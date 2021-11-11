@@ -1,4 +1,4 @@
-package ex.google.faculty_schedule_preference;
+package ex.google.faculty_schedule_preference.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

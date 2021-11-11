@@ -1,20 +1,27 @@
-package ex.google.faculty_schedule_preference;
+package ex.google.faculty_schedule_preference.user;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import ex.google.faculty_schedule_preference.department.Department;
+import ex.google.faculty_schedule_preference.request.Request;
+
 @Entity(name = "User")
-@Table(name = "user", uniqueConstraints = { @UniqueConstraint(name = "user_email_unique", columnNames = "email") })
-class User {
+@Table(name = "users", uniqueConstraints = { @UniqueConstraint(name = "user_email_unique", columnNames = "email") })
+public class User {
     @Id
-    @SequenceGenerator(name = "User_generator", sequenceName = "id_generator", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "id_generator")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false)
     private long id;
     @Column(name = "csun_id", nullable = false, columnDefinition = "TEXT")
@@ -32,6 +39,20 @@ class User {
     @Column(name = "password", nullable = false, columnDefinition = "TEXT")
     private String password;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Request> requests = new ArrayList<Request>();
+
+    @OneToOne(fetch = FetchType.LAZY)
+    private Department department;
+
+    public Department getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
+    }
+
     public User(String csun_id, String name, String username, String email, String password) {
         this.csun_id = csun_id;
         this.name = name;
@@ -40,12 +61,25 @@ class User {
         this.password = password;
     }
 
+    public User(String csun_id, String name, String username, String email, String password, List<Request> requests) {
+        this.csun_id = csun_id;
+        this.name = name;
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.requests = requests;
+    }
+
     public long getId() {
         return id;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public List<Request> getRequests() {
+        return requests;
+    }
+
+    public void setRequests(List<Request> requests) {
+        this.requests = requests;
     }
 
     public String getCsun_id() {
