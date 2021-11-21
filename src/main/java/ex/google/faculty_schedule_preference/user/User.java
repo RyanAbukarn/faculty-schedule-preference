@@ -16,6 +16,7 @@ import javax.persistence.UniqueConstraint;
 
 import ex.google.faculty_schedule_preference.department.Department;
 import ex.google.faculty_schedule_preference.request.Request;
+import ex.google.faculty_schedule_preference.user_permission.UserPermission;
 
 @Entity(name = "User")
 @Table(name = "users", uniqueConstraints = { @UniqueConstraint(name = "user_email_unique", columnNames = "email") })
@@ -41,6 +42,9 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Request> requests = new ArrayList<Request>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserPermission> user_permissions = new ArrayList<UserPermission>();
 
     @OneToOne(fetch = FetchType.LAZY)
 
