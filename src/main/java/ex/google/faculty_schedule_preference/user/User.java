@@ -43,7 +43,11 @@ public class User {
     private List<Request> requests = new ArrayList<Request>();
 
     @OneToOne(fetch = FetchType.LAZY)
+
     private Department department;
+
+    public User() {
+    }
 
     public Department getDepartment() {
         return department;

@@ -27,4 +27,8 @@ public class Request {
     private User user;
     @OneToOne(fetch = FetchType.LAZY)
     private Course course;
+
+    public Request() {
+    }
+
 }
