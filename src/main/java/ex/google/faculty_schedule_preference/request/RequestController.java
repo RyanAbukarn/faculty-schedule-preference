@@ -36,8 +36,7 @@ public class RequestController {
 
     @GetMapping("courses/{course_id}/request")
     public String Create(@PathVariable("course_id") long course_id, Model model) {
-
-        model.addAttribute("request", "");
+        model.addAttribute("request", new Request());
         return "/request/create";
     }
 
