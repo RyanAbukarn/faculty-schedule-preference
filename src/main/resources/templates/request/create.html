@@ -47,14 +47,10 @@
                         html: arg.event.title
                     };
                 },
-                eventClick: function (info) {
+                select: function (start, end) {
 
                 },
-                select: function (info) {
-
-                },
-                // change event date
-                eventDrop: function (info) {
+                eventDrop: function (old, new_) {
 
                 },
             });
@@ -78,6 +74,7 @@
 
 <body>
     <div id='calendar' th:id="calendar"></div>
+
 </body>
 
 </html>
