@@ -28,6 +28,9 @@ public class UserAvailability {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
+    public UserAvailability() {
+    }
+
     public UserAvailability(String body, double max_unit, double min_unit, double release_time) {
         this.body = body;
         this.max_unit = max_unit;

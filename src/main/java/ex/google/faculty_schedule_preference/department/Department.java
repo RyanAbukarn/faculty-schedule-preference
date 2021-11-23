@@ -21,6 +21,9 @@ public class Department {
     @Column(name = "prefix", nullable = false, columnDefinition = "TEXT")
     private String prefix;
 
+    public Department() {
+    }
+
     public Department(String name, String prefix) {
         this.name = name;
         this.prefix = prefix;
