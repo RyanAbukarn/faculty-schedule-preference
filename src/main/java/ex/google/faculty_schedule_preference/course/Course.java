@@ -44,6 +44,9 @@ public class Course {
     @OneToOne(fetch = FetchType.LAZY)
     private Department department;
 
+    public Course() {
+    }
+
     public Course(String name, String prefix, double unit, int type, Date start_date, Date end_date) {
         this.name = name;
         this.prefix = prefix;
