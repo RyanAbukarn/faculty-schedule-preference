@@ -13,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -47,9 +48,9 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Request> requests = new ArrayList<Request>();
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "user_permissions", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "permission_id", referencedColumnName = "id"))
-    private Set<Permission> permissions;
+    private List<Permission> permissions;
 
     @OneToOne(fetch = FetchType.LAZY)
     private Department department;
@@ -82,12 +83,12 @@ public class User {
         this.department = department;
     }
 
-    public Set<Permission> getPermissions() {
+    public List<Permission> getPermissions() {
         return permissions;
     }
 
-    public void setPermissions(Set<Permission> permissions) {
-        this.permissions = permissions;
+    public void setPermissions(List<Permission> list) {
+        this.permissions = list;
     }
 
     public long getId() {
