@@ -62,4 +62,10 @@ public class UserController {
         redirectAttributes.addFlashAttribute("alertClass", "alert-success");
         return "redirect:/user/"+user_id+"/permissions";
     }
+
+    @GetMapping("/login")
+    public String login(){
+        return "user/login";
+    }
+
 }

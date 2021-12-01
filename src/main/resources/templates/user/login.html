@@ -1,17 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Landing Page</title>
-    <link rel="stylesheet" href="./loginstyle.css" />
+    <link rel="stylesheet" type = "text/css" href="./loginstyle.css"/>
     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@100&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="header">
         <a target="_blank" href="https://www.csun.edu/" >
-            <img src="./images/Seal-Logos/Seal-CSUN Horizontal 186.jpg" alt="CSUN Logo"> 
+            <img src="./images/Seal-Logos/Seal-CSUN Horizontal 186.jpg"
+                 alt="CSUN Logo">
         </a>         
         <div class="red">
         </div>
@@ -25,10 +26,16 @@
                 <h1>
                     Login
                 </h1>
-                    <form id="loginForm" >
+                    <form id="loginForm" name = "f" th:action="@{/user/login}" method="post">
                         <div id="errs" class="errorcontainer"></div>
-                        <label for="Username">Username</label>
-				        <input id="Username" name="Username" type="text" autocomplete="email" placeholder="Enter Your Username" />   
+                        <div th:if="${param.error}" class="alert alert-error">
+                            Invalid username and password.
+                        </div>
+                        <div th:if="${param.logout}" class = "alert alert-success">
+                            You have been logged out.
+                        </div>
+                        <label for="username">Username</label>
+				        <input id="username" name="username" type="text" autocomplete="email" placeholder="Enter Your Username" />
                         <label for="password">Password</label>
                         <input id="password" name="password" type="password" autocomplete="current-password" placeholder="Enter Your Password" />
                         <input type="submit" name="submit" placeholder="Login">
