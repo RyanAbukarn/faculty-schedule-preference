@@ -11,9 +11,9 @@ import java.util.*;
 
 @SpringBootApplication
 public class FacultySchedulePreferenceApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(FacultySchedulePreferenceApplication.class, args);
+
 	}
 	@Bean
 	public ApplicationRunner DDBInitializer(DepartmentRepository repo){
