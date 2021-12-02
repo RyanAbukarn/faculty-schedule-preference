@@ -24,14 +24,10 @@ public class DepartmentController {
     }
 
     @GetMapping("/departments")
-    public String fetchDepartments(Model model)
+    public String index(Model model)
     {
-        List<Department> departments = new ArrayList<Department>();
-        repository.findAll()
-                        .forEach(departments::add);
-
-        model.addAttribute("departments", departments);
-        return "department/list";
+        model.addAttribute("departments", repository.findAll());
+        return "department/index";
     }
 
 }
