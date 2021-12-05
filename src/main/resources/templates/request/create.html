@@ -30,21 +30,17 @@
 
     <div class="wrap">
         <div class="info">
+            <h1>Course Info</h1>
             <div class="fsp-card">
                 <div class="fsp-card-body">
-                    <h5 class="card-title">Card title</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                        card's content.</p>
-                    <a href="#" class="card-link">Card link</a>
-                    <a href="#" class="card-link">Another link</a>
+                    <h5 class="card-title" th:text="| Course Name: ${course.getName()} |"></h5>
+                    <h6 class="card-subtitle mb-2 text-muted" th:text="|Course prefix: ${course.getPrefix()} |"></h6>
+                    <p class="card-text"></p>
                 </div>
             </div>
-            <h1>User</h1>
         </div>
         <div id='calendar'></div>
     </div>
-
     <button id="submit_request" type="button" class="btn btn-primary">submit</button>
 
     <div class="modal fade" id="createEventModal" tabindex="-1" aria-labelledby="createEventModalLabel"
@@ -81,11 +77,11 @@
             2: 'Alternative',
             3: 'Lowest',
         }
+        let dates = [];
         let calendarEL = $('#calendar');
         let currentDate = "2012-05-25";
         let start_ = "";
         let end_ = "";
-        let dates = [];
         calendarEL.fullCalendar({
             defaultView: 'agendaWeek',
             selectHelper: true,
@@ -118,7 +114,7 @@
             select: function (start, end) {
                 start_ = start.toISOString();
                 end_ = end.toISOString();
-                if (dates.length != 3) {
+                if (calendarEL.fullCalendar("clientEvents").length != 3) {
                     $("#createEventModal").modal("show");
                     return true;
                 } else {
@@ -129,28 +125,13 @@
             eventRender: function (event, element) {
                 element
                     .find(".fc-content")
-                    .prepend("<span class='closeBtn material-icons'>&#xe5cd;</span>");
+                    .prepend(`<i class="closeBtn far fa-times-circle"></i>`);
                 element.find(".closeBtn").on("click", function () {
                     $("#calendar").fullCalendar("removeEvents", event._id);
                 });
             }
         });
         $('#calendar').fullCalendar('gotoDate', currentDate);
-
-        function addevent(title, start1, end1) {
-
-            calendarEL.fullCalendar('renderEvent', {
-                title: title,
-                start: start1,
-                end: end1,
-            }, true);
-
-            dates.push({
-                title: title,
-                start: start1,
-                end: end1,
-            });
-        };
 
         $("#submit_event").click(_ => {
             addevent(Direction[$("#priorities").val()], start_, end_);
@@ -162,7 +143,24 @@
             fire_ajax_submit();
         });
 
+        function addevent(title, start1, end1) {
+            calendarEL.fullCalendar('renderEvent', {
+                title: title,
+                start: start1,
+                end: end1,
+            }, true);
+        };
+
+        function convertToJson(value, _, _) {
+            dates.push({
+                title: value.title,
+                start: value.start.toISOString(),
+                end: value.end.toISOString()
+            })
+        }
+
         function fire_ajax_submit() {
+            calendarEL.fullCalendar("clientEvents").forEach(convertToJson);
             $.ajax({
                 type: "POST",
                 contentType: "application/json",

@@ -13,7 +13,7 @@ import java.util.List;
 
 @Controller
 
-@RequestMapping("department")
+@RequestMapping("departments")
 public class DepartmentController {
 
     @Autowired
@@ -23,11 +23,9 @@ public class DepartmentController {
         this.repository = repository;
     }
 
-    @GetMapping("/departments")
-    public String index(Model model)
-    {
+    @GetMapping("")
+    public String index(Model model) {
         model.addAttribute("departments", repository.findAll());
         return "department/index";
     }
-
 }
