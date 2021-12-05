@@ -2,19 +2,14 @@ package ex.google.faculty_schedule_preference.user;
 
 import ex.google.faculty_schedule_preference.permission.Permission;
 import ex.google.faculty_schedule_preference.permission.PermissionRepository;
-import org.springframework.data.repository.query.Param;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -52,14 +47,13 @@ public class UserController {
     // after admin clicks submit, function is called
     @RequestMapping(value = "/{user_id}/permissions", method = RequestMethod.POST)
     public String postRoles(@PathVariable("user_id") long user_id,
-            @RequestParam("permissions1") List<Long> permissions1,
+            @RequestParam("permissions1") List<Long> permissions,
             RedirectAttributes redirectAttributes) {
         // remove everything
         // re-add what is checked
-        List<Permission> permissions = new ArrayList<Permission>();
         User user = repository.findById(user_id).get();
         user.getPermissions().clear();
-        user.setPermissions(permissionRepository.findAllById(permissions1));
+        user.setPermissions(permissionRepository.findAllById(permissions));
         repository.save(user);
         redirectAttributes.addFlashAttribute("message", "Success");
         redirectAttributes.addFlashAttribute("alertClass", "alert-success");

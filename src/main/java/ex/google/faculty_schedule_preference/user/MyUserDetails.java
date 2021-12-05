@@ -14,18 +14,19 @@ public class MyUserDetails implements UserDetails {
 
     private String username;
     private String password;
-    //private boolean active;
+    // private boolean active;
     private List<GrantedAuthority> authorities;
 
     @Autowired
     UserRepository userRepository;
+
     public MyUserDetails(User user) {
         this.username = user.getUsername();
         this.password = user.getPassword();
-        //System.out.println(c.getRole());
-        this.authorities = Arrays.stream(user.getPermissions().stream().map(x->x.getRole()).toArray(String[]::new))
-                    .map(SimpleGrantedAuthority::new)
-                    .collect(Collectors.toList());
+        // System.out.println(c.getRole());
+        this.authorities = Arrays.stream(user.getPermissions().stream().map(x -> x.getRole()).toArray(String[]::new))
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
     }
 
     @Override

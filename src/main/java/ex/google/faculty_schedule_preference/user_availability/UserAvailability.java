@@ -17,7 +17,7 @@ public class UserAvailability {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false)
     private long id;
-    @Column(name = "body", nullable = false)
+    @Column(name = "times", nullable = false)
     private String body;
     @Column(name = "max_unit", nullable = false)
     private double max_unit;

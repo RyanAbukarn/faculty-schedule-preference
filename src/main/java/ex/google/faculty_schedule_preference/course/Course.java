@@ -1,6 +1,8 @@
 package ex.google.faculty_schedule_preference.course;
 
-import java.sql.Date;
+import javax.persistence.Transient;
+import java.sql.Time;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,6 +20,11 @@ import ex.google.faculty_schedule_preference.department.Department;
 @Table(name = "courses", uniqueConstraints = {
         @UniqueConstraint(name = "course_prefix_unique", columnNames = "prefix") })
 public class Course {
+    @Transient
+    private Map<Integer, String> weekDays = Map.of(1, "Sun", 2, "Mon", 3, "Tue", 4, "Wed", 5, "Thu", 6, "Fri", 7,
+            "Sat");
+    @Transient
+    private Map<Integer, String> classType = Map.of(1, "Online", 2, "In-person", 3, "Hybrid");
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false)
@@ -35,11 +42,11 @@ public class Course {
     @Column(name = "type", nullable = false)
     private int type;
 
-    @Column(name = "start_date", nullable = false)
-    private Date start_date;
+    @Column(name = "start_time", nullable = false)
+    private Time startTime;
 
-    @Column(name = "end_date", nullable = false)
-    private Date end_date;
+    @Column(name = "end_time", nullable = false)
+    private Time endTime;
 
     @OneToOne(fetch = FetchType.LAZY)
     private Department department;
@@ -47,13 +54,14 @@ public class Course {
     public Course() {
     }
 
-    public Course(String name, String prefix, double unit, int type, Date start_date, Date end_date) {
+    public Course(String name, String prefix, double unit, int type, String daysOfWeek, Time startTime,
+            Time endTime) {
         this.name = name;
         this.prefix = prefix;
         this.unit = unit;
         this.type = type;
-        this.start_date = start_date;
-        this.end_date = end_date;
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
 
     public long getId() {
@@ -92,20 +100,20 @@ public class Course {
         this.type = type;
     }
 
-    public Date getStart_date() {
-        return start_date;
+    public Time getStartTime() {
+        return startTime;
     }
 
-    public void setStart_date(Date start_date) {
-        this.start_date = start_date;
+    public void setStartTime(Time startTime) {
+        this.startTime = startTime;
     }
 
-    public Date getEnd_date() {
-        return end_date;
+    public Time getEndTime() {
+        return endTime;
     }
 
-    public void setEnd_date(Date end_date) {
-        this.end_date = end_date;
+    public void setEndTime(Time endTime) {
+        this.endTime = endTime;
     }
 
 }
