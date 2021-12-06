@@ -3,6 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
 <head>
+	<title>Review</title>
 	<meta charset='utf-8' content="Cory Sanoy" name="Author" />
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
 		integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
@@ -25,7 +26,7 @@
 </head>
 
 <body>
-	<div id="feedback"></div>
+	<div th:if="${message}" th:text="${message}" th:class="${'alert ' + alertClass}" />
 
 	<div class="wrap">
 		<div class="info">
@@ -33,8 +34,8 @@
 			<h1>Course Info</h1>
 			<div class="fsp-card">
 				<div class="fsp-card-body">
-					<h5 class="card-title" th:text="|Course Name: ${course.getName()}|"></h5>
-					<h6 class="card-subtitle mb-2 text-muted" th:text="|Course prefix: ${course.getPrefix()}|"></h6>
+					<h5 class="card-title" th:text="|Name: ${course.getName()}|"></h5>
+					<h6 class="card-subtitle mb-2 text-muted" th:text="|prefix: ${course.getPrefix()}|"></h6>
 					<p class="card-text"></p>
 				</div>
 			</div>
@@ -47,29 +48,50 @@
 					<a href="#" class="card-link">resume</a>
 				</div>
 			</div>
-		</div>
-		<div id='calendar'></div>
-	</div>
-	<div>
-		<div class="card" style="width: 18rem;" th:each="_request_feedback: ${request_feedbacks}">
-			<div class="card-body">
-				<h5 class="card-title" th:text="${_request_feedback.getUser().getName()}"></h5>
-				<p class="card-text" th:text="${_request_feedback.getComment()}"></p>
+			<br>
+			<h1>Logs</h1>
+			<div class="Scrolller">
+				<div class="card" style="width: 635px;" th:each="request_feedback: ${request_feedbacks}">
+					<div class="card-body">
+						<h5 class="card-title" th:text="${request_feedback.getUser().getName()}"></h5>
+						<h6 class="card-subtitle mb-2 text-muted"
+							th:text="|Sent to : ${request_feedback.getHumanReciver()}|">
+						</h6>
+						<p class="card-text" th:text="${request_feedback.getComment()}"></p>
+					</div>
+				</div>
+			</div>
+
+			<br>
+			<h1>Add comment</h1>
+			<div class="fsp-card">
+				<form th:action="@{/requests/__${request.getId()}__}" th:object="${request_feedback}" method="post">
+					<div class="form-group">
+						<label for="comment">Feedback</label>
+						<textarea class="form-control" id="comment" name="comment" th:field="*{comment}" />
+						</div>
+				<div class="form-group">
+					<label for="reciver">Send to</label>
+					<select th:field="*{reciver}" name="reciver" class="form-control" id="reciver">
+						<option th:each="i : ${reciverTypes}" th:value="${i.key}" th:text="${i.value}">
+						</option>
+					</select>
+				</div>
+				<br>
+					<input class="btn btn-primary" type="submit" name="submit"/>
+				</form>
 			</div>
 		</div>
+		<div>
+			<div id='calendar'></div>
+			<br>
+			<form th:if="${request.getStatus()!=4 && request.getStatus()!=3}"th:action="@{/requests/__${request.getId()}__/denied}" method="post">
+				<input type="hidden" name="denie" />
+				<button class="btn btn-danger">Denie</button>
+			</form>
+		</div>
+
 	</div>
-	<form th:action="@{/requests/__${request.getId()}__}" th:object="${request_feedback}" method="post">
-		<label for="comment">Feedback</label>
-		<textarea id="comment" name="comment" th:field="*{comment}" />
-		<label for="reciver">Example select</label>
-		<select th:field="*{reciver}" name="reciver" class="form-control" id="reciver">
-			<option th:each="i : ${reciverTypes}" th:value="${i.key}" th:text="${i.value}">
-			</option>
-			
-		</select>
-		<input type="submit" name="submit"/>
-		
-	</form>
 	<div class="modal fade" id="createEventModal" tabindex="-1" aria-labelledby="createEventModalLabel"
 		aria-hidden="true">
 		<div class="modal-dialog">
@@ -89,18 +111,23 @@
 		</div>
 	</div>
 
-
-
 </body>
 <script>
-	let approved_date1;
+	let f;
 	$(document).ready(function () {
 
 		const Direction = {
 			1: 'Highest',
 			2: 'Alternative',
 			3: 'Lowest',
+		}	
+		const Status = {
+			'new':1,
+			'under_review':2,
+			'denied':3,
+			'accpeted':4,
 		}
+		let showModel;
 		let calendarEL = $('#calendar');
 		let currentDate = "2012-05-25";
 		let approved_date;
@@ -124,19 +151,28 @@
 				center: '',
 				right: ''
 			},
-			eventSources: [{
-				url: `/api${window.location.pathname}`,
-			}, {
-				url: `/api${window.location.pathname}/approved`,
-				color: "#50C878"
-			}],
+			events: function (start, end,_, callback) {
+				$.ajax({
+					type: "GET",
+					contentType: "application/json",
+					url: `/api${window.location.pathname}`,
+					dataType: 'json',
+					cache: false,
+					timeout: 600000,
+					success: function (data) {
+						showModel = data.status == Status["new"]
+						callback(JSON.parse(data.event));
+					},
+				})
+    		},
 			eventClick: function (info) {
-				if (calendarEL.fullCalendar("clientEvents").length != 4) {
+				if (showModel) {
 					$("#createEventModal").modal("show");
-					approved_date = [{
+					approved_date = {
+						title: info.title,
 						start: info.start.toISOString(),
 						end: info.end.toISOString(),
-					}];
+					};
 				}
 			}
 		});

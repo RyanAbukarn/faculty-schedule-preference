@@ -29,7 +29,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Request {
 
     @Transient
-    private Map<Integer, String> humanStatusMap = Map.of(1, "New", 2, "Under review", 3, "Not Complete", 4, "Accpeted");
+    public static Map<String, Integer> statusValues = Map.of("new", 1, "under_review", 2, "denied", 3, "accpeted",
+            4);
+    @Transient
+
+    private Map<Integer, String> humanStatusMap = Map.of(1, "New", 2, "Under review", 3, "Denied", 4, "Accpeted");
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,12 +43,8 @@ public class Request {
     private int status;
 
     @JsonProperty("times")
-    @Column(name = "times", nullable = false)
+    @Column(name = "times", nullable = false, columnDefinition = "TEXT")
     private String times;
-    @JsonProperty("aproved_time")
-
-    @Column(name = "aproved_time", nullable = true)
-    private String aproved_time;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
@@ -57,10 +57,9 @@ public class Request {
     public Request() {
     }
 
-    public Request(int status, String times, String aproved_time, User user, Course course) {
+    public Request(int status, String times, User user, Course course) {
         this.status = status;
         this.times = times;
-        this.aproved_time = aproved_time;
         this.user = user;
         this.course = course;
     }
@@ -79,14 +78,6 @@ public class Request {
 
     public void setTimes(String times) {
         this.times = times;
-    }
-
-    public String getAproved_time() {
-        return aproved_time;
-    }
-
-    public void setAproved_time(String aproved_time) {
-        this.aproved_time = aproved_time;
     }
 
     public User getUser() {
