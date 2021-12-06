@@ -1,5 +1,10 @@
 package ex.google.faculty_schedule_preference.request;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -34,31 +39,26 @@ public class RequestController {
     @GetMapping("my-requests")
     public String MyRquests(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         User currentUser = userRepository.findByUsername(userDetails.getUsername()).get();
-        model.addAttribute("requests", currentUser.getRequests());
-        return "request/index";
-    }
-
-    @GetMapping("my-requests/{request_id}")
-    public String ViewMyRequest(@PathVariable("request_id") long request_id, Model model) {
-        Request theRequest = repository.findById(request_id).get();
-        model.addAttribute("request", theRequest);
-        model.addAttribute("course", theRequest.getCourse());
-        model.addAttribute("request_feedbacks",
-                theRequest.getRequestFeedbacks().stream().filter(x -> x.getReciver() == 1));
-        return "/request/my_request";
+        List<Request> theRequests = currentUser.getRequests();
+        Map<Long, List<Requestfeedback>> requestFeedbacks = new HashMap<Long, List<Requestfeedback>>();
+        theRequests.stream().forEach(x -> requestFeedbacks.put(x.getId(),
+                x.getRequestFeedbacks().stream().filter(y -> y.getReciver() == 1).collect(Collectors.toList())));
+        model.addAttribute("requests", theRequests);
+        model.addAttribute("requestFeedbacks", requestFeedbacks);
+        return "request/my_requests";
     }
 
     @PostMapping("requests/{request_id}")
-    public String Add(@PathVariable("request_id") long request_id, Requestfeedback requestfeed, Model model,
+    public String Add(@PathVariable("request_id") long request_id,
+            Requestfeedback requestfeed, Model model,
             RedirectAttributes redirectAttributes, @AuthenticationPrincipal UserDetails userDetails) {
         Request theRequest = repository.findById(request_id).get();
         User currentUser = userRepository.findByUsername(userDetails.getUsername()).get();
-
         requestfeed.setRequest(theRequest);
         requestfeed.setUser(currentUser);
         theRequest.pushRequestFeedback(requestfeed);
         repository.save(theRequest);
-        redirectAttributes.addFlashAttribute("message", "Success");
+        redirectAttributes.addFlashAttribute("message", "Successfully added a comment");
         redirectAttributes.addFlashAttribute("alertClass", "alert-success");
         return "redirect:/requests/" + request_id;
     }
@@ -72,7 +72,18 @@ public class RequestController {
         model.addAttribute("request_feedback", new Requestfeedback());
         model.addAttribute("request_feedbacks", theRequest.getRequestFeedbacks());
         model.addAttribute("reciverTypes", Requestfeedback.getReciverTyps());
-        return "/request/view";
+        return "request/view";
+    }
+
+    @PostMapping("requests/{request_id}/denied")
+    public String Denied(@PathVariable("request_id") long request_id,
+            RedirectAttributes redirectAttributes) {
+        Request theRequest = repository.findById(request_id).get();
+        theRequest.setStatus(Request.statusValues.get("denied"));
+        repository.save(theRequest);
+        redirectAttributes.addFlashAttribute("message", "Successfully Denied The Reqeust");
+        redirectAttributes.addFlashAttribute("alertClass", "alert-success");
+        return "redirect:/requests/" + request_id;
     }
 
     @GetMapping("courses/{course_id}/request")
