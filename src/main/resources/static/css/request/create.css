@@ -27,3 +27,14 @@ body {
     align-items: center;
     max-height: fit-content;
 }
+.Scrolller {
+    height:150px;
+    overflow-y: scroll;
+  }
+.footer {
+    display: flex;
+    justify-content: left;
+    align-items: left;
+    max-height: fit-content;
+    padding: 40px;
+}
