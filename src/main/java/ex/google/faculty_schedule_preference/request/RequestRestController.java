@@ -1,17 +1,17 @@
 package ex.google.faculty_schedule_preference.request;
 
-import org.json.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import ex.google.faculty_schedule_preference.course.CourseRepository;
 import ex.google.faculty_schedule_preference.user.User;
@@ -33,53 +33,37 @@ public class RequestRestController {
         this.userRepository = userRepository;
     }
 
+    @GetMapping("api/requests/{request_id}/approved")
+    public ResponseEntity<?> Approved(@PathVariable long request_id) {
+        Request theRequest = requestRepository.findById(request_id).get();
+        return ResponseEntity.ok(theRequest.getAproved_time());
+
+    }
+
     @GetMapping("api/requests/{request_id}")
     public ResponseEntity<?> View(@PathVariable long request_id) {
-
         Request theRequest = requestRepository.findById(request_id).get();
-        JSONArray jsonArray = new JSONArray(theRequest.getTimes());
-        JSONObject responces = new JSONObject();
-        responces.put("event", jsonArray.toString());
-        responces.put("status", theRequest.getStatus());
+        theRequest.setStatus(2);
+        requestRepository.save(theRequest);
+        return ResponseEntity.ok(theRequest.getTimes());
 
-        if (theRequest.getStatus() == Request.statusValues.get("new"))
-            theRequest.setStatus(Request.statusValues.get("under_review"));
-
-        return ResponseEntity.ok(responces.toString());
     }
 
     @PostMapping("api/requests/{request_id}")
-    public ResponseEntity<?> SubmitAprroveTime(@RequestBody String approvedTime, @PathVariable long request_id,
-            RedirectAttributes redirectAttributes) {
+    public ResponseEntity<?> SubmitAprroveTime(@RequestBody String approvedTime, @PathVariable long request_id) {
         Request request = requestRepository.findById(request_id).get();
-        JSONObject newJSONObject = new JSONObject(approvedTime);
-        JSONArray jsonArray = new JSONArray(request.getTimes());
-
-        for (int i = 0; i < jsonArray.length(); i++) {
-
-            if (jsonArray.getJSONObject(i).getString("title").equals(newJSONObject.getString("title"))) {
-                jsonArray.getJSONObject(i).put("color", "#AFE1AF");
-                System.out.println(jsonArray.toString());
-            }
-        }
-        System.out.println(jsonArray.toString());
-        request.setTimes(jsonArray.toString());
-        request.setStatus(Request.statusValues.get("accpeted"));
+        request.setAproved_time(approvedTime);
+        request.setStatus(3);
         requestRepository.save(request);
-        redirectAttributes.addFlashAttribute("message", "Successfully Approved The Time");
-        redirectAttributes.addFlashAttribute("alertClass", "alert-success");
-
         return ResponseEntity.ok("okay");
 
     }
 
     @PostMapping("courses/{course_id}/request")
     public ResponseEntity<?> Add(@RequestBody String times, @AuthenticationPrincipal UserDetails userDetails,
-            @PathVariable long course_id, RedirectAttributes redirectAttributes) {
-
+            @PathVariable long course_id) {
         User currentUser = userRepository.findByUsername(userDetails.getUsername()).get();
-
-        Request newRequest = new Request(1, times,
+        Request newRequest = new Request(1, times, null,
                 currentUser,
                 courseRepository.findById(course_id).get());
         requestRepository.save(newRequest);

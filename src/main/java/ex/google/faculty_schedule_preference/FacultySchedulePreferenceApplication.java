@@ -1,7 +1,9 @@
 package ex.google.faculty_schedule_preference;
 
 import ex.google.faculty_schedule_preference.department.Department;
+import ex.google.faculty_schedule_preference.permission.Permission;
 import ex.google.faculty_schedule_preference.department.DepartmentRepository;
+import ex.google.faculty_schedule_preference.permission.PermissionRepository;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,7 +18,7 @@ public class FacultySchedulePreferenceApplication {
 
 	}
 	@Bean
-	public ApplicationRunner DDBInitializer(DepartmentRepository repo){
+	public ApplicationRunner DDBInitializer(DepartmentRepository repo, PermissionRepository permissionRepository){
 		return (args) -> {
 			System.out.println("running"); //debug
 			// Create departments HashMap
@@ -46,8 +48,27 @@ public class FacultySchedulePreferenceApplication {
 					repo.save(new Department(id, splitted[1], splitted[0]));
 			});
 
+			// Create permissions HashMap
+			HashMap<Long, String> permissions = new HashMap<Long, String>();
+
+			// Add permissions by key-value pairs
+			permissions.put(1L, "ROLE_ADMIN");
+			permissions.put(2L, "ROLE_CONTROLLER");
+			permissions.put(3L, "ROLE_TENURETRACK");
+			permissions.put(4L, "ROLE_LECTURER");
+
+			// Check if Repo is full
+			// If repo entries are greater than 0, delete and populate the repo
+			System.out.println("Populating repo...");
+			permissions.forEach((id, prm) -> {
+				if(!permissionRepository.existsById(id))
+					permissionRepository.save(new Permission(id, prm));
+			});
+
 		};
 
 	}
+
+
 
 }

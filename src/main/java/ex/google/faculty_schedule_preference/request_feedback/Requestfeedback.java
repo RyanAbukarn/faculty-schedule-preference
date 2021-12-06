@@ -51,17 +51,16 @@ public class Requestfeedback {
         this.comment = comment;
     }
 
-    public Requestfeedback(String comment, Request request, Integer reciver) {
+    public Requestfeedback(String comment, Request request) {
         this.comment = comment;
         this.request = request;
-        this.reciver = reciver;
     }
 
     public Integer getReciver() {
         return reciver;
     }
 
-    public void setReciver(Integer reciver) {
+    public void setView(Integer reciver) {
         this.reciver = reciver;
     }
 
@@ -91,9 +90,5 @@ public class Requestfeedback {
 
     public void setRequest(Request request) {
         this.request = request;
-    }
-
-    public String getHumanReciver() {
-        return recivers.get(this.reciver);
     }
 }

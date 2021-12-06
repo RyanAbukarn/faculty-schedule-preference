@@ -26,18 +26,4 @@ body {
     justify-content: center;
     align-items: center;
     max-height: fit-content;
-<<<<<<< HEAD
-=======
-}
-.Scrolller {
-    height:150px;
-    overflow-y: scroll;
-  }
-.footer {
-    display: flex;
-    justify-content: left;
-    align-items: left;
-    max-height: fit-content;
-    padding: 40px;
->>>>>>> 6cd1975dd5aaff20d1405b5f4017e9e5fc4d298f
 }
