@@ -24,6 +24,13 @@ public class Permission {
 
     public Permission(Long id, String role) {
         this.id = id;
+<<<<<<< HEAD
+=======
+        this.role = role;
+    }
+
+    public Permission(String role) {
+>>>>>>> master
         this.role = role;
     }
 
