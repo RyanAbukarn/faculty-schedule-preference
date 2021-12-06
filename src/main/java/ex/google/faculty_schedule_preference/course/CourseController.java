@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("course")
 public class CourseController {
     private final CourseRepository repository;
 
@@ -15,7 +14,7 @@ public class CourseController {
         this.repository = repository;
     }
 
-    @GetMapping("")
+    @GetMapping("courses")
     public String index(Model model) {
         model.addAttribute("courses", repository.findAll());
         return "course/index";
