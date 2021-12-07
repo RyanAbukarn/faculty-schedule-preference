@@ -1,0 +1,34 @@
+    h1 {
+    color: white;
+    text-align: center;
+    width: 50%;
+    height: 5%;
+    position: absolute;
+    left: 50%;
+    top: 3%;
+    transform: translate(-50%, -50%);
+    border: 5px solid #00008B;
+    padding-top: 5px;
+    padding: 10px;
+    background-color: #F08080;
+    }
+    form{
+    margin-left: 40px;
+    }
+    body
+    {
+    background-color: #ADD8E6;
+    }
+
+    #box {
+    width: 50%;
+    height: 50%;
+    position: absolute;
+    left: 50%;
+    top: 38.5%;
+    transform: translate(-50%, -50%);
+    border: 5px solid #00008B;
+    padding-top: 500px;
+    padding: 10px;
+    background-color: white;
+    }
