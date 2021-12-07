@@ -1,27 +1,214 @@
-<!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>request</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Review</title>
+	<meta charset='utf-8' content="Cory Sanoy" name="Author" />
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+		integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.0.1/fullcalendar.css" rel="stylesheet" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.0.1/fullcalendar.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"
+		integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous">
+	</script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"
+		integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous">
+	</script>
+	<link th:href="@{/css/request/create.css}" rel="stylesheet" />
+
 </head>
 
 <body>
-    <h1>request</h1>
-    <!-- Name: <b th:text="${request.priority}" /> <b th:text="${request.status}" /><br />
-    <!-- Email: <span th:text="${request.email}" /><br/>
-	Skills:
-		<span th:each="skill : ${request.skills}">
-			<br/>&nbsp;&nbsp;<span th:text="${skill.label}" /> - <span th:text="${skill.description}" />
-		</span>
-	<form th:action="@{/request/{id}/skills(id=${request.id})}" method="post" enctype="multipart/form-data" >
-		<select name="skillId">
-			<option th:each="skill : ${skills}" 
-				th:value="${skill.id}" 
-				th:text="${skill.description}">Skill</option>
-		</select>
-		<input type="submit" value="Add skill"/>
-	</form> --> -->
+	<div th:if="${message}" th:text="${message}" th:class="${'alert ' + alertClass}" />
+
+	<div class="wrap">
+		<div class="info">
+
+			<h1>Course Info</h1>
+			<div class="fsp-card">
+				<div class="fsp-card-body">
+					<h5 class="card-title" th:text="|Name: ${course.getName()}|"></h5>
+					<h6 class="card-subtitle mb-2 text-muted" th:text="|prefix: ${course.getPrefix()}|"></h6>
+					<p class="card-text"></p>
+				</div>
+			</div>
+			<br>
+			<h1>User Info</h1>
+			<div class="fsp-card">
+				<div class="fsp-card-body">
+					<h5 class="card-title" th:text="|Full Name: ${user.getName()}|"></h5>
+					<h6 class="card-subtitle mb-2 text-muted" th:text="|CSUN ID: ${user.getCsun_id()}|"></h6>
+					<a href="#" class="card-link">resume</a>
+				</div>
+			</div>
+			<br>
+			<h1>Logs</h1>
+			<div class="Scrolller">
+				<div class="card" style="width: 635px;" th:each="request_feedback: ${request_feedbacks}">
+					<div class="card-body">
+						<h5 class="card-title" th:text="${request_feedback.getUser().getName()}"></h5>
+						<h6 class="card-subtitle mb-2 text-muted"
+							th:text="|Sent to : ${request_feedback.getHumanReciver()}|">
+						</h6>
+						<p class="card-text" th:text="${request_feedback.getComment()}"></p>
+					</div>
+				</div>
+			</div>
+
+			<br>
+			<h1>Add comment</h1>
+			<div class="fsp-card">
+				<form th:action="@{/requests/__${request.getId()}__}" th:object="${request_feedback}" method="post">
+					<div class="form-group">
+						<label for="comment">Feedback</label>
+						<textarea class="form-control" id="comment" name="comment" th:field="*{comment}" />
+						</div>
+				<div class="form-group">
+					<label for="reciver">Send to</label>
+					<select th:field="*{reciver}" name="reciver" class="form-control" id="reciver">
+						<option th:each="i : ${reciverTypes}" th:value="${i.key}" th:text="${i.value}">
+						</option>
+					</select>
+				</div>
+				<br>
+					<input class="btn btn-primary" type="submit" name="submit"/>
+				</form>
+			</div>
+		</div>
+		<div>
+			<div id='calendar'></div>
+			<br>
+			<form th:if="${request.getStatus()!=4 && request.getStatus()!=3}"th:action="@{/requests/__${request.getId()}__/denied}" method="post">
+				<input type="hidden" name="denie" />
+				<button class="btn btn-danger">Denie</button>
+			</form>
+		</div>
+
+	</div>
+	<div class="modal fade" id="createEventModal" tabindex="-1" aria-labelledby="createEventModalLabel"
+		aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="createEventModalLabel">Approve final time</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<p>Are you sure you want to approve this time?</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+					<button type="button" id="approve" class="btn btn-primary">YES</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
 </body>
+<script>
+	let f;
+	$(document).ready(function () {
+
+		const Direction = {
+			1: 'Highest',
+			2: 'Alternative',
+			3: 'Lowest',
+		}	
+		const Status = {
+			'new':1,
+			'under_review':2,
+			'denied':3,
+			'accpeted':4,
+		}
+		let showModel;
+		let calendarEL = $('#calendar');
+		let currentDate = "2012-05-25";
+		let approved_date;
+		calendarEL.fullCalendar({
+			defaultView: 'agendaWeek',
+			eventColor: '#f16621',
+			slotDuration: '00:15',
+			allDaySlot: false,
+			slotLabelInterval: "00:15",
+			longPressDelay: 0,
+			views: {
+				agendaWeek: {
+					columnFormat: "dddd"
+				}
+			},
+			nowIndicator: "true",
+			minTime: '06:00',
+			maxTime: '22:45',
+			header: {
+				left: '',
+				center: '',
+				right: ''
+			},
+			events: function (start, end,_, callback) {
+				$.ajax({
+					type: "GET",
+					contentType: "application/json",
+					url: `/api${window.location.pathname}`,
+					dataType: 'json',
+					cache: false,
+					timeout: 600000,
+					success: function (data) {
+						showModel = data.status == Status["new"]
+						callback(JSON.parse(data.event));
+					},
+				})
+    		},
+			eventClick: function (info) {
+				if (showModel) {
+					$("#createEventModal").modal("show");
+					approved_date = {
+						title: info.title,
+						start: info.start.toISOString(),
+						end: info.end.toISOString(),
+					};
+				}
+			}
+		});
+		$('#calendar').fullCalendar('gotoDate', currentDate);
+
+		$('#my-draggable').draggable({
+			zIndex: 999,
+			revert: true, // will cause the event to go back to its
+		});
+		$("#approve").click(event => {
+			event.preventDefault();
+			$("#createEventModal").modal("hide");
+			fire_ajax_submit();
+		});
+
+		function fire_ajax_submit() {
+			$.ajax({
+				type: "POST",
+				contentType: "application/json",
+				url: `/api${window.location.pathname}`,
+				data: JSON.stringify(approved_date),
+				dataType: 'json',
+				cache: false,
+				timeout: 600000,
+				success: function (data) {
+					location.reload();
+				},
+				error: function (e) {
+					location.reload();
+				}
+			});
+		}
+
+	});
+</script>
+
+
 
 </html>

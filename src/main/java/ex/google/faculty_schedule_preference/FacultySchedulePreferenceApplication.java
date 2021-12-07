@@ -7,58 +7,45 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.ListIterator;
+import java.util.*;
 
 @SpringBootApplication
 public class FacultySchedulePreferenceApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(FacultySchedulePreferenceApplication.class, args);
+
 	}
 	@Bean
 	public ApplicationRunner DDBInitializer(DepartmentRepository repo){
 		return (args) -> {
 			System.out.println("running"); //debug
-
 			// Create departments HashMap
-			HashMap<String, String> departments = new HashMap<String, String>();
+			HashMap<Long, String> departments = new HashMap<Long, String>();
 
 			// Add departments by key-value pairs
-			departments.put("ENGL","English");
-			departments.put("HIST","History");
-			departments.put("HUM", "Humanities");
-			departments.put("AFRS", "Africana Studies");
-			departments.put("BIO", "Biology");
-			departments.put("CHEM", "Chemistry");
-			departments.put("PHYS", "Physics");
-			departments.put("KINS", "Kinesiology");
-			departments.put("MATH", "Math");
-			departments.put("COMP", "Computer Science");
-			departments.put("ME", "Mechanical Engineering");
-			departments.put("ECE", "Electrical Engineering");
+			departments.put(1L, "ENGL:English");
+			departments.put(2L, "HIST:History");
+			departments.put(3L, "HUM:Humanities");
+			departments.put(4L, "AFRS:Africana Studies");
+			departments.put(5L, "BIO:Biology");
+			departments.put(6L, "CHEM:Chemistry");
+			departments.put(7L, "PHYS:Physics");
+			departments.put(8L, "KINS:Kinesiology");
+			departments.put(9L, "MATH:Math");
+			departments.put(10L, "COMP:Computer Science");
+			departments.put(11L, "ME:Mechanical Engineering");
+			departments.put(12L, "ECE:Electrical Engineering");
+			departments.put(13L, "PSY:Psychology");
 
 			// Check if Repo is full
-			// If repo entries are less than 12, populate the repo
-			// Else, return message.
-			if(repo.count() < 12) {
-				System.out.println("Populating repo...");
-				departments.forEach((abrv, dpt) -> {
-					boolean found = false;
-					for(Department x: repo.findAll()) {
-						if(x.getPrefix().equalsIgnoreCase(abrv) && x.getName().equalsIgnoreCase(dpt)){
-							found = true;
-						}
-					}
-					if(!found)
-						repo.save(new Department(dpt, abrv));
-				});
-			}
-			else {
-				System.out.println("Database has previously been populated.");
-			}
+			// If repo entries are greater than 0, delete and populate the repo
+			System.out.println("Populating repo...");
+			departments.forEach((id, dpt) -> {
+				String[] splitted = dpt.split(":");
+				if(!repo.existsById(id))
+					repo.save(new Department(id, splitted[1], splitted[0]));
+			});
+
 		};
 
 	}
