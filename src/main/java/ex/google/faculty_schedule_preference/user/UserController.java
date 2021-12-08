@@ -47,7 +47,7 @@ public class UserController {
     // after admin clicks submit, function is called
     @RequestMapping(value = "/{user_id}/permissions", method = RequestMethod.POST)
     public String postRoles(@PathVariable("user_id") long user_id,
-            @RequestParam("permissions1") List<Long> permissions,
+            @RequestParam("permissions") List<Long> permissions,
             RedirectAttributes redirectAttributes) {
         // remove everything
         // re-add what is checked
