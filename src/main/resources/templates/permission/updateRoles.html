@@ -1,28 +1,35 @@
 <!DOCTYPE html>
 <html xmlns:th="https://thymeleaf.org">
+
 <head>
-    <meta charset="UTF-8"/>
+    <meta charset="UTF-8" />
     <title>Update Roles Page</title>
     <link th:href="@{/css/permission/updateRoles.css}" rel="stylesheet" />
 </head>
+
 <body>
-<div th:if="${message}" th:text="${message}" th:class="${'alert ' + alertClass}"/>
-<h1 >Update user roles.</h1>
-<div id = "box">
-<form action="#" method= "POST" th:action="@{/user/__${user.getId()}__/permissions}">
-    <p>CSUN ID:
-        <span th:text="${user.csun_id}">Default</span>
-        <br>
-        <input name = "permissions1" value = 1 type="checkbox" id="myCheckAdmin" th:checked = "${permissions.get('ROLE_ADMIN')}"> Admin
-        <br>
-        <input name = "permissions1" value = 2 type="checkbox" id="myCheckController" th:checked = "${permissions.get('ROLE_CONTROLLER')}"> Controller
-        <br>
-        <input name = "permissions1" value = 3 type="checkbox" id="myCheckTenure" th:checked = "${permissions.get('ROLE_TENURETRACK')}"> Tenure Track
-        <br>
-        <input name = "permissions1" value = 4 type="checkbox" id="myCheckLecturer" th:checked = "${permissions.get('ROLE_LECTURER')}"> Lecturer
-    </p>
-    <input type="submit" id = "submit" value="submit">
-</form>
-</div>
+    <div th:if="${message}" th:text="${message}" th:class="${'alert ' + alertClass}" />
+    <h1>Update user roles.</h1>
+    <div id="box">
+        <form action="#" method="POST" th:action="@{/user/__${user.getId()}__/permissions}">
+            <p>CSUN ID:
+                <span th:text="${user.csun_id}">Default</span>
+                <br>
+                <input name="permissions" value=1 type="checkbox" id="myCheckAdmin"
+                    th:checked="${permissions.get('ROLE_ADMIN')}"> Admin
+                <br>
+                <input name="permissions" value=2 type="checkbox" id="myCheckController"
+                    th:checked="${permissions.get('ROLE_CONTROLLER')}"> Controller
+                <br>
+                <input name="permissions" value=3 type="checkbox" id="myCheckTenure"
+                    th:checked="${permissions.get('ROLE_TENURETRACK')}"> Tenure Track
+                <br>
+                <input name="permissions" value=4 type="checkbox" id="myCheckLecturer"
+                    th:checked="${permissions.get('ROLE_LECTURER')}"> Lecturer
+            </p>
+            <input type="submit" id="submit" value="submit">
+        </form>
+    </div>
 </body>
+
 </html>

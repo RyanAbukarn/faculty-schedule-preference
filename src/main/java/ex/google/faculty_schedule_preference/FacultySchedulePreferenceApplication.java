@@ -17,10 +17,11 @@ public class FacultySchedulePreferenceApplication {
 		SpringApplication.run(FacultySchedulePreferenceApplication.class, args);
 
 	}
+
 	@Bean
-	public ApplicationRunner DDBInitializer(DepartmentRepository repo, PermissionRepository permissionRepository){
+	public ApplicationRunner DDBInitializer(DepartmentRepository repo, PermissionRepository permissionRepository) {
 		return (args) -> {
-			System.out.println("running"); //debug
+			System.out.println("running"); // debug
 			// Create departments HashMap
 			HashMap<Long, String> departments = new HashMap<Long, String>();
 
@@ -41,10 +42,10 @@ public class FacultySchedulePreferenceApplication {
 
 			// Check if Repo is full
 			// If repo entries are greater than 0, delete and populate the repo
-			System.out.println("Populating repo...");
+			System.out.println("Populating repo... departments");
 			departments.forEach((id, dpt) -> {
 				String[] splitted = dpt.split(":");
-				if(!repo.existsById(id))
+				if (!repo.existsById(id))
 					repo.save(new Department(id, splitted[1], splitted[0]));
 			});
 
@@ -56,19 +57,17 @@ public class FacultySchedulePreferenceApplication {
 			permissions.put(2L, "ROLE_CONTROLLER");
 			permissions.put(3L, "ROLE_TENURETRACK");
 			permissions.put(4L, "ROLE_LECTURER");
-
+			permissions.put(5L, "ROLE_SUPERUSER");
 			// Check if Repo is full
 			// If repo entries are greater than 0, delete and populate the repo
-			System.out.println("Populating repo...");
+			System.out.println("Populating repo... permissions");
 			permissions.forEach((id, prm) -> {
-				if(!permissionRepository.existsById(id))
+				if (!permissionRepository.existsById(id))
 					permissionRepository.save(new Permission(id, prm));
 			});
 
 		};
 
 	}
-
-
 
 }
