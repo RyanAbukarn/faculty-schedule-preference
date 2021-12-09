@@ -1,0 +1,115 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.alert alert-error {
+  color: white;
+}
+
+body {
+  font-family: "Raleway", sans-serif;
+}
+
+.createBox {
+  width: 250px;
+  height: 575px;
+  background-image: linear-gradient(rgb(210, 32, 48), rgb(230, 75, 54));
+  top: 55%;
+  left: 50%;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  box-sizing: border-box;
+  align-content: center;
+  border-radius: 5%;
+  padding: 70px 30px;
+  opacity: 90%;
+}
+
+.createBox h2 {
+  text-align: center;
+  padding-bottom: 5px;
+  padding-top: 5px;
+  margin: 3px;
+  color: white;
+}
+
+.createBox select {
+  width: 100%;
+  margin-bottom: 10px;
+  color: black;
+}
+
+.createBox a {
+  color: white;
+  line-height: 20px;
+  font-size: 12px;
+  text-decoration: none;
+}
+.createBox a:hover {
+  cursor: pointer;
+  color: grey;
+}
+
+.createBox label {
+  color: white;
+  margin: 0;
+  padding: 0;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.createBox input {
+  width: 100%;
+  margin-bottom: 20px;
+  color: white;
+}
+
+.createBox input[type="text"],
+input[type="email"],
+input[type="password"] {
+  border: none;
+  border-bottom: 1px solid #fff;
+  background: transparent;
+  outline: none;
+  height: 30px;
+  font-size: 11px;
+}
+.createBox input[type="submit"] {
+  border: none;
+  outline: none;
+  height: 30px;
+  font-size: 16px;
+  color: black;
+  border-radius: 20px;
+}
+.createBox input[type="submit"]:hover {
+  cursor: pointer;
+  background: gray;
+  color: white;
+}
+
+::placeholder {
+  color: white;
+  opacity: 1;
+}
+
+.red {
+  background-color: rgb(210, 32, 48);
+  height: 20px;
+}
+
+.header img {
+  height: auto;
+  width: 10%;
+  bottom: -40px;
+}
+
+.thread {
+  height: auto;
+  width: 100%;
+  position: absolute;
+  top: -50px;
+  left: calc(7% - 30px);
+}

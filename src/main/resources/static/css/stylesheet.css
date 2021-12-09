@@ -17,6 +17,7 @@ h1,h2,h3,h4,h5,h6 {
 p, ul, ol, li, tr, span {
     font-family: 'Roboto', sans-serif;
     text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.075);
+
 }
 
 li {
@@ -120,6 +121,7 @@ button:active {
     text-align: left;
     font-size: 1.1rem;
     border-radius: 10px 10px 0 0;
+
     overflow: hidden;
     /* padding: 10px; */
 }
@@ -143,6 +145,7 @@ button:active {
 
 .fsp-table tbody tr:last-child {
     border-bottom: 4px solid #961616;
+
 }
 
 .fsp-table th, .fsp-table td {
@@ -203,5 +206,6 @@ button:active {
 .fsp-button:active {
     background-color: #ff9898;
 }
+
 
 /* Styling ID's */
