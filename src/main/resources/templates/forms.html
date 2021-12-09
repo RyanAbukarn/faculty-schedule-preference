@@ -1,0 +1,24 @@
+
+    <form class="form-container" action="#" th:action="@{/departments/save}" th:object="${department}" method="post">
+        <div class="row">
+
+            <div class="form-group col-md-8">
+                <label for="name" class="col-form-label">Department Name</label>
+                <input type="text" th:field="*{name}" class="form-control" id="name" placeholder="Department Name"> <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-8">
+                <label for="email" class="col-form-label">Prefix</label>
+                <input type="text" th:field="*{prefix}" class="form-control" id="email" placeholder="Prefix"> <span th:if="${#fields.hasErrors('prefix')}" th:errors="*{prefix}" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-8">
+                <input type="submit" class="save" value="Add Department">
+            </div>
+
+            <div class="form-group col-md-8"></div>
+
+        </div>
+    </form>
+
+</div>
+
