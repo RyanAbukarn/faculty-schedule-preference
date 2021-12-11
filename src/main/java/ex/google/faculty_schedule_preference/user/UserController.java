@@ -25,6 +25,12 @@ public class UserController {
         this.permissionRepository = permissionRepository;
     }
 
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    String index(Model model) {
+        model.addAttribute("users", repository.findAll());
+        return "user/index";
+    }
+
     // function is called to load updateRoles page
     // http://localhost:3001/user/1/permissions
     @RequestMapping(value = "/{user_id}/permissions", method = RequestMethod.GET)

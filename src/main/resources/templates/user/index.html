@@ -10,23 +10,24 @@
 </head>
 
 <body>
-    <h1 class="title">Courses</h1>
+    <h1 class="title">Users</h1>
     <table class="fsp-table fsp-table-striped">
         <thead>
             <tr>
                 <th scope="col">ID</th>
                 <th scope="col">Name</th>
+                <th scope="col">CSUN ID</th>
                 <th scope="col">Action</th>
             </tr>
         </thead>
         <tbody>
 
-            <tr th:each="course: ${courses}">
-                <td th:text="${course.id}" />
-                <td th:text="${course.name}" />
+            <tr th:each="user: ${users}">
+                <td th:text="${user.id}" />
+                <td th:text="${user.name}" />
+                <td th:text="${user.csun_id}" />
                 <td>
-                    <a th:href="@{courses/{course_id}/request(course_id=${course.id})}" th:text="|Request to teach|"
-                        target="_blank" />
+                    <a th:href="|/user/${user.getId()}/permissions|" th:text="|Edit Roles|" />
                 </td>
             </tr>
         </tbody>

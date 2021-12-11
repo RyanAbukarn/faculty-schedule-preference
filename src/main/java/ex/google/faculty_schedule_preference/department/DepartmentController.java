@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 
-@RequestMapping("departments")
 public class DepartmentController {
 
     @Autowired
@@ -18,9 +17,14 @@ public class DepartmentController {
         this.repository = repository;
     }
 
-    @GetMapping("")
+    @GetMapping("departments")
     public String index(Model model) {
         model.addAttribute("departments", repository.findAll());
         return "department/index";
+    }
+
+    @GetMapping("test_styles")
+    public String html_test(Model model) {
+        return "test_styles";
     }
 }
