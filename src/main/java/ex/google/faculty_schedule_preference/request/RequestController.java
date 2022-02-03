@@ -90,7 +90,7 @@ public class RequestController {
     public String Create(@PathVariable("course_id") long course_id, Model model) {
         model.addAttribute("request", new Request());
         model.addAttribute("course", courseRepository.findById(course_id).get());
-        return "/request/create";
+        return "request/create";
     }
 
 }
