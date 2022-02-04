@@ -25,105 +25,106 @@
     <meta charset='utf-8' content="Cory Sanoy" name="Author" />
 
 </head>
-	<body>
-        <div th:if="${message}" th:text="${message}" th:class="${'alert ' + alertClass}" />
-		<div class="wrap">
-                <div class="info">
-                    <h1>User Info</h1>
-                    <div class="fsp-card">
-                        <div class="fsp-card-body">
-                            <h5 class="card-title" th:text="|Name: ${user.name}|"></h5>
-                            <h5 class="card-title" th:text="|CSUN Id: ${user.csun_id}|"></h5>
-                            <form action = "#" th:object = "${user_availability}">
-                                <label for ="min_unit">Select mimum units:</label>
-                                <select name = "min_unit" id = "min_unit" th:field="*{min_unit}">
-                                    <option value = "3.0">3.0</option>
-                                    <option value = "6.0">6.0</option>
-                                    <option value = "9.0">9.0</option>
-                                    <option value = "12.0">12.0</option>
-                                </select>
-                                <br>
-                                <label for ="max_unit">Select maximum units:</label>
-                                <select name = "max_unit" id = "max_unit" th:field="*{max_unit}">
-                                    <option value = "3.0">3.0</option>
-                                    <option value = "6.0">6.0</option>
-                                    <option value = "9.0">9.0</option>
-                                    <option value = "12.0">12.0</option>
-                                    <option value = "15.0">15.0</option>
-                                </select>
-                                <br>
-                                <label for ="release_time">Select release units:</label>
-                                <select name = "release_time" id = "release_time" th:field="*{release_time}">
-                                    <option value = "0.0">0.0</option>
-                                    <option value = "3.0">3.0</option>
-                                    <option value = "6.0">6.0</option>
-                                </select>
-                                <br>
-                                <button id="submit_request" type="button" class="btn btn-primary">submit</button>
-                            </form> 
-                        </div>
-                    </div>
+
+<body>
+    <div th:if="${message}" th:text="${message}" th:class="${'alert ' + alertClass}" />
+    <div class="wrap">
+        <div class="info">
+            <h1>User Info</h1>
+            <div class="fsp-card">
+                <div class="fsp-card-body">
+                    <h5 class="card-title" th:text="|Name: ${user.name}|"></h5>
+                    <h5 class="card-title" th:text="|CSUN Id: ${user.csun_id}|"></h5>
+                    <form action="#" th:object="${user_availability}">
+                        <label for="min_unit">Select mimum units:</label>
+                        <select name="min_unit" id="min_unit" th:field="*{min_unit}">
+                            <option value="3.0">3.0</option>
+                            <option value="6.0">6.0</option>
+                            <option value="9.0">9.0</option>
+                            <option value="12.0">12.0</option>
+                        </select>
+                        <br>
+                        <label for="max_unit">Select maximum units:</label>
+                        <select name="max_unit" id="max_unit" th:field="*{max_unit}">
+                            <option value="3.0">3.0</option>
+                            <option value="6.0">6.0</option>
+                            <option value="9.0">9.0</option>
+                            <option value="12.0">12.0</option>
+                            <option value="15.0">15.0</option>
+                        </select>
+                        <br>
+                        <label for="release_time">Select release units:</label>
+                        <select name="release_time" id="release_time" th:field="*{release_time}">
+                            <option value="0.0">0.0</option>
+                            <option value="3.0">3.0</option>
+                            <option value="6.0">6.0</option>
+                        </select>
+                        <br>
+                        <button id="submit_request" type="button" class="btn btn-primary">submit</button>
+                    </form>
                 </div>
-                <div>
-                        <div id='calendar'></div>
-                </div>
-		</div>
-	</div>
-	</body>
-	<script>
-		$(document).ready(function () {
-            let showModel;
-			let dates = [];
-			let calendarEL = $('#calendar');
-			let currentDate = "2012-05-25";
-			let start_ = "";
-			let end_ = "";
-			calendarEL.fullCalendar({
-				defaultView: 'agendaWeek',
-				selectHelper: true,
-           		editable: true,
-            	selectable: true,
-            	unselectAuto: true,
-            	eventOverlap: false,
-				eventColor: '#f16666',
-				slotDuration: '00:15',
-				allDaySlot: false,
-				slotLabelInterval: "00:15",
-				longPressDelay: 0,
-				views: {
-					agendaWeek: {
-						columnFormat: "dddd"
-					}
-				},
-				nowIndicator: "true",
-				minTime: '06:00',
-				maxTime: '22:45',
-				visibleRange: {
-                    start: '2017-03-22',
-                    end: '2017-03-25'
-            	},
-				header: {
-					left: '',
-					center: '',
-					right: ''
-				},
-                events: function (start, end,_, callback) {
-                    $.ajax({
-                        type: "GET",
-                        contentType: "application/json",
-                        url: `/api${window.location.pathname}`,
-                        dataType: 'json',
-                        cache: false,
-                        timeout: 600000,
-                        success: function (data) {
-                            callback(JSON.parse(data.event));
-                        },
-                    })
-    		    },  
-				select: function (start, end) {
+            </div>
+        </div>
+        <div>
+            <div id='calendar'></div>
+        </div>
+    </div>
+    </div>
+</body>
+<script>
+    $(document).ready(function () {
+        let showModel;
+        let dates = [];
+        let calendarEL = $('#calendar');
+        let currentDate = "2012-05-25";
+        let start_ = "";
+        let end_ = "";
+        calendarEL.fullCalendar({
+            defaultView: 'agendaWeek',
+            selectHelper: true,
+            editable: true,
+            selectable: true,
+            unselectAuto: true,
+            eventOverlap: false,
+            eventColor: '#f16666',
+            slotDuration: '00:15',
+            allDaySlot: false,
+            slotLabelInterval: "00:15",
+            longPressDelay: 0,
+            views: {
+                agendaWeek: {
+                    columnFormat: "dddd"
+                }
+            },
+            nowIndicator: "true",
+            minTime: '06:00',
+            maxTime: '22:45',
+            visibleRange: {
+                start: '2017-03-22',
+                end: '2017-03-25'
+            },
+            header: {
+                left: '',
+                center: '',
+                right: ''
+            },
+            events: function (start, end, _, callback) {
+                $.ajax({
+                    type: "GET",
+                    contentType: "application/json",
+                    url: `/api${window.location.pathname}`,
+                    dataType: 'json',
+                    cache: false,
+                    timeout: 600000,
+                    success: function (data) {
+                        callback(JSON.parse(data.event));
+                    },
+                })
+            },
+            select: function (start, end) {
                 start_ = start.toISOString();
                 end_ = end.toISOString();
-                addevent('', start_, end_);
+                addevent(start_, end_);
                 return true;
             },
             eventRender: function (event, element) {
@@ -138,34 +139,27 @@
         $('#calendar').fullCalendar('gotoDate', currentDate);
 
         $('#my-draggable').draggable({
-			zIndex: 999,
-			revert: true, // will cause the event to go back to its
-		});
-
-        $("#submit_event").click(_ => {
-            addevent('', start_, end_);
+            zIndex: 999,
+            revert: true, // will cause the event to go back to its
         });
-
 
         $("#submit_request").click(event => {
             event.preventDefault();
             let min_unit = $("#min_unit").val();
             let max_unit = $("#max_unit").val();
             var release_time = $("#release_time").val();
-            if (min_unit * 100  <= max_unit * 100){
+            if (min_unit <= max_unit) {
                 alert("Successfully updated units and availability.");
                 fire_ajax_submit(min_unit, max_unit, release_time);
-            }
-            else{
+            } else {
                 alert("Warning: Minimum units must be less then maximum units.");
             }
         });
 
 
 
-        function addevent(title, start, end) {
+        function addevent(start, end) {
             calendarEL.fullCalendar('renderEvent', {
-                title: title,
                 start: start,
                 end: end,
             }, true);
@@ -173,7 +167,6 @@
 
         function convertToJson(value, _, _) {
             dates.push({
-                title: value.title,
                 start: value.start.toISOString(),
                 end: value.end.toISOString()
             })
@@ -181,17 +174,15 @@
 
         function fire_ajax_submit(min_unit, max_unit, release_time) {
             calendarEL.fullCalendar("clientEvents").forEach(convertToJson);
-            let units = [];
-            units.push({
+            let units = {
                 min_unit: min_unit,
                 max_unit: max_unit,
                 release_time: release_time
-            })
-            let data = [];
-            data.push({
+            }
+            let data = {
                 dates: dates,
                 units: units
-            })
+            };
             $.ajax({
                 type: "POST",
                 contentType: "application/json",
@@ -209,5 +200,6 @@
             });
         }
     });
-	</script>
+</script>
+
 </html>
