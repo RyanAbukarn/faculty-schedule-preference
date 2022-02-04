@@ -56,13 +56,9 @@ public class RequestRestController {
         JSONArray jsonArray = new JSONArray(request.getTimes());
 
         for (int i = 0; i < jsonArray.length(); i++) {
-
-            if (jsonArray.getJSONObject(i).getString("title").equals(newJSONObject.getString("title"))) {
+            if (jsonArray.getJSONObject(i).getString("title").equals(newJSONObject.getString("title")))
                 jsonArray.getJSONObject(i).put("color", "#AFE1AF");
-                System.out.println(jsonArray.toString());
-            }
         }
-        System.out.println(jsonArray.toString());
         request.setTimes(jsonArray.toString());
         request.setStatus(Request.statusValues.get("accpeted"));
         requestRepository.save(request);

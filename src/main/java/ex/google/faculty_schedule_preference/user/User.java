@@ -21,6 +21,7 @@ import javax.persistence.UniqueConstraint;
 import ex.google.faculty_schedule_preference.department.Department;
 import ex.google.faculty_schedule_preference.permission.Permission;
 import ex.google.faculty_schedule_preference.request.Request;
+import ex.google.faculty_schedule_preference.user_availability.UserAvailability;
 
 @Entity(name = "User")
 @Table(name = "users", uniqueConstraints = { @UniqueConstraint(name = "user_email_unique", columnNames = "email") })
@@ -53,6 +54,9 @@ public class User {
 
     @OneToOne(fetch = FetchType.LAZY)
     private Department department;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private UserAvailability userAvailabilities;
 
     public User() {
     }
@@ -140,6 +144,14 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public UserAvailability getUserAvailabilities() {
+        return userAvailabilities;
+    }
+
+    public void setUserAvailabilities(UserAvailability userAvailabilities) {
+        this.userAvailabilities = userAvailabilities;
     }
 
 }
