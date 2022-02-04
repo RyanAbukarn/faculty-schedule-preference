@@ -32,12 +32,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.csrf(csrf -> csrf.disable());
         http.authorizeRequests()
-                .antMatchers("/courses").hasAnyRole("ADMIN", "CONTROLLER", "TENURETRACK", "LECTURER", "SUPERUSER")
+                .antMatchers("/courses/{course_id}/request").hasAnyRole("ADMIN", "CONTROLLER", "TENURETRACK", "LECTURER", "SUPERUSER")
                 .antMatchers("/departments").hasAnyRole("ADMIN", "CONTROLLER", "TENURETRACK", "LECTURER", "SUPERUSER")
                 .antMatchers("/requests/**").hasAnyRole("CONTROLLER", "SUPERUSER")
                 .antMatchers("/my-requests/**").hasAnyRole("TENURETRACK", "LECTURER", "SUPERUSER")
                 .antMatchers("/courses/{course_id}/request").hasAnyRole("TENURETRACK", "LECTURER", "SUPERUSER")
                 .antMatchers("/user/{user_id}/permissions").hasAnyRole("ADMIN", "SUPERUSER")
+                .antMatchers("/user/{user_id}/user_availability").
+                    hasAnyRole("ADMIN", "CONTROLLER", "TENURETRACK", "LECTURER", "SUPERUSER")
                 .antMatchers("/").permitAll()
                 .and().formLogin()
                 .loginPage("/user/login")

@@ -1,14 +1,15 @@
 package ex.google.faculty_schedule_preference.user_availability;
 
-import ex.google.faculty_schedule_preference.user.User;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import ex.google.faculty_schedule_preference.user.User;
 
 @Entity(name = "UserAvailability")
 @Table(name = "user_availabilities")
@@ -25,7 +26,8 @@ public class UserAvailability {
     private double min_unit;
     @Column(name = "release_time", nullable = false)
     private double release_time;
-    @ManyToOne(fetch = FetchType.LAZY)
+
+    @OneToOne(fetch = FetchType.LAZY)
     private User user;
 
     public UserAvailability() {
@@ -48,6 +50,10 @@ public class UserAvailability {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public Long getId(){
+        return id;
     }
 
     public String getBody() {
@@ -88,6 +94,10 @@ public class UserAvailability {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Long getUserId(){
+        return this.user.getId();
     }
 
 }
