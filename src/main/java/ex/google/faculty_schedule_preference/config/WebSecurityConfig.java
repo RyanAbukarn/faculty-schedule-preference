@@ -3,14 +3,10 @@ package ex.google.faculty_schedule_preference.config;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
-
-import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
@@ -32,14 +28,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.csrf(csrf -> csrf.disable());
         http.authorizeRequests()
-                .antMatchers("/courses/{course_id}/request").hasAnyRole("ADMIN", "CONTROLLER", "TENURETRACK", "LECTURER", "SUPERUSER")
+                .antMatchers("/courses/{course_id}/request")
+                .hasAnyRole("ADMIN", "CONTROLLER", "TENURETRACK", "LECTURER", "SUPERUSER")
                 .antMatchers("/departments").hasAnyRole("ADMIN", "CONTROLLER", "TENURETRACK", "LECTURER", "SUPERUSER")
                 .antMatchers("/requests/**").hasAnyRole("CONTROLLER", "SUPERUSER")
                 .antMatchers("/my-requests/**").hasAnyRole("TENURETRACK", "LECTURER", "SUPERUSER")
                 .antMatchers("/courses/{course_id}/request").hasAnyRole("TENURETRACK", "LECTURER", "SUPERUSER")
                 .antMatchers("/user/{user_id}/permissions").hasAnyRole("ADMIN", "SUPERUSER")
-                .antMatchers("/user/{user_id}/user_availability").
-                    hasAnyRole("ADMIN", "CONTROLLER", "TENURETRACK", "LECTURER", "SUPERUSER")
+                .antMatchers("/user/{user_id}/user_availability")
+                .hasAnyRole("ADMIN", "CONTROLLER", "TENURETRACK", "LECTURER", "SUPERUSER")
+                .antMatchers("/user/upload-resume")
+                .hasAnyRole("ADMIN", "CONTROLLER", "TENURETRACK", "LECTURER", "SUPERUSER")
                 .antMatchers("/").permitAll()
                 .and().formLogin()
                 .loginPage("/user/login")

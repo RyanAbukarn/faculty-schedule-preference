@@ -19,6 +19,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import ex.google.faculty_schedule_preference.department.Department;
+import ex.google.faculty_schedule_preference.document.Document;
 import ex.google.faculty_schedule_preference.permission.Permission;
 import ex.google.faculty_schedule_preference.request.Request;
 import ex.google.faculty_schedule_preference.user_availability.UserAvailability;
@@ -47,6 +48,9 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Request> requests = new ArrayList<Request>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Document> documents = new ArrayList<Document>();
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "user_permissions", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "permission_id", referencedColumnName = "id"))
@@ -152,6 +156,20 @@ public class User {
 
     public void setUserAvailabilities(UserAvailability userAvailabilities) {
         this.userAvailabilities = userAvailabilities;
+    }
+
+    public List<Document> getDocuments() {
+        return documents;
+    }
+
+    public void setDocuments(List<Document> documents) {
+        this.documents = documents;
+    }
+
+    public Document getResume() {
+        if (!this.documents.isEmpty())
+            return this.documents.stream().filter(doc -> doc.getType() == 1).findAny().get();
+        return null;
     }
 
 }
