@@ -1,11 +1,11 @@
-<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
 
-<head>
-    <meta charset='utf-8' content="Cory Sanoy" name="Author" />
+<head th:fragment="headerfiles">
+    <meta charset="UTF-8" />
+    <link th:href="@{/css/styles.css}" rel="stylesheet">
 </head>
-
-<body>
+<div th:fragment="navbar">
     <nav class="fsp-navbar">
         <div class="fsp-navbar-csunlogo">
             <img src="https://upload.wikimedia.org/wikipedia/en/thumb/8/8c/CSUNS.svg/50px-CSUNS.svg.png" alt="">
@@ -25,6 +25,7 @@
             <h3 id="fsp-1">Page Name Here</h3> <!-- Only change this -->
         </div>
     </nav>
+</div>
 </body>
 
 </html>

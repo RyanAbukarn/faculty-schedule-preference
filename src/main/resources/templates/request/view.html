@@ -45,7 +45,7 @@
 				<div class="fsp-card-body">
 					<h5 class="card-title" th:text="|Full Name: ${user.getName()}|"></h5>
 					<h6 class="card-subtitle mb-2 text-muted" th:text="|CSUN ID: ${user.getCsun_id()}|"></h6>
-					<a href="#" class="card-link">resume</a>
+					<a th:href="${resume}" class="card-link" target="_blank">resume</a>
 				</div>
 			</div>
 			<br>
