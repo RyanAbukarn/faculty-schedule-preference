@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+    <meta charset="UTF-8" />
+    <link th:href="@{/css/stylesheet.css}" rel="stylesheet" />
+    <title>Layout page</title>
+</head>
+
+<body>
+
+
+    <nav class="fsp-navbar">
+        <div class="fsp-navbar-csunlogo">
+            <img src="https://upload.wikimedia.org/wikipedia/en/thumb/8/8c/CSUNS.svg/50px-CSUNS.svg.png" alt="">
+            <h4>CSUN</h4>
+        </div>
+        <ul class="fsp-navbar-links">
+            <li><a class="fsp-navbar-link" href="/courses">Courses</a></li>
+            <li><a class="fsp-navbar-link" href="/requests">Requests</a></li>
+            <li><a class="fsp-navbar-link" href="/users">User</a></li>
+            <li><a class="fsp-navbar-link" href="/users">My</a></li>
+        </ul>
+    </nav>
+
+    <section layout:fragment="content">
+
+    </section>
+
+</body>
+
+</html>

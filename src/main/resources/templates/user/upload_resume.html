@@ -1,5 +1,7 @@
-<!DOCTYPE html>
-<html>
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{page_layout/layout}">
 
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
@@ -9,40 +11,43 @@
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
         integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
 
-    <link th:href="@{/css/stylesheet.css}" rel="stylesheet" />
     <link th:href="@{/css/user/upload.css}" rel="stylesheet" />
 
 </head>
 
 <body>
-    <div th:if="${message}" th:text="${message}" th:class="${'alert ' + alertClass}" />
+    <section layout:fragment="content">
 
-    <div class="upload-container">
+        <div th:if="${message}" th:text="${message}" th:class="${'alert ' + alertClass}" />
+
+        <div class="upload-container">
 
 
-        <div>
-            <form method="POST" enctype="multipart/form-data" th:action="@{/user/upload-resume}">
-                <table>
-                    <tr>
-                        <td>File to upload:</td>
-                        <td><input type="file" name="file" /></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td><input class="fsp-button" type="submit" value="Upload" /></td>
-                    </tr>
-                </table>
-            </form>
+            <div>
+                <form method="POST" enctype="multipart/form-data" th:action="@{/user/upload-resume}">
+                    <table>
+                        <tr>
+                            <td>File to upload:</td>
+                            <td><input type="file" name="file" /></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td><input class="fsp-button" type="submit" value="Upload" /></td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+
+            <div>
+                <ul>
+                    <li th:each="file : ${files}">
+                        <a th:href="${file}" th:text="${file}" />
+                    </li>
+                </ul>
+            </div>
         </div>
+    </section>
 
-        <div>
-            <ul>
-                <li th:each="file : ${files}">
-                    <a th:href="${file}" th:text="${file}" />
-                </li>
-            </ul>
-        </div>
-    </div>
 </body>
 
 </html>

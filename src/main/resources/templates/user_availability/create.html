@@ -1,6 +1,7 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{page_layout/layout}">
 
 <head>
     <title>User availability</title>
@@ -27,49 +28,52 @@
 </head>
 
 <body>
-    <div th:if="${message}" th:text="${message}" th:class="${'alert ' + alertClass}" />
-    <div class="wrap">
-        <div class="info">
-            <h1>User Info</h1>
-            <div class="fsp-card">
-                <div class="fsp-card-body">
-                    <h5 class="card-title" th:text="|Name: ${user.name}|"></h5>
-                    <h5 class="card-title" th:text="|CSUN Id: ${user.csun_id}|"></h5>
-                    <form action="#" th:object="${user_availability}">
-                        <label for="min_unit">Select mimum units:</label>
-                        <select name="min_unit" id="min_unit" th:field="*{min_unit}">
-                            <option value="3.0">3.0</option>
-                            <option value="6.0">6.0</option>
-                            <option value="9.0">9.0</option>
-                            <option value="12.0">12.0</option>
-                        </select>
-                        <br>
-                        <label for="max_unit">Select maximum units:</label>
-                        <select name="max_unit" id="max_unit" th:field="*{max_unit}">
-                            <option value="3.0">3.0</option>
-                            <option value="6.0">6.0</option>
-                            <option value="9.0">9.0</option>
-                            <option value="12.0">12.0</option>
-                            <option value="15.0">15.0</option>
-                        </select>
-                        <br>
-                        <label for="release_time">Select release units:</label>
-                        <select name="release_time" id="release_time" th:field="*{release_time}">
-                            <option value="0.0">0.0</option>
-                            <option value="3.0">3.0</option>
-                            <option value="6.0">6.0</option>
-                        </select>
-                        <br>
-                        <button id="submit_request" type="button" class="btn btn-primary">submit</button>
-                    </form>
+    <section layout:fragment="content">
+
+        <div th:if="${message}" th:text="${message}" th:class="${'alert ' + alertClass}" />
+        <div class="wrap">
+            <div class="info">
+                <h1>User Info</h1>
+                <div class="fsp-card">
+                    <div class="fsp-card-body">
+                        <h5 class="card-title" th:text="|Name: ${user.name}|"></h5>
+                        <h5 class="card-title" th:text="|CSUN Id: ${user.csun_id}|"></h5>
+                        <form action="#" th:object="${user_availability}">
+                            <label for="min_unit">Select mimum units:</label>
+                            <select name="min_unit" id="min_unit" th:field="*{min_unit}">
+                                <option value="3.0">3.0</option>
+                                <option value="6.0">6.0</option>
+                                <option value="9.0">9.0</option>
+                                <option value="12.0">12.0</option>
+                            </select>
+                            <br>
+                            <label for="max_unit">Select maximum units:</label>
+                            <select name="max_unit" id="max_unit" th:field="*{max_unit}">
+                                <option value="3.0">3.0</option>
+                                <option value="6.0">6.0</option>
+                                <option value="9.0">9.0</option>
+                                <option value="12.0">12.0</option>
+                                <option value="15.0">15.0</option>
+                            </select>
+                            <br>
+                            <label for="release_time">Select release units:</label>
+                            <select name="release_time" id="release_time" th:field="*{release_time}">
+                                <option value="0.0">0.0</option>
+                                <option value="3.0">3.0</option>
+                                <option value="6.0">6.0</option>
+                            </select>
+                            <br>
+                            <button id="submit_request" type="button" class="btn btn-primary">submit</button>
+                        </form>
+                    </div>
                 </div>
             </div>
+            <div>
+                <div id='calendar'></div>
+            </div>
         </div>
-        <div>
-            <div id='calendar'></div>
         </div>
-    </div>
-    </div>
+    </section>
 </body>
 <script>
     $(document).ready(function () {

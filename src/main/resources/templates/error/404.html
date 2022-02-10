@@ -1,48 +1,30 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{page_layout/layout}">
 
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title> Error 404: Page Not Found</title>
-    <link th:href="@{/css/stylesheet.css}" rel="stylesheet" />
-	<link th:href="@{/css/error/error.css}" rel="stylesheet" />
+    <link th:href="@{/css/error/error.css}" rel="stylesheet" />
     <!-- <link rel="stylesheet" href="/src/main/resources/static/css/stylesheet.css">
     <link rel="stylesheet" href="/src/main/resources/static/css/error/error.css"> -->
-    
+
 </head>
 
-<nav class="fsp-navbar">
-    <div class="fsp-navbar-csunlogo">
-        <img src="https://upload.wikimedia.org/wikipedia/en/thumb/8/8c/CSUNS.svg/50px-CSUNS.svg.png" alt="">
-        <h4>CSUN</h4>
-    </div>
-    <ul class="fsp-navbar-links">
-        <li><a class="fsp-navbar-link" href="">Option One</a></li>
-        <li><a class="fsp-navbar-link" href="">Option Two</a></li>
-        <li><a class="fsp-navbar-link" href="">Option Three</a></li>
-        <li><a class="fsp-navbar-link" href="">Option Four</a></li>
-        <li><a class="fsp-navbar-link" href="">Option Five</a></li>
-        <li><a class="fsp-navbar-link" href="">Option Six</a></li>
-        <li><a class="fsp-navbar-link" href="">Option Seven</a></li>
-        <li><a class="fsp-navbar-link" href="">Option Eight</a></li>
-    </ul>
-    <div class="fsp-page-name">
-        <h3 id="fsp-1">Page Name Here</h3> <!-- Only change this -->
-    </div>
-</nav>
-
 <body>
-    <div class="error-container">
-        <div class="error-box">
-            <h1>Page Not Found Exception - 404</h1>
-            <img th:src="@{/src/main/resources/static/images/error/pnf400.png}" alt="">
-            <p>Sorry, we were unable to find the page you requested.</p>
+    <section layout:fragment="content">
+        <div class="error-container">
+            <div class="error-box">
+                <h1>Page Not Found Exception - 404</h1>
+                <img th:src="@{/images/error/pnf400.png}" alt="">
+                <p>Sorry, we were unable to find the page you requested.</p>
+            </div>
         </div>
-    </div>
-    
-    
+    </section>
+
 </body>
 
 </html>

@@ -1,5 +1,6 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{page_layout/layout}">
 
 <head>
     <title>My Requests</title>
@@ -18,34 +19,36 @@
 </head>
 
 <body>
+    <section layout:fragment="content">
 
-    <h1>My Requests</h1>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th scope="col">Request ID</th>
-                <th scope="col">For Course</th>
-                <th scope="col">Status</th>
-                <th scope="col">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="request: ${requests}">
-                <td th:text="${request.getId()}" />
-                <td th:text="${request.getCourse().getPrefix()}" />
-                <td th:text="${request.humanStatus()}" />
-                <td>
-                    <details>
-                        <summary>Details</summary>
-                        <th:block th:each="requestFeedback: ${requestFeedbacks.get(request.id)}">
-                            <p th:text=${requestFeedback.comment}>
-                                <p>
-                        </th:block>
-                    </details>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+        <h1>My Requests</h1>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Request ID</th>
+                    <th scope="col">For Course</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="request: ${requests}">
+                    <td th:text="${request.getId()}" />
+                    <td th:text="${request.getCourse().getPrefix()}" />
+                    <td th:text="${request.humanStatus()}" />
+                    <td>
+                        <details>
+                            <summary>Details</summary>
+                            <th:block th:each="requestFeedback: ${requestFeedbacks.get(request.id)}">
+                                <p th:text=${requestFeedback.comment}>
+                                    <p>
+                            </th:block>
+                        </details>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
 
 
 </body>
