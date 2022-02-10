@@ -1,47 +1,40 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{page_layout/layout}">
 
 <head>
 	<title>Requests</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
-		integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-	<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
-		integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
-
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"
-		integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous">
-	</script> -->
-	<link th:href="@{/css/stylesheet.css}" rel="stylesheet" />
 	<link th:href="@{/css/request/general.css}" rel="stylesheet" />
 </head>
 
 <body>
-	<h1 class="title">Requests</h1>
-	<table class="fsp-table fsp-table-striped">
-		
-		<thead>
-			<tr>
-				<th scope="col">Request ID</th>
-				<th scope="col">CSUN ID</th>
-				<th scope="col">For course</th>
-				<th scope="col">Status</th>
-				<th scope="col">Actions</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr th:each="request: ${requests}">
-				<td th:text="${request.getId()}" />
-				<td th:text="${request.getUser().getCsun_id()}" />
-				<td th:text="${request.getCourse().getPrefix()}" />
-				<td th:text="${request.humanStatus()}" />
-				<td>
-					<a th:else th:href="|/requests/${request.getId()}|" th:text="View" />
-				</td>
-			</tr>
-		</tbody>
-	</table>
+	<section layout:fragment="content">
+		<h1 class="title">Requests</h1>
+		<table class="fsp-table fsp-table-striped">
+
+			<thead>
+				<tr>
+					<th scope="col">Request ID</th>
+					<th scope="col">CSUN ID</th>
+					<th scope="col">For course</th>
+					<th scope="col">Status</th>
+					<th scope="col">Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="request: ${requests}">
+					<td th:text="${request.getId()}" />
+					<td th:text="${request.getUser().getCsun_id()}" />
+					<td th:text="${request.getCourse().getPrefix()}" />
+					<td th:text="${request.humanStatus()}" />
+					<td>
+						<a th:else th:href="|/requests/${request.getId()}|" th:text="View" />
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</section>
 
 
 </body>

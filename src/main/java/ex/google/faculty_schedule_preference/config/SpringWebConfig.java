@@ -7,6 +7,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
+import nz.net.ultraq.thymeleaf.layoutdialect.LayoutDialect;
+import nz.net.ultraq.thymeleaf.layoutdialect.decorators.strategies.GroupingStrategy;
+
 @Configuration
 public class SpringWebConfig implements WebMvcConfigurer {
     @Override
@@ -25,5 +28,10 @@ public class SpringWebConfig implements WebMvcConfigurer {
         configurer.setOrder(0); // this is important. This way spring //boot will listen to both places 0 and 1
         configurer.setCheckExistence(true);
         return configurer;
+    }
+
+    @Bean
+    public LayoutDialect layoutDialect() {
+        return new LayoutDialect(new GroupingStrategy());
     }
 }
