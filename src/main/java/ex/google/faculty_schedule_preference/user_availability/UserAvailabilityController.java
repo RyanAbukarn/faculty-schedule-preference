@@ -34,8 +34,9 @@ public class UserAvailabilityController {
             User user = userRepository.findById(user_id).get();
 
             UserAvailability userAvailabilities = user.getUserAvailabilities();
-            if (userAvailabilities.equals(null))
+            if (userAvailabilities == null){
                   userAvailabilities = new UserAvailability();
+            } 
 
             model.addAttribute("user", user);
             model.addAttribute("user_availability", userAvailabilities);
@@ -62,14 +63,16 @@ public class UserAvailabilityController {
             User user = userRepository.findById(user_id).get();
             JSONObject newJSONObject = new JSONObject(dataFromView);
             JSONObject newUnit = newJSONObject.getJSONObject("units");
+            JSONObject newSourceDescription = newJSONObject.getJSONObject("source");
             UserAvailability userAvailabilities = user.getUserAvailabilities();
-            if (userAvailabilities.equals(null))
+            if (userAvailabilities == null)
                   userAvailabilities = new UserAvailability();
 
             userAvailabilities.setBody(newJSONObject.optJSONArray("dates").toString());
             userAvailabilities.setMax_unit(Double.parseDouble(newUnit.getString("max_unit")));
             userAvailabilities.setMin_unit(Double.parseDouble(newUnit.getString("min_unit")));
             userAvailabilities.setRelease_time(Double.parseDouble(newUnit.getString("release_time")));
+            userAvailabilities.setSource_description(newSourceDescription.getString("source_description"));
             userAvailabilities.setUser(user);
             repository.save(userAvailabilities);
 
