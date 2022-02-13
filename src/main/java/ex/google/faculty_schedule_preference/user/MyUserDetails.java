@@ -1,14 +1,13 @@
 package ex.google.faculty_schedule_preference.user;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class MyUserDetails implements UserDetails {
 
@@ -16,12 +15,12 @@ public class MyUserDetails implements UserDetails {
     private String password;
     // private boolean active;
     private List<GrantedAuthority> authorities;
+    private User user;
 
-    @Autowired
-    UserRepository userRepository;
 
     public MyUserDetails(User user) {
         this.username = user.getUsername();
+        this.user = user;
         this.password = user.getPassword();
         // System.out.println(c.getRole());
         this.authorities = Arrays.stream(user.getPermissions().stream().map(x -> x.getRole()).toArray(String[]::new))
@@ -62,5 +61,10 @@ public class MyUserDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public long getId()
+    {
+        return this.user.getId();
     }
 }

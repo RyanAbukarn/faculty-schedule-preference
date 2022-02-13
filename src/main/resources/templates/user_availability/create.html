@@ -1,209 +1,219 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
 
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-    layout:decorate="~{page_layout/layout}">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{page_layout/layout}"></html>
+<html>
+    <head>
+        <title>User availability</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+            integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+            integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
 
-<head>
-    <title>User availability</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
-        integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.0.1/fullcalendar.css" rel="stylesheet" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.0.1/fullcalendar.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"
+            integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous">
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"
+            integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous">
+        </script>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.0.1/fullcalendar.css" rel="stylesheet" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.0.1/fullcalendar.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"
-        integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous">
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"
-        integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous">
-    </script>
+        <link th:href="@{/css/request/create.css}" rel="stylesheet" />
+        <meta charset='utf-8' content="Cory Sanoy" name="Author" />
 
-    <link th:href="@{/css/request/create.css}" rel="stylesheet" />
-    <meta charset='utf-8' content="Cory Sanoy" name="Author" />
+    </head>
 
-</head>
+    <body>
+        <section layout:fragment="content">
 
-<body>
-    <section layout:fragment="content">
-
-        <div th:if="${message}" th:text="${message}" th:class="${'alert ' + alertClass}" />
-        <div class="wrap">
-            <div class="info">
-                <h1>User Info</h1>
-                <div class="fsp-card">
-                    <div class="fsp-card-body">
-                        <h5 class="card-title" th:text="|Name: ${user.name}|"></h5>
-                        <h5 class="card-title" th:text="|CSUN Id: ${user.csun_id}|"></h5>
-                        <form action="#" th:object="${user_availability}">
-                            <label for="min_unit">Select mimum units:</label>
-                            <select name="min_unit" id="min_unit" th:field="*{min_unit}">
-                                <option value="3.0">3.0</option>
-                                <option value="6.0">6.0</option>
-                                <option value="9.0">9.0</option>
-                                <option value="12.0">12.0</option>
-                            </select>
-                            <br>
-                            <label for="max_unit">Select maximum units:</label>
-                            <select name="max_unit" id="max_unit" th:field="*{max_unit}">
-                                <option value="3.0">3.0</option>
-                                <option value="6.0">6.0</option>
-                                <option value="9.0">9.0</option>
-                                <option value="12.0">12.0</option>
-                                <option value="15.0">15.0</option>
-                            </select>
-                            <br>
-                            <label for="release_time">Select release units:</label>
-                            <select name="release_time" id="release_time" th:field="*{release_time}">
-                                <option value="0.0">0.0</option>
-                                <option value="3.0">3.0</option>
-                                <option value="6.0">6.0</option>
-                            </select>
-                            <br>
-                            <button id="submit_request" type="button" class="btn btn-primary">submit</button>
-                        </form>
+            <div th:if="${message}" th:text="${message}" th:class="${'alert ' + alertClass}" />
+                <div class="wrap">
+                    <div class="info">
+                        <h1>User Info</h1>
+                        <div class="fsp-card">
+                            <div class="fsp-card-body">
+                                <h5 class="card-title" th:text="|Name: ${user.name}|"></h5>
+                                <h5 class="card-title" th:text="|CSUN Id: ${user.csun_id}|"></h5>
+                                <form action="#" th:object="${user_availability}">
+                                    <label for="min_unit">Select mimum units:</label>
+                                    <select name="min_unit" id="min_unit" th:field="*{min_unit}">
+                                        <option value="3.0">3.0</option>
+                                        <option value="6.0">6.0</option>
+                                        <option value="9.0">9.0</option>
+                                        <option value="12.0">12.0</option>
+                                    </select>
+                                    <br>
+                                    <label for="max_unit">Select maximum units:</label>
+                                    <select name="max_unit" id="max_unit" th:field="*{max_unit}">
+                                        <option value="3.0">3.0</option>
+                                        <option value="6.0">6.0</option>
+                                        <option value="9.0">9.0</option>
+                                        <option value="12.0">12.0</option>
+                                        <option value="15.0">15.0</option>
+                                    </select>
+                                    <br>
+                                    <label for="release_time">Select release units:</label>
+                                    <select name="release_time" id="release_time" th:field="*{release_time}">
+                                        <option value="0.0">0.0</option>
+                                        <option value="3.0">3.0</option>
+                                        <option value="6.0">6.0</option>
+                                    </select>
+                                    <br>
+                                    <!-- Source description text box -->
+                                    <div class="form-group">
+                                        <label for="source_description">Enter description for request of release time units.</label>
+                                        <textarea class="form-control" id="source_description" name="source_description" th:field="*{source_description}" 
+                                        th:placeholder="*{source_description}"/>
+                                    </div>
+                                    <br>
+                                    <button id="submit_request" type="button" class="btn btn-primary">Submit</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div id='calendar'></div>
                     </div>
                 </div>
             </div>
-            <div>
-                <div id='calendar'></div>
-            </div>
-        </div>
-        </div>
-    </section>
-</body>
-<script>
-    $(document).ready(function () {
-        let showModel;
-        let dates = [];
-        let calendarEL = $('#calendar');
-        let currentDate = "2012-05-25";
-        let start_ = "";
-        let end_ = "";
-        calendarEL.fullCalendar({
-            defaultView: 'agendaWeek',
-            selectHelper: true,
-            editable: true,
-            selectable: true,
-            unselectAuto: true,
-            eventOverlap: false,
-            eventColor: '#f16666',
-            slotDuration: '00:15',
-            allDaySlot: false,
-            slotLabelInterval: "00:15",
-            longPressDelay: 0,
-            views: {
-                agendaWeek: {
-                    columnFormat: "dddd"
+        </section>
+    </body>
+    <script>
+        $(document).ready(function () {
+            let showModel;
+            let dates = [];
+            let calendarEL = $('#calendar');
+            let currentDate = "2012-05-25";
+            let start_ = "";
+            let end_ = "";
+            calendarEL.fullCalendar({
+                defaultView: 'agendaWeek',
+                selectHelper: true,
+                editable: true,
+                selectable: true,
+                unselectAuto: true,
+                eventOverlap: false,
+                eventColor: '#f16666',
+                slotDuration: '00:15',
+                allDaySlot: false,
+                slotLabelInterval: "00:15",
+                longPressDelay: 0,
+                views: {
+                    agendaWeek: {
+                        columnFormat: "dddd"
+                    }
+                },
+                nowIndicator: "true",
+                minTime: '06:00',
+                maxTime: '22:45',
+                visibleRange: {
+                    start: '2017-03-22',
+                    end: '2017-03-25'
+                },
+                header: {
+                    left: '',
+                    center: '',
+                    right: ''
+                },
+                events: function (start, end, _, callback) {
+                    $.ajax({
+                        type: "GET",
+                        contentType: "application/json",
+                        url: `/api${window.location.pathname}`,
+                        dataType: 'json',
+                        cache: false,
+                        timeout: 600000,
+                        success: function (data) {
+                            callback(JSON.parse(data.event));
+                        },
+                    })
+                },
+                select: function (start, end) {
+                    start_ = start.toISOString();
+                    end_ = end.toISOString();
+                    addevent(start_, end_);
+                    return true;
+                },
+                eventRender: function (event, element) {
+                    element
+                        .find(".fc-content")
+                        .prepend(`<i class="closeBtn far fa-times-circle"></i>`);
+                    element.find(".closeBtn").on("click", function () {
+                        $("#calendar").fullCalendar("removeEvents", event._id);
+                    });
                 }
-            },
-            nowIndicator: "true",
-            minTime: '06:00',
-            maxTime: '22:45',
-            visibleRange: {
-                start: '2017-03-22',
-                end: '2017-03-25'
-            },
-            header: {
-                left: '',
-                center: '',
-                right: ''
-            },
-            events: function (start, end, _, callback) {
+            });
+            $('#calendar').fullCalendar('gotoDate', currentDate);
+
+            $('#my-draggable').draggable({
+                zIndex: 999,
+                revert: true, // will cause the event to go back to its
+            });
+
+            $("#submit_request").click(event => {
+                event.preventDefault();
+                let min_unit = $("#min_unit").val();
+                let max_unit = $("#max_unit").val();
+                var release_time = $("#release_time").val();
+                const source_description = $("#source_description").val();
+                if (min_unit * 100  <= max_unit * 100) {  // because the units are doubles, multiply by 100 does a proper comparison
+                    alert("Successfully updated units and availability.");
+                    fire_ajax_submit(min_unit, max_unit, release_time, source_description);
+                } else {
+                    alert("Warning: Minimum units must be less than or equal to maximum units.");
+                }
+            });
+
+
+
+            function addevent(start, end) {
+                calendarEL.fullCalendar('renderEvent', {
+                    start: start,
+                    end: end,
+                }, true);
+            };
+
+            function convertToJson(value, _, _) {
+                dates.push({
+                    start: value.start.toISOString(),
+                    end: value.end.toISOString()
+                })
+            }
+
+            function fire_ajax_submit(min_unit, max_unit, release_time, source_description) {
+                calendarEL.fullCalendar("clientEvents").forEach(convertToJson);
+                let units = {
+                    min_unit: min_unit,
+                    max_unit: max_unit,
+                    release_time: release_time
+                };
+                let source = {
+                    source_description: source_description
+                };
+                let data = {
+                    dates: dates,
+                    units: units,
+                    source: source
+                };
                 $.ajax({
-                    type: "GET",
+                    type: "POST",
                     contentType: "application/json",
                     url: `/api${window.location.pathname}`,
+                    data: JSON.stringify(data),
                     dataType: 'json',
                     cache: false,
                     timeout: 600000,
                     success: function (data) {
-                        callback(JSON.parse(data.event));
+                        location.reload();
                     },
-                })
-            },
-            select: function (start, end) {
-                start_ = start.toISOString();
-                end_ = end.toISOString();
-                addevent(start_, end_);
-                return true;
-            },
-            eventRender: function (event, element) {
-                element
-                    .find(".fc-content")
-                    .prepend(`<i class="closeBtn far fa-times-circle"></i>`);
-                element.find(".closeBtn").on("click", function () {
-                    $("#calendar").fullCalendar("removeEvents", event._id);
+                    error: function (e) {
+                        location.reload();
+                    }
                 });
             }
         });
-        $('#calendar').fullCalendar('gotoDate', currentDate);
-
-        $('#my-draggable').draggable({
-            zIndex: 999,
-            revert: true, // will cause the event to go back to its
-        });
-
-        $("#submit_request").click(event => {
-            event.preventDefault();
-            let min_unit = $("#min_unit").val();
-            let max_unit = $("#max_unit").val();
-            var release_time = $("#release_time").val();
-            if (min_unit <= max_unit) {
-                alert("Successfully updated units and availability.");
-                fire_ajax_submit(min_unit, max_unit, release_time);
-            } else {
-                alert("Warning: Minimum units must be less then maximum units.");
-            }
-        });
-
-
-
-        function addevent(start, end) {
-            calendarEL.fullCalendar('renderEvent', {
-                start: start,
-                end: end,
-            }, true);
-        };
-
-        function convertToJson(value, _, _) {
-            dates.push({
-                start: value.start.toISOString(),
-                end: value.end.toISOString()
-            })
-        }
-
-        function fire_ajax_submit(min_unit, max_unit, release_time) {
-            calendarEL.fullCalendar("clientEvents").forEach(convertToJson);
-            let units = {
-                min_unit: min_unit,
-                max_unit: max_unit,
-                release_time: release_time
-            }
-            let data = {
-                dates: dates,
-                units: units
-            };
-            $.ajax({
-                type: "POST",
-                contentType: "application/json",
-                url: `/api${window.location.pathname}`,
-                data: JSON.stringify(data),
-                dataType: 'json',
-                cache: false,
-                timeout: 600000,
-                success: function (data) {
-                    location.reload();
-                },
-                error: function (e) {
-                    location.reload();
-                }
-            });
-        }
-    });
-</script>
-
+    </script>
 </html>

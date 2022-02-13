@@ -26,6 +26,8 @@ public class UserAvailability {
     private double min_unit;
     @Column(name = "release_time", nullable = false)
     private double release_time;
+    @Column(name = "source_description", nullable = false)
+    private String source_description;
 
     @OneToOne(fetch = FetchType.LAZY)
     private User user;
@@ -33,18 +35,20 @@ public class UserAvailability {
     public UserAvailability() {
     }
 
-    public UserAvailability(String body, double max_unit, double min_unit, double release_time) {
+    public UserAvailability(String body, double max_unit, double min_unit, double release_time, String source_description) {
         this.body = body;
         this.max_unit = max_unit;
         this.min_unit = min_unit;
         this.release_time = release_time;
+        this.source_description = source_description;
     }
 
-    public UserAvailability(String body, double max_unit, double min_unit, double release_time, User user) {
+    public UserAvailability(String body, double max_unit, double min_unit, double release_time, String source_description, User user) {
         this.body = body;
         this.max_unit = max_unit;
         this.min_unit = min_unit;
         this.release_time = release_time;
+        this.source_description = source_description;
         this.user = user;
     }
 
@@ -86,6 +90,14 @@ public class UserAvailability {
 
     public void setRelease_time(double release_time) {
         this.release_time = release_time;
+    }
+
+    public void setSource_description(String source_description){
+        this.source_description = source_description;
+    }
+
+    public String getSource_description(){
+        return source_description;
     }
 
     public User getUser() {
