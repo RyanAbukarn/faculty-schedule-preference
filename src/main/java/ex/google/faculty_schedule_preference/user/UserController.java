@@ -124,4 +124,31 @@ public class UserController {
         return "user/upload_resume";
     }
 
+    // if the current user is a controller but not an admin or a superuser then filter users to be of the same department as controller
+    @GetMapping("/manage")
+    public String manageUsers(Model model, @AuthenticationPrincipal UserDetails userDetails){
+        Boolean showAllUsers = false;
+        User currentUser = repository.findByUsername(userDetails.getUsername()).get();
+        List<Permission> currentUserPermissions = currentUser.getPermissions(); 
+        List<User> users;
+
+        for (Permission currentUserPermission : currentUserPermissions){
+            if (currentUserPermission.getId() == 1 || currentUserPermission.getId() == 5){
+                showAllUsers = true;
+                continue;
+            }
+        }
+
+        if (showAllUsers){
+            users = repository.findAll();
+        }
+        else{
+            users = repository.findAllByDepartment(currentUser.getDepartment());
+        }
+        
+        model.addAttribute("users", users);
+
+        return "user/manage";
+    }
+
 }

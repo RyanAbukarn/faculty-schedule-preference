@@ -39,6 +39,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .hasAnyRole("ADMIN", "CONTROLLER", "TENURETRACK", "LECTURER", "SUPERUSER")
                 .antMatchers("/user/upload-resume")
                 .hasAnyRole("ADMIN", "CONTROLLER", "TENURETRACK", "LECTURER", "SUPERUSER")
+                .antMatchers("/user/manage")
+                .hasAnyRole("ADMIN", "CONTROLLER", "SUPERUSER")
                 .antMatchers("/").permitAll()
                 .and().formLogin()
                 .loginPage("/user/login")

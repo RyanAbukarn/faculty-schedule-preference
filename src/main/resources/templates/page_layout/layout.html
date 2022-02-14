@@ -16,7 +16,7 @@
             <h4>CSUN</h4>
         </div>
         <ul class="fsp-navbar-links">
-            <li sec:authorize="hasAnyRole('ADMIN', 'SUPERUSER')"><a class="fsp-navbar-link" href="/user/permissions">Manage User Roles</a></li> <!-- Not live yet-->
+            <li sec:authorize="hasAnyRole('ADMIN', 'CONTROLLER','SUPERUSER')"><a class="fsp-navbar-link" href="/user/manage">Manage User Roles</a></li> 
             <li sec:authorize="hasAnyRole('ADMIN', 'SUPERUSER')"><a class="fsp-navbar-link" href="/departments/new">Create new department</a></li> <!-- Not live yet-->
             <li sec:authorize="hasAnyRole('CONTROLLER','SUPERUSER')"><a class="fsp-navbar-link" href="/courses/new">Create new course</a></li> <!-- Not live yet-->
             <li sec:authorize="hasAnyRole('CONTROLLER','TENURETRACK', 'LECTURER','SUPERUSER')"><a class="fsp-navbar-link" href="/requests">Requests</a></li>
