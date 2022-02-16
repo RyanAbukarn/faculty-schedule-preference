@@ -21,6 +21,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -122,6 +124,26 @@ public class UserController {
     @GetMapping("/upload-resume")
     public String uploadFile() {
         return "user/upload_resume";
+    }
+
+    // Function sends User data to View where Controller, Admin or Superuser have access to
+    @GetMapping("/manage")
+    public String manageUsers(Model model, HttpServletRequest request, 
+        @AuthenticationPrincipal UserDetails userDetails){
+        List<User> users;
+        User currentUser = repository.findByUsername(userDetails.getUsername()).get();
+        // if the current user is an admin or superuser send all users to View
+        if (request.isUserInRole("ROLE_ADMIN") || request.isUserInRole("ROLE_SUPERUSER")) {
+            users = repository.findAll();
+        }
+        else {
+            // if the current user is a controller then only send users within the same department
+            users = repository.findAllByDepartment(currentUser.getDepartment());
+        }
+
+        model.addAttribute("users", users);
+
+        return "user/manage";
     }
 
 }
