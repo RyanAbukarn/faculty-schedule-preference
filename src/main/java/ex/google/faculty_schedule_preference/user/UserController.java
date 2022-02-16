@@ -21,6 +21,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -124,28 +126,21 @@ public class UserController {
         return "user/upload_resume";
     }
 
-    // if the current user is a controller but not an admin or a superuser then filter users to be of the same department as controller
+    // Function sends User data to View where Controller, Admin or Superuser have access to
     @GetMapping("/manage")
-    public String manageUsers(Model model, @AuthenticationPrincipal UserDetails userDetails){
-        Boolean showAllUsers = false;
-        User currentUser = repository.findByUsername(userDetails.getUsername()).get();
-        List<Permission> currentUserPermissions = currentUser.getPermissions(); 
+    public String manageUsers(Model model, HttpServletRequest request, 
+        @AuthenticationPrincipal UserDetails userDetails){
         List<User> users;
-
-        for (Permission currentUserPermission : currentUserPermissions){
-            if (currentUserPermission.getId() == 1 || currentUserPermission.getId() == 5){
-                showAllUsers = true;
-                continue;
-            }
-        }
-
-        if (showAllUsers){
+        User currentUser = repository.findByUsername(userDetails.getUsername()).get();
+        // if the current user is an admin or superuser send all users to View
+        if (request.isUserInRole("ROLE_ADMIN") || request.isUserInRole("ROLE_SUPERUSER")) {
             users = repository.findAll();
         }
-        else{
+        else {
+            // if the current user is a controller then only send users within the same department
             users = repository.findAllByDepartment(currentUser.getDepartment());
         }
-        
+
         model.addAttribute("users", users);
 
         return "user/manage";
