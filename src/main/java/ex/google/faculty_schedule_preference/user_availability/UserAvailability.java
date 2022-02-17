@@ -1,14 +1,15 @@
 package ex.google.faculty_schedule_preference.user_availability;
 
-import ex.google.faculty_schedule_preference.user.User;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import ex.google.faculty_schedule_preference.user.User;
 
 @Entity(name = "UserAvailability")
 @Table(name = "user_availabilities")
@@ -25,29 +26,38 @@ public class UserAvailability {
     private double min_unit;
     @Column(name = "release_time", nullable = false)
     private double release_time;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Column(name = "source_description", nullable = false)
+    private String source_description;
+
+    @OneToOne(fetch = FetchType.LAZY)
     private User user;
 
     public UserAvailability() {
     }
 
-    public UserAvailability(String body, double max_unit, double min_unit, double release_time) {
+    public UserAvailability(String body, double max_unit, double min_unit, double release_time, String source_description) {
         this.body = body;
         this.max_unit = max_unit;
         this.min_unit = min_unit;
         this.release_time = release_time;
+        this.source_description = source_description;
     }
 
-    public UserAvailability(String body, double max_unit, double min_unit, double release_time, User user) {
+    public UserAvailability(String body, double max_unit, double min_unit, double release_time, String source_description, User user) {
         this.body = body;
         this.max_unit = max_unit;
         this.min_unit = min_unit;
         this.release_time = release_time;
+        this.source_description = source_description;
         this.user = user;
     }
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public Long getId(){
+        return id;
     }
 
     public String getBody() {
@@ -82,12 +92,24 @@ public class UserAvailability {
         this.release_time = release_time;
     }
 
+    public void setSource_description(String source_description){
+        this.source_description = source_description;
+    }
+
+    public String getSource_description(){
+        return source_description;
+    }
+
     public User getUser() {
         return user;
     }
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Long getUserId(){
+        return this.user.getId();
     }
 
 }

@@ -19,8 +19,10 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import ex.google.faculty_schedule_preference.department.Department;
+import ex.google.faculty_schedule_preference.document.Document;
 import ex.google.faculty_schedule_preference.permission.Permission;
 import ex.google.faculty_schedule_preference.request.Request;
+import ex.google.faculty_schedule_preference.user_availability.UserAvailability;
 
 @Entity(name = "User")
 @Table(name = "users", uniqueConstraints = { @UniqueConstraint(name = "user_email_unique", columnNames = "email") })
@@ -47,12 +49,18 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Request> requests = new ArrayList<Request>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Document> documents = new ArrayList<Document>();
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "user_permissions", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "permission_id", referencedColumnName = "id"))
     private List<Permission> permissions;
 
     @OneToOne(fetch = FetchType.LAZY)
     private Department department;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private UserAvailability userAvailabilities;
 
     public User() {
     }
@@ -140,6 +148,28 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public UserAvailability getUserAvailabilities() {
+        return userAvailabilities;
+    }
+
+    public void setUserAvailabilities(UserAvailability userAvailabilities) {
+        this.userAvailabilities = userAvailabilities;
+    }
+
+    public List<Document> getDocuments() {
+        return documents;
+    }
+
+    public void setDocuments(List<Document> documents) {
+        this.documents = documents;
+    }
+
+    public Document getResume() {
+        if (!this.documents.isEmpty())
+            return this.documents.stream().filter(doc -> doc.getType() == 1).findAny().get();
+        return null;
     }
 
 }

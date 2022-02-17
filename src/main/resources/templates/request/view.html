@@ -1,6 +1,7 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{page_layout/layout}">
 
 <head>
 	<title>Review</title>
@@ -26,50 +27,52 @@
 </head>
 
 <body>
-	<div th:if="${message}" th:text="${message}" th:class="${'alert ' + alertClass}" />
+	<section layout:fragment="content">
 
-	<div class="wrap">
-		<div class="info">
+		<div th:if="${message}" th:text="${message}" th:class="${'alert ' + alertClass}" />
 
-			<h1>Course Info</h1>
-			<div class="fsp-card">
-				<div class="fsp-card-body">
-					<h5 class="card-title" th:text="|Name: ${course.getName()}|"></h5>
-					<h6 class="card-subtitle mb-2 text-muted" th:text="|prefix: ${course.getPrefix()}|"></h6>
-					<p class="card-text"></p>
-				</div>
-			</div>
-			<br>
-			<h1>User Info</h1>
-			<div class="fsp-card">
-				<div class="fsp-card-body">
-					<h5 class="card-title" th:text="|Full Name: ${user.getName()}|"></h5>
-					<h6 class="card-subtitle mb-2 text-muted" th:text="|CSUN ID: ${user.getCsun_id()}|"></h6>
-					<a href="#" class="card-link">resume</a>
-				</div>
-			</div>
-			<br>
-			<h1>Logs</h1>
-			<div class="Scrolller">
-				<div class="card" style="width: 635px;" th:each="request_feedback: ${request_feedbacks}">
-					<div class="card-body">
-						<h5 class="card-title" th:text="${request_feedback.getUser().getName()}"></h5>
-						<h6 class="card-subtitle mb-2 text-muted"
-							th:text="|Sent to : ${request_feedback.getHumanReciver()}|">
-						</h6>
-						<p class="card-text" th:text="${request_feedback.getComment()}"></p>
+		<div class="wrap">
+			<div class="info">
+
+				<h1>Course Info</h1>
+				<div class="fsp-card">
+					<div class="fsp-card-body">
+						<h5 class="card-title" th:text="|Name: ${course.getName()}|"></h5>
+						<h6 class="card-subtitle mb-2 text-muted" th:text="|prefix: ${course.getPrefix()}|"></h6>
+						<p class="card-text"></p>
 					</div>
 				</div>
-			</div>
-
-			<br>
-			<h1>Add comment</h1>
-			<div class="fsp-card">
-				<form th:action="@{/requests/__${request.getId()}__}" th:object="${request_feedback}" method="post">
-					<div class="form-group">
-						<label for="comment">Feedback</label>
-						<textarea class="form-control" id="comment" name="comment" th:field="*{comment}" />
+				<br>
+				<h1>User Info</h1>
+				<div class="fsp-card">
+					<div class="fsp-card-body">
+						<h5 class="card-title" th:text="|Full Name: ${user.getName()}|"></h5>
+						<h6 class="card-subtitle mb-2 text-muted" th:text="|CSUN ID: ${user.getCsun_id()}|"></h6>
+						<a th:href="${resume}" class="card-link" target="_blank">resume</a>
+					</div>
+				</div>
+				<br>
+				<h1>Logs</h1>
+				<div class="Scrolller">
+					<div class="card" style="width: 635px;" th:each="request_feedback: ${request_feedbacks}">
+						<div class="card-body">
+							<h5 class="card-title" th:text="${request_feedback.getUser().getName()}"></h5>
+							<h6 class="card-subtitle mb-2 text-muted"
+								th:text="|Sent to : ${request_feedback.getHumanReciver()}|">
+							</h6>
+							<p class="card-text" th:text="${request_feedback.getComment()}"></p>
 						</div>
+					</div>
+				</div>
+
+				<br>
+				<h1>Add comment</h1>
+				<div class="fsp-card">
+					<form th:action="@{/requests/__${request.getId()}__}" th:object="${request_feedback}" method="post">
+						<div class="form-group">
+							<label for="comment">Feedback</label>
+							<textarea class="form-control" id="comment" name="comment" th:field="*{comment}" />
+							</div>
 				<div class="form-group">
 					<label for="reciver">Send to</label>
 					<select th:field="*{reciver}" name="reciver" class="form-control" id="reciver">
@@ -110,104 +113,105 @@
 			</div>
 		</div>
 	</div>
-
-</body>
-<script>
-	let f;
-	$(document).ready(function () {
-
-		const Direction = {
-			1: 'Highest',
-			2: 'Alternative',
-			3: 'Lowest',
-		}	
-		const Status = {
-			'new':1,
-			'under_review':2,
-			'denied':3,
-			'accpeted':4,
-		}
-		let showModel;
-		let calendarEL = $('#calendar');
-		let currentDate = "2012-05-25";
-		let approved_date;
-		calendarEL.fullCalendar({
-			defaultView: 'agendaWeek',
-			eventColor: '#f16621',
-			slotDuration: '00:15',
-			allDaySlot: false,
-			slotLabelInterval: "00:15",
-			longPressDelay: 0,
-			views: {
-				agendaWeek: {
-					columnFormat: "dddd"
+	<script>
+		let f;
+		$(document).ready(function () {
+	
+			const Direction = {
+				1: 'Highest',
+				2: 'Alternative',
+				3: 'Lowest',
+			}	
+			const Status = {
+				'new':1,
+				'under_review':2,
+				'denied':3,
+				'accpeted':4,
+			}
+			let showModel;
+			let calendarEL = $('#calendar');
+			let currentDate = "2012-05-25";
+			let approved_date;
+			calendarEL.fullCalendar({
+				defaultView: 'agendaWeek',
+				eventColor: '#f16621',
+				slotDuration: '00:15',
+				allDaySlot: false,
+				slotLabelInterval: "00:15",
+				longPressDelay: 0,
+				views: {
+					agendaWeek: {
+						columnFormat: "dddd"
+					}
+				},
+				nowIndicator: "true",
+				minTime: '06:00',
+				maxTime: '22:45',
+				header: {
+					left: '',
+					center: '',
+					right: ''
+				},
+				events: function (start, end,_, callback) {
+					$.ajax({
+						type: "GET",
+						contentType: "application/json",
+						url: `/api${window.location.pathname}`,
+						dataType: 'json',
+						cache: false,
+						timeout: 600000,
+						success: function (data) {
+							showModel = data.status == Status["new"]
+							callback(JSON.parse(data.event));
+						},
+					})
+				},
+				eventClick: function (info) {
+					if (showModel) {
+						$("#createEventModal").modal("show");
+						approved_date = {
+							title: info.title,
+							start: info.start.toISOString(),
+							end: info.end.toISOString(),
+						};
+					}
 				}
-			},
-			nowIndicator: "true",
-			minTime: '06:00',
-			maxTime: '22:45',
-			header: {
-				left: '',
-				center: '',
-				right: ''
-			},
-			events: function (start, end,_, callback) {
+			});
+			$('#calendar').fullCalendar('gotoDate', currentDate);
+	
+			$('#my-draggable').draggable({
+				zIndex: 999,
+				revert: true, // will cause the event to go back to its
+			});
+			$("#approve").click(event => {
+				event.preventDefault();
+				$("#createEventModal").modal("hide");
+				fire_ajax_submit();
+			});
+	
+			function fire_ajax_submit() {
 				$.ajax({
-					type: "GET",
+					type: "POST",
 					contentType: "application/json",
 					url: `/api${window.location.pathname}`,
+					data: JSON.stringify(approved_date),
 					dataType: 'json',
 					cache: false,
 					timeout: 600000,
 					success: function (data) {
-						showModel = data.status == Status["new"]
-						callback(JSON.parse(data.event));
+						location.reload();
 					},
-				})
-    		},
-			eventClick: function (info) {
-				if (showModel) {
-					$("#createEventModal").modal("show");
-					approved_date = {
-						title: info.title,
-						start: info.start.toISOString(),
-						end: info.end.toISOString(),
-					};
-				}
+					error: function (e) {
+						location.reload();
+					}
+				});
 			}
+	
 		});
-		$('#calendar').fullCalendar('gotoDate', currentDate);
+	</script>
+</section>
+</body>
 
-		$('#my-draggable').draggable({
-			zIndex: 999,
-			revert: true, // will cause the event to go back to its
-		});
-		$("#approve").click(event => {
-			event.preventDefault();
-			$("#createEventModal").modal("hide");
-			fire_ajax_submit();
-		});
-
-		function fire_ajax_submit() {
-			$.ajax({
-				type: "POST",
-				contentType: "application/json",
-				url: `/api${window.location.pathname}`,
-				data: JSON.stringify(approved_date),
-				dataType: 'json',
-				cache: false,
-				timeout: 600000,
-				success: function (data) {
-					location.reload();
-				},
-				error: function (e) {
-					location.reload();
-				}
-			});
-		}
-
-	});
-</script>
 
 
 
