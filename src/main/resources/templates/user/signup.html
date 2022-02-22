@@ -3,8 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Landing Page</title>
     <link th:href="@{/css/user/signup.css}" rel="stylesheet" />
 
@@ -30,7 +29,7 @@
                 <h2>
                     Sign Up
                 </h2>
-                <form id="signUpForm" name="f" th:action="@{/user/signup}" method="post">
+                <form id="signUpForm" name="f" th:action="@{registration/signup}" method="post">
                     <div id="errs" class="errorcontainer"></div>
                     <div th:if="${param.error}" id="alert alert-error" class="alert alert-error">
                         Invalid username and password.
@@ -43,33 +42,20 @@
                         placeholder="Enter Your Full Name" />
 
                     <label for="email">Email</label>
-                    <input id="email" name="email" type="email" autocomplete="email"
-                    placeholder="Enter your email">
+                    <input id="email" name="email" type="email" autocomplete="email" placeholder="Enter your email">
 
                     <label for="username">Username</label>
                     <input id="username" name="username" type="text" autocomplete="name"
                         placeholder="Enter Your Username" />
-
                     <label for="departments">Department</label>
-                    <select id="departments" name="username" >
-                        <option value="1">English</option>
-                        <option value="2">History</option>
-                        <option value="3">Humanities</option>
-                        <option value="4">Africana Studies</option>
-                        <option value="5">Biology</option>
-                        <option value="6">Chemistry</option>
-                        <option value="7">Physics</option>
-                        <option value="8">Kinesiology</option>
-                        <option value="9">Math</option>
-                        <option value="10">Computer Science</option>
-                        <option value="11">Mechanical Engineering</option>
-                        <option value="12">Electrical Engineering</option>
-                        <option value="13">Psychology</option>
+
+                    <select th:field="*{departments}">
+                        <option th:each="i : ${departments}" th:value="${i.getId()}" th:text="${i.getName()}"></option>
                     </select>
 
+
                     <label for="csunID">CSUN ID</label>
-                    <input id="csunID" name="csunID" type="number"
-                           placeholder="Enter Your Username" />
+                    <input id="csunID" name="csunID" type="text" placeholder="Enter Your Username" />
 
                     <label for="password">Password</label>
                     <input id="password" name="password" type="password" autocomplete="current-password"

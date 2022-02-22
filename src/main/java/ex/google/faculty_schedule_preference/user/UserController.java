@@ -1,5 +1,6 @@
 package ex.google.faculty_schedule_preference.user;
 
+import ex.google.faculty_schedule_preference.department.DepartmentRepository;
 import ex.google.faculty_schedule_preference.document.Document;
 import ex.google.faculty_schedule_preference.document.DocumentRepository;
 import ex.google.faculty_schedule_preference.permission.Permission;
@@ -39,14 +40,17 @@ public class UserController {
     private final UserRepository repository;
     private final PermissionRepository permissionRepository;
     private final DocumentRepository documentRepository;
+    private final DepartmentRepository departmentRepository;
+
     @Value("${boxapi}")
     private String boxapi;
 
     UserController(UserRepository repository, PermissionRepository permissionRepository,
-            DocumentRepository documentRepository) {
+            DocumentRepository documentRepository, DepartmentRepository departmentRepository) {
         this.repository = repository;
         this.permissionRepository = permissionRepository;
         this.documentRepository = documentRepository;
+        this.departmentRepository = departmentRepository;
     }
 
     // function is called to load updateRoles page
@@ -89,6 +93,12 @@ public class UserController {
         return "user/login";
     }
 
+    @GetMapping("/signup")
+    public String signup(Model model) {
+        model.addAttribute("departments", departmentRepository.findAll());
+        return "user/signup";
+    }
+
     @PostMapping("/upload-resume")
     public String postUploadFile(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes,
             @AuthenticationPrincipal UserDetails userDetails) throws IOException, NoSuchAlgorithmException {
@@ -126,18 +136,19 @@ public class UserController {
         return "user/upload_resume";
     }
 
-    // Function sends User data to View where Controller, Admin or Superuser have access to
+    // Function sends User data to View where Controller, Admin or Superuser have
+    // access to
     @GetMapping("/manage")
-    public String manageUsers(Model model, HttpServletRequest request, 
-        @AuthenticationPrincipal UserDetails userDetails){
+    public String manageUsers(Model model, HttpServletRequest request,
+            @AuthenticationPrincipal UserDetails userDetails) {
         List<User> users;
         User currentUser = repository.findByUsername(userDetails.getUsername()).get();
         // if the current user is an admin or superuser send all users to View
         if (request.isUserInRole("ROLE_ADMIN") || request.isUserInRole("ROLE_SUPERUSER")) {
             users = repository.findAll();
-        }
-        else {
-            // if the current user is a controller then only send users within the same department
+        } else {
+            // if the current user is a controller then only send users within the same
+            // department
             users = repository.findAllByDepartment(currentUser.getDepartment());
         }
 
