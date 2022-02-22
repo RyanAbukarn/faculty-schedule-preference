@@ -31,10 +31,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/courses/{course_id}/request")
                 .hasAnyRole("ADMIN", "CONTROLLER", "TENURETRACK", "LECTURER", "SUPERUSER")
                 .antMatchers("/departments").hasAnyRole("ADMIN", "CONTROLLER", "TENURETRACK", "LECTURER", "SUPERUSER")
+                .antMatchers("/*").hasAnyRole("ADMIN", "CONTROLLER", "TENURETRACK", "LECTURER", "SUPERUSER")
                 .antMatchers("/requests/**").hasAnyRole("CONTROLLER", "SUPERUSER")
                 .antMatchers("/my-requests/**").hasAnyRole("TENURETRACK", "LECTURER", "SUPERUSER")
                 .antMatchers("/courses/{course_id}/request").hasAnyRole("TENURETRACK", "LECTURER", "SUPERUSER")
-                .antMatchers("/user/{user_id}/permissions").hasAnyRole("ADMIN", "SUPERUSER")
+                .antMatchers("/user/{user_id}/permissions").hasAnyRole("ADMIN", "SUPERUSER", "CONTROLLER")
                 .antMatchers("/user/{user_id}/user_availability")
                 .hasAnyRole("ADMIN", "CONTROLLER", "TENURETRACK", "LECTURER", "SUPERUSER")
                 .antMatchers("/user/upload-resume")
@@ -44,6 +45,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/").permitAll()
                 .and().formLogin()
                 .loginPage("/user/login")
+                .loginProcessingUrl("/user/login")
+                .defaultSuccessUrl("/user")
                 .permitAll();
     }
 

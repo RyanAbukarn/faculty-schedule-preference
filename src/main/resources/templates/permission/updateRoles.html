@@ -25,7 +25,7 @@
                 <span id="roles-id-number" th:text="${user.csun_id}">Default</span>
             </div>
             <div id="roles-container">
-                <div>
+                <div sec:authorize  = "hasAnyRole('ADMIN','SUPERUSER')"></td>
                     <input name="permissions" value=1 type="checkbox" id="roles-myCheckAdmin"
                         th:checked="${permissions.get('ROLE_ADMIN')}"> <span>Admin</span>
                 </div>
