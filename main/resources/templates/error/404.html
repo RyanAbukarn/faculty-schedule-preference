@@ -1,0 +1,30 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{page_layout/layout}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Error 404: Page Not Found</title>
+    <link th:href="@{/css/error/error.css}" rel="stylesheet" />
+    <!-- <link rel="stylesheet" href="/src/main/resources/static/css/stylesheet.css">
+    <link rel="stylesheet" href="/src/main/resources/static/css/error/error.css"> -->
+
+</head>
+
+<body>
+    <section layout:fragment="content">
+        <div class="error-container">
+            <div class="error-box">
+                <h1>Page Not Found Exception - 404</h1>
+                <img th:src="@{/images/error/pnf400.png}" alt="">
+                <p>Sorry, we were unable to find the page you requested.</p>
+            </div>
+        </div>
+    </section>
+
+</body>
+
+</html>

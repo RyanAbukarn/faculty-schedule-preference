@@ -1,0 +1,60 @@
+#roles-h2 {
+    text-align: center;
+    text-decoration: underline #961616;
+}
+
+#roles-user-details {
+    text-align: center;
+    font-size: 18px;
+    margin: 5px 0 10px 0;
+}
+
+#roles-csun-id {
+    color:#961616;
+    font-weight: bold;
+}
+
+#roles-id-number {
+    font-style: italic;
+}
+
+#roles-container {
+    display: flex;
+    flex-direction: column;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+#roles-container div {
+    display: flex;
+    align-items: center;
+    margin: 0 0 10px 0;
+}
+
+#roles-container div input[type="checkbox"]  {
+    appearance: none;
+    height: 1.05rem;
+    width: 1.05rem;
+    margin-right: 10px;
+    border: 1px solid #961616;
+    border-radius: 3px;
+    transition: background-color 60ms linear;
+}
+
+#roles-container div input[type="checkbox"]:hover {
+    border: 2px solid #961616;
+    background-color: #96161623;
+}
+
+#roles-container div input[type="checkbox"]:checked {
+    background-color: #961616;
+}
+
+#roles-container div:last-of-type { 
+    margin-bottom: 20px
+}
+
+#roles-container .fsp-button {
+    align-self: center;
+}
+
