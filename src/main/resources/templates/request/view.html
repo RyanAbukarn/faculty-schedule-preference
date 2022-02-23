@@ -28,7 +28,7 @@
 
 <body>
 	<section layout:fragment="content">
-
+		<input name="times" th:value="*{request.times}" type="hidden" id="times">
 		<div th:if="${message}" th:text="${message}" th:class="${'alert ' + alertClass}" />
 
 		<div class="wrap">
@@ -152,19 +152,8 @@
 					center: '',
 					right: ''
 				},
-				events: function (start, end,_, callback) {
-					$.ajax({
-						type: "GET",
-						contentType: "application/json",
-						url: `/api${window.location.pathname}`,
-						dataType: 'json',
-						cache: false,
-						timeout: 600000,
-						success: function (data) {
-							showModel = data.status == Status["new"]
-							callback(JSON.parse(data.event));
-						},
-					})
+				events: function (_, _,_, callback) {
+					callback(JSON.parse($("#times").val()));
 				},
 				eventClick: function (info) {
 					if (showModel) {

@@ -47,7 +47,11 @@
             <div>
                 <div id='calendar'></div>
                 <br>
-                <button id="submit_request" type="button" class="btn btn-primary">submit</button>
+                <form method="POST" th:action="@{/courses/__${course.id}__/request/create}" th:object="${request}">
+                    <input name="times" th:value="*{times}" type="hidden" id="times">
+                    <button type="submit">submit</button>
+                </form>
+
             </div>
 
         </div>
@@ -140,6 +144,7 @@
                             $("#calendar").fullCalendar("removeEvents", event._id);
                             $("#priorities").append(new Option(event.title, Direction2[event
                                 .title]));
+                            updateHidenInoput();
                         });
                     }
                 });
@@ -150,10 +155,6 @@
                     $(`#priorities option[value='${$("#priorities").val()}']`).remove();
                     $("#createEventModal").modal("hide");
                 });
-                $("#submit_request").click(event => {
-                    event.preventDefault();
-                    fire_ajax_submit();
-                });
 
                 function addevent(title, start, end) {
                     calendarEL.fullCalendar('renderEvent', {
@@ -161,7 +162,14 @@
                         start: start,
                         end: end,
                     }, true);
+                    updateHidenInoput();
                 };
+
+                function updateHidenInoput() {
+                    dates = [];
+                    calendarEL.fullCalendar("clientEvents").forEach(convertToJson);
+                    $('#times').val(JSON.stringify(dates));
+                }
 
                 function convertToJson(value, _, _) {
                     dates.push({
@@ -170,26 +178,6 @@
                         end: value.end.toISOString()
                     })
                 }
-
-                function fire_ajax_submit() {
-                    calendarEL.fullCalendar("clientEvents").forEach(convertToJson);
-                    $.ajax({
-                        type: "POST",
-                        contentType: "application/json",
-                        url: window.location.pathname,
-                        data: JSON.stringify(dates),
-                        dataType: 'json',
-                        cache: false,
-                        timeout: 600000,
-                        success: function (data) {
-                            location.reload();
-                        },
-                        error: function (e) {
-                            location.reload();
-                        }
-                    });
-                }
-
             });
         </script>
 

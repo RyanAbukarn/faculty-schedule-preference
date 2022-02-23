@@ -16,6 +16,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -46,7 +47,7 @@ public class RequestController {
     }
 
     @GetMapping("my-requests")
-    public String MyRquests(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+    public String myRquests(Model model, @AuthenticationPrincipal UserDetails userDetails) {
 
         User currentUser = userRepository.findByUsername(userDetails.getUsername()).get();
         List<Request> theRequests = currentUser.getRequests();
@@ -60,7 +61,7 @@ public class RequestController {
     }
 
     @PostMapping("requests/{request_id}")
-    public String Add(@PathVariable("request_id") long request_id,
+    public String add_feedbacck(@PathVariable("request_id") long request_id,
             Requestfeedback requestfeed, Model model,
             RedirectAttributes redirectAttributes, @AuthenticationPrincipal UserDetails userDetails) {
         Request theRequest = repository.findById(request_id).get();
@@ -98,7 +99,7 @@ public class RequestController {
     }
 
     @PostMapping("requests/{request_id}/denied")
-    public String Denied(@PathVariable("request_id") long request_id,
+    public String denied(@PathVariable("request_id") long request_id,
             RedirectAttributes redirectAttributes) {
         Request theRequest = repository.findById(request_id).get();
         theRequest.setStatus(Request.statusValues.get("denied"));
@@ -109,10 +110,23 @@ public class RequestController {
     }
 
     @GetMapping("courses/{course_id}/request")
-    public String Create(@PathVariable("course_id") long course_id, Model model) {
+    public String new_(@PathVariable("course_id") long course_id, Model model) {
         model.addAttribute("request", new Request());
         model.addAttribute("course", courseRepository.findById(course_id).get());
-        return "request/create";
+        return "request/new";
+    }
+
+    @PostMapping("courses/{course_id}/request/create")
+    public String create(@ModelAttribute Request request,
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable long course_id, RedirectAttributes redirectAttributes) {
+
+        User currentUser = userRepository.findByUsername(userDetails.getUsername()).get();
+        Request newRequest = new Request(1, request.getTimes(),
+                currentUser,
+                courseRepository.findById(course_id).get());
+        repository.save(newRequest);
+        return "redirect: my_requests";
     }
 
 }
