@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import ex.google.faculty_schedule_preference.department.Department;
+import ex.google.faculty_schedule_preference.term.Term;
 
 @Entity(name = "Course")
 @Table(name = "courses", uniqueConstraints = {
@@ -25,6 +26,10 @@ public class Course {
             "Sat");
     @Transient
     private Map<Integer, String> classType = Map.of(1, "Online", 2, "In-person", 3, "Hybrid");
+
+    @Transient
+    private Map<Integer, String> statusEnum = Map.of(1, "open", 2, "under_review", 3, "closed");
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false)
@@ -48,8 +53,14 @@ public class Course {
     @Column(name = "end_time", nullable = false)
     private Time endTime;
 
+    @Column(name = "status", nullable = false)
+    private int status;
+
     @OneToOne(fetch = FetchType.LAZY)
     private Department department;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    private Term term;
 
     public Course() {
     }
@@ -114,6 +125,22 @@ public class Course {
 
     public void setEndTime(Time endTime) {
         this.endTime = endTime;
+    }
+
+    public Department getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
+    }
+
+    public Term getTerm() {
+        return term;
+    }
+
+    public void setTerm(Term term) {
+        this.term = term;
     }
 
 }

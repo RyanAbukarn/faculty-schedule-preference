@@ -26,13 +26,6 @@ public class RequestRestController {
     @Autowired
     private UserRepository userRepository;
 
-    RequestRestController(RequestRepository requestRepository, CourseRepository courseRepository,
-            UserRepository userRepository) {
-        this.requestRepository = requestRepository;
-        this.courseRepository = courseRepository;
-        this.userRepository = userRepository;
-    }
-
     @GetMapping("api/requests/{request_id}")
     public ResponseEntity<?> View(@PathVariable long request_id) {
 

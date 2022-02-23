@@ -1,0 +1,11 @@
+.create_form {
+    max-width: 750px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #fff;
+    box-shadow: 0 1px 11px rgba(0, 0, 0, 0.27);
+    margin-top: 60px;
+    min-height: 400px;
+    position: relative;
+    padding: 20px;
+}

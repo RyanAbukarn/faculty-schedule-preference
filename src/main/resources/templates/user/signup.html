@@ -30,7 +30,7 @@
                 <h2>
                     Sign Up
                 </h2>
-                <form id="signUpForm" name="f" th:action="@{/user/signup}" method="post">
+                <form id="signUpForm" name="f" th:action="@{/users/signup}" method="post">
                     <div id="errs" class="errorcontainer"></div>
                     <div th:if="${param.error}" id="alert alert-error" class="alert alert-error">
                         Invalid username and password.
@@ -43,8 +43,7 @@
                         placeholder="Enter Your Full Name" />
 
                     <label for="email">Email</label>
-                    <input id="email" name="email" type="email" autocomplete="email"
-                    placeholder="Enter your email">
+                    <input id="email" name="email" type="email" autocomplete="email" placeholder="Enter your email">
 
                     <label for="username">Username</label>
                     <input id="username" name="username" type="text" autocomplete="email"
