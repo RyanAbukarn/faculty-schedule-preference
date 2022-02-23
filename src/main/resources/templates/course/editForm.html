@@ -1,0 +1,66 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+
+<html xmlns:th="http://www.thymeleaf.org" >
+
+<head>
+    <title>Edit Courses</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+
+<body>
+	<div style="margin-top:100px">
+	<form th:action="@{/update/courses/{id} (id=${course.id})}" th:object = "${course}" method="POST">
+<!-- 		<input  
+				type="hidden"
+				name = "id" /> -->
+		<input  
+				type="text"
+				name = "name"
+				th:field = "*{name}"
+				placeholder="Enter Course Name"  />
+		<input  
+				type="text"
+				name = "prefix"
+				th:field = "*{prefix}"
+				placeholder="Enter Prefix Name"  />
+		<input  
+				type="text"
+				name = "unit"
+				th:field = "*{unit}"
+				placeholder="Enter Unit Name"  />
+		<input  
+				type="number"
+				name = "type"
+				th:field = "*{type}"
+				  />
+
+		<select id="departments" name="departments">
+		<option
+			th:each="department : ${departments}"
+			th:value="${department.prefix}"
+			th:text="${department.name}"
+			th:selected="${department.prefix} == ${course.department.prefix}"
+		>
+			<!-- th:selected="${prodCat.ProductCategoryID} == ${update.category.ProductCategoryID}"  -->
+		</option>
+		</select>
+				
+		<input  
+				type="time"
+				name = "startTime"
+				th:field = "*{startTime}"
+				  />
+				
+		<input  
+				type="time"
+				name = "endTime"
+				th:field = "*{endTime}"
+				 />
+
+		<button type="submit">Update Course</button>
+	</form>
+	</div>
+</body>
+
+</html>

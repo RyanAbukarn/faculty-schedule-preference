@@ -1,0 +1,57 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{page_layout/layout}">
+
+<head>
+    <title>Courses</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+
+<body>
+    <section layout:fragment="content">
+		<a th:href="@{/add/course}" >Add Course</a>
+        <table class="table" border="1" style="padding:20px">
+            <thead>
+                <tr>
+                	<th scope="col">id</th>
+                    <th scope="col">name</th>
+                    <th scope="col">prefix</th>
+                    <th scope="col">type</th>
+                    <th scope="col">unit</th>
+                    <th scope="col">Department Name</th>
+                    <th scope="col">start time</th>
+                    <th scope="col">end time</th>
+                    <th scope="col" colspan="2">Action</th>
+                    <th scope="col">Handle</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                <tr th:each="course: ${courses}">
+                    <td th:text="${course.id}" />
+                    <td th:text="${course.name}" />
+                    <td th:text="${course.prefix}" />
+                    <td th:text="${course.type}" />
+                    <td th:text="${course.unit}" />
+                    <td th:text="${course.department.name}" />
+                    <td th:text="${course.startTime}" />
+                    <td th:text="${course.endTime}" />
+                    <td>
+                        <a th:href="@{/edit/course/{course_id}(course_id=${course.id})}" 
+                             >Edit </a>
+                    </td>
+                    <td>
+                        <!-- <a th:href="@{courses/{course_id}/request(course_id=${course.id})}" 
+                            target="_blank" >Delete </a> -->
+                            <a th:href="@{/delete/course/{course_id}(course_id=${course.id})}" 
+                             >Delete </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+</body>
+
+</html>

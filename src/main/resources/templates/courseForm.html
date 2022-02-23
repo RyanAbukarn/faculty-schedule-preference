@@ -1,0 +1,50 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{page_layout/layout}">
+
+<head>
+    <title>Add Courses</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+
+<body>
+	<div style="margin-top:100px">
+	<form th:action="@{/insert/courses}" th:object = "${course}" method="POST">
+		<input  
+				type="text"
+				name = "name"
+				th:field = "*{name}"
+				
+				placeholder="Enter Course Name"  />
+		<input  
+				type="text"
+				name = "prefix"
+				th:field = "*{prefix}"
+				
+				placeholder="Enter Prefix Name"  />
+		<input  
+				type="text"
+				name = "unit"
+				th:field = "*{Unit}"
+				
+				placeholder="Enter Unit Name"  />
+		<input  
+				type="text"
+				name = "type"
+				th:field = "*{type}"
+				
+				placeholder="Enter Type Name"  />
+		<input  
+				type="text"
+				name = "department"
+				th:field = "*{department}"
+		
+				placeholder="Enter Department Name"  />
+		<button type="submit">Add Course</button>
+	</form>
+	</div>
+</body>
+
+</html>
