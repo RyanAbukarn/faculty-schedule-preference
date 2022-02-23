@@ -22,6 +22,7 @@
             <li sec:authorize="hasAnyRole('CONTROLLER','TENURETRACK', 'LECTURER','SUPERUSER')"><a class="fsp-navbar-link" href="/requests">Requests</a></li>
             <li sec:authorize="hasAnyRole('ADMIN', 'CONTROLLER', 'TENURETRACK', 'LECTURER','SUPERUSER')"><a class="fsp-navbar-link" href="/users">User</a></li>
             <li sec:authorize="hasAnyRole('TENURETRACK', 'LECTURER','SUPERUSER')"><a class="fsp-navbar-link" th:href="@{/user/__${#authentication.getPrincipal().getId()}__/user_availability}">My availability</a></li>
+            <li sec:authorize="hasAnyRole('ADMIN', 'CONTROLLER', 'TENURETRACK', 'LECTURER','SUPERUSER')"><a class="fsp-navbar-link" href= "#" th:href="@{/user/logout}">Logout</a></li>
             <!-- Include more role authorizations later on, testing purposes for now-->
         </ul>
     </nav>

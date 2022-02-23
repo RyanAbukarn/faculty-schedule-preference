@@ -6,8 +6,12 @@ import ex.google.faculty_schedule_preference.permission.Permission;
 import ex.google.faculty_schedule_preference.permission.PermissionRepository;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,6 +26,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -85,8 +90,21 @@ public class UserController {
     }
 
     @GetMapping("/login")
-    public String login() {
-        return "user/login";
+    public String login(Model model) {
+       Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
+            return "user/login";
+        }
+        return "redirect:/user";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request, HttpServletResponse response){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null){    
+            new SecurityContextLogoutHandler().logout(request, response, auth);
+        }
+        return "redirect:/user/login";
     }
 
     @PostMapping("/upload-resume")
@@ -126,7 +144,7 @@ public class UserController {
         return "user/upload_resume";
     }
 
-    // Function sends User data to View where Controller, Admin or Superuser have access to
+    // Function sends User data to View where Controller, Admin or Superuser have access to.
     @GetMapping("/manage")
     public String manageUsers(Model model, HttpServletRequest request, 
         @AuthenticationPrincipal UserDetails userDetails){

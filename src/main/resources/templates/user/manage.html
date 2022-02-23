@@ -21,7 +21,7 @@
 					<th scope="col">Email</th>
 					<th scope="col">Department</th>
                     <th scope="col">View User availability</th>
-                    <th sec:authorize = "hasAnyRole('ADMIN','SUPERUSER')" scope="col">Edit User Permissions</th>
+                    <th scope="col">Edit User Permissions</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -34,7 +34,7 @@
                     <td>
                         <a class="fsp-navbar-link" th:href="@{/user/__${user.getId()}__/user_availability}">Availability</a> 
                     </td>
-                    <td sec:authorize  = "hasAnyRole('ADMIN','SUPERUSER')">
+					<td>
                         <a class="fsp-navbar-link" th:href="@{/user/__${user.getId()}__/permissions}">Permissions</a> 
                     </td>
 				</tr>
