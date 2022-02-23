@@ -15,28 +15,29 @@
 
 			<thead>
 				<tr>
-                    <th scope="col">User ID</th>
+					<th scope="col">User ID</th>
 					<th scope="col">CSUN ID</th>
 					<th scope="col">Full name</th>
 					<th scope="col">Email</th>
 					<th scope="col">Department</th>
-                    <th scope="col">View User availability</th>
-                    <th scope="col">Edit User Permissions</th>
+					<th scope="col">View User availability</th>
+					<th scope="col">Edit User Permissions</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr th:each="user: ${users}">
 					<td th:text="${user.getId()}" />
-                    <td th:text="${user.getCsun_id()}" />
-                    <td th:text="${user.getName()}" />
-                    <td th:text="${user.getEmail()}" />
-                    <td th:text="${user.getDepartment().getName()}" />
-                    <td>
-                        <a class="fsp-navbar-link" th:href="@{/user/__${user.getId()}__/user_availability}">Availability</a> 
-                    </td>
+					<td th:text="${user.getCsun_id()}" />
+					<td th:text="${user.getName()}" />
+					<td th:text="${user.getEmail()}" />
+					<td th:text="${user.getDepartment().getName()}" />
 					<td>
-                        <a class="fsp-navbar-link" th:href="@{/user/__${user.getId()}__/permissions}">Permissions</a> 
-                    </td>
+						<a class="fsp-navbar-link"
+							th:href="@{/users/__${user.getId()}__/user_availability}">Availability</a>
+					</td>
+					<td>
+						<a class="fsp-navbar-link" th:href="@{/users/__${user.getId()}__/permissions}">Permissions</a>
+					</td>
 				</tr>
 			</tbody>
 		</table>

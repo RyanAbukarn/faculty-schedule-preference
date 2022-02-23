@@ -5,6 +5,7 @@ import ex.google.faculty_schedule_preference.document.DocumentRepository;
 import ex.google.faculty_schedule_preference.permission.Permission;
 import ex.google.faculty_schedule_preference.permission.PermissionRepository;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -39,23 +40,23 @@ import java.util.HashMap;
 
 @Controller
 
-@RequestMapping("user")
+@RequestMapping("users")
 public class UserController {
-    private final UserRepository repository;
-    private final PermissionRepository permissionRepository;
-    private final DocumentRepository documentRepository;
+
+    @Autowired
+    private UserRepository repository;
+
+    @Autowired
+    private PermissionRepository permissionRepository;
+
+    @Autowired
+    private DocumentRepository documentRepository;
+
     @Value("${boxapi}")
     private String boxapi;
 
-    UserController(UserRepository repository, PermissionRepository permissionRepository,
-            DocumentRepository documentRepository) {
-        this.repository = repository;
-        this.permissionRepository = permissionRepository;
-        this.documentRepository = documentRepository;
-    }
-
     // function is called to load updateRoles page
-    // http://localhost:3001/user/1/permissions
+    // http://localhost:3001/users/1/permissions
     @RequestMapping(value = "/{user_id}/permissions", method = RequestMethod.GET)
     String getRoles(@PathVariable("user_id") long user_id, Model model) {
         User user = repository.findById(user_id).get();
@@ -86,25 +87,25 @@ public class UserController {
         repository.save(user);
         redirectAttributes.addFlashAttribute("message", "Success");
         redirectAttributes.addFlashAttribute("alertClass", "alert-success");
-        return "redirect:/user/" + user_id + "/permissions";
+        return "redirect:/users/" + user_id + "/permissions";
     }
 
     @GetMapping("/login")
     public String login(Model model) {
-       Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
             return "user/login";
         }
-        return "redirect:/user";
+        return "redirect: /";
     }
 
     @GetMapping("/logout")
-    public String logout(HttpServletRequest request, HttpServletResponse response){
+    public String logout(HttpServletRequest request, HttpServletResponse response) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null){    
+        if (auth != null) {
             new SecurityContextLogoutHandler().logout(request, response, auth);
         }
-        return "redirect:/user/login";
+        return "redirect:/users/login";
     }
 
     @PostMapping("/upload-resume")
@@ -136,7 +137,7 @@ public class UserController {
 
         redirectAttributes.addFlashAttribute("message", "Successfully uploaded the resume");
         redirectAttributes.addFlashAttribute("alertClass", "alert-success");
-        return "redirect:/user/upload-resume";
+        return "redirect:/users/upload-resume";
     }
 
     @GetMapping("/upload-resume")
@@ -144,24 +145,25 @@ public class UserController {
         return "user/upload_resume";
     }
 
-    // Function sends User data to View where Controller, Admin or Superuser have access to.
-    @GetMapping("/manage")
-    public String manageUsers(Model model, HttpServletRequest request, 
-        @AuthenticationPrincipal UserDetails userDetails){
+    // Function sends User data to View where Controller, Admin or Superuser have
+    // access to.
+    @GetMapping("")
+    public String manageUsers(Model model, HttpServletRequest request,
+            @AuthenticationPrincipal UserDetails userDetails) {
         List<User> users;
         User currentUser = repository.findByUsername(userDetails.getUsername()).get();
         // if the current user is an admin or superuser send all users to View
         if (request.isUserInRole("ROLE_ADMIN") || request.isUserInRole("ROLE_SUPERUSER")) {
             users = repository.findAll();
-        }
-        else {
-            // if the current user is a controller then only send users within the same department
+        } else {
+            // if the current user is a controller then only send users within the same
+            // department
             users = repository.findAllByDepartment(currentUser.getDepartment());
         }
 
         model.addAttribute("users", users);
 
-        return "user/manage";
+        return "user/index";
     }
 
 }

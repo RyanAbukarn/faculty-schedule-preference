@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import ex.google.faculty_schedule_preference.term.Term;
 import ex.google.faculty_schedule_preference.user.User;
 
 @Entity(name = "UserAvailability")
@@ -19,36 +20,41 @@ public class UserAvailability {
     @Column(name = "id", updatable = false)
     private long id;
     @Column(name = "times", nullable = false)
-    private String body;
+    private String times;
     @Column(name = "max_unit", nullable = false)
-    private double max_unit;
+    private double maxUnit;
     @Column(name = "min_unit", nullable = false)
-    private double min_unit;
+    private double minUnit;
     @Column(name = "release_time", nullable = false)
-    private double release_time;
+    private double releaseTime;
     @Column(name = "source_description", nullable = false)
-    private String source_description;
+    private String sourceDescription;
 
     @OneToOne(fetch = FetchType.LAZY)
     private User user;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    private Term term;
+
     public UserAvailability() {
     }
 
-    public UserAvailability(String body, double max_unit, double min_unit, double release_time, String source_description) {
-        this.body = body;
-        this.max_unit = max_unit;
-        this.min_unit = min_unit;
-        this.release_time = release_time;
-        this.source_description = source_description;
+    public UserAvailability(String times, double maxUnit, double minUnit, double releaseTime,
+            String sourceDescription) {
+        this.times = times;
+        this.maxUnit = maxUnit;
+        this.minUnit = minUnit;
+        this.releaseTime = releaseTime;
+        this.sourceDescription = sourceDescription;
     }
 
-    public UserAvailability(String body, double max_unit, double min_unit, double release_time, String source_description, User user) {
-        this.body = body;
-        this.max_unit = max_unit;
-        this.min_unit = min_unit;
-        this.release_time = release_time;
-        this.source_description = source_description;
+    public UserAvailability(String times, double maxUnit, double minUnit, double releaseTime,
+            String sourceDescription, User user) {
+        this.times = times;
+        this.maxUnit = maxUnit;
+        this.minUnit = minUnit;
+        this.releaseTime = releaseTime;
+        this.sourceDescription = sourceDescription;
         this.user = user;
     }
 
@@ -56,48 +62,48 @@ public class UserAvailability {
         this.id = id;
     }
 
-    public Long getId(){
+    public Long getId() {
         return id;
     }
 
-    public String getBody() {
-        return body;
+    public String getTimes() {
+        return times;
     }
 
-    public void setBody(String body) {
-        this.body = body;
+    public void setTimes(String times) {
+        this.times = times;
     }
 
-    public double getMax_unit() {
-        return max_unit;
+    public double getMaxUnit() {
+        return maxUnit;
     }
 
-    public void setMax_unit(double max_unit) {
-        this.max_unit = max_unit;
+    public void setMaxUnit(double maxUnit) {
+        this.maxUnit = maxUnit;
     }
 
-    public double getMin_unit() {
-        return min_unit;
+    public double getMinUnit() {
+        return minUnit;
     }
 
-    public void setMin_unit(double min_unit) {
-        this.min_unit = min_unit;
+    public void setMinUnit(double minUnit) {
+        this.minUnit = minUnit;
     }
 
-    public double getRelease_time() {
-        return release_time;
+    public double getReleaseTime() {
+        return releaseTime;
     }
 
-    public void setRelease_time(double release_time) {
-        this.release_time = release_time;
+    public void setReleaseTime(double releaseTime) {
+        this.releaseTime = releaseTime;
     }
 
-    public void setSource_description(String source_description){
-        this.source_description = source_description;
+    public void setSourceDescription(String sourceDescription) {
+        this.sourceDescription = sourceDescription;
     }
 
-    public String getSource_description(){
-        return source_description;
+    public String getSourceDescription() {
+        return sourceDescription;
     }
 
     public User getUser() {
@@ -108,8 +114,16 @@ public class UserAvailability {
         this.user = user;
     }
 
-    public Long getUserId(){
+    public Long getUserId() {
         return this.user.getId();
+    }
+
+    public Term getTerm() {
+        return term;
+    }
+
+    public void setTerm(Term term) {
+        this.term = term;
     }
 
 }
