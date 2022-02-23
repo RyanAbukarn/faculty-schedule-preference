@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Department List</title>
+</head>
+
+<body>
+    <h1>Departments</h1>
+    <ul th:each="department: ${departments} ">
+        <li th:text="| ${department.prefix} : ${department.name} |">
+        </li>
+    </ul>
+</body>
+
+</html>

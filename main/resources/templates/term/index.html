@@ -1,0 +1,38 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{page_layout/layout}">
+
+<head>
+	<title>Manage Terms</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<link th:href="@{/css/request/general.css}" rel="stylesheet" />
+</head>
+
+<body>
+	<section layout:fragment="content">
+		<h1 class="title">Users</h1>
+		<table class="fsp-table fsp-table-striped">
+
+			<thead>
+				<tr>
+					<th scope="col">Name</th>
+					<th scope="col">Prefix</th>
+					<th scope="col">Start Date</th>
+					<th scope="col">End Date</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="term: ${terms}">
+					<td th:text="${term.getName()}" />
+					<td th:text="${term.getPrefix()}" />
+					<td th:text="${term.getStartDate()}" />
+					<td th:text="${term.getEndDate()}" />
+				</tr>
+			</tbody>
+		</table>
+	</section>
+
+
+</body>
+
+</html>

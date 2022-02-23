@@ -1,0 +1,50 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{page_layout/layout}">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Update Roles Page</title>
+    <link th:href="@{/css/permission/general.css}" rel="stylesheet" />
+
+    <!-- <link rel="stylesheet" href="/src/main/resources/static/css/stylesheet.css">
+    <link rel="stylesheet" href="/src/main/resources/static/css/permission/general.css"> for testing purposes. -->
+</head>
+
+<body>
+    <section layout:fragment="content">
+
+        <div th:if="${message}" th:text="${message}" th:class="${'alert ' + alertClass}" />
+
+
+        <form action="#" method="POST" th:action="@{/users/__${user.getId()}__/permissions}" class="fsp-form">
+            <h1 id="roles-h2">Update User Roles</h1>
+            <div id="roles-user-details">
+                <span id="roles-csun-id">CSUN ID:</span>
+                <span id="roles-id-number" th:text="${user.csun_id}">Default</span>
+            </div>
+            <div id="roles-container">
+                <div sec:authorize  = "hasAnyRole('ADMIN','SUPERUSER')"></td>
+                    <input name="permissions" value=1 type="checkbox" id="roles-myCheckAdmin"
+                        th:checked="${permissions.get('ROLE_ADMIN')}"> <span>Admin</span>
+                </div>
+                <div>
+                    <input name="permissions" value=2 type="checkbox" id="roles-myCheckController"
+                        th:checked="${permissions.get('ROLE_CONTROLLER')}"> <span>Controller</span>
+                </div>
+                <div>
+                    <input name="permissions" value=3 type="checkbox" id="roles-myCheckTenure"
+                        th:checked="${permissions.get('ROLE_TENURETRACK')}"> <span>Tenure Track</span>
+                </div>
+                <div>
+                    <input name="permissions" value=4 type="checkbox" id="roles-myCheckLecturer"
+                        th:checked="${permissions.get('ROLE_LECTURER')}"> <span>Lecturer</span>
+                </div>
+                <input type="submit" id="submit" value="Submit" class="fsp-button">
+            </div>
+        </form>
+    </section>
+</body>
+
+</html>
