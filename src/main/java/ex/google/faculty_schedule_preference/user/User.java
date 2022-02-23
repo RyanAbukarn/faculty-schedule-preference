@@ -59,8 +59,8 @@ public class User {
     @OneToOne(fetch = FetchType.LAZY)
     private Department department;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private UserAvailability userAvailabilities;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserAvailability> userAvailabilities;
 
     public User() {
     }
@@ -150,11 +150,11 @@ public class User {
         this.password = password;
     }
 
-    public UserAvailability getUserAvailabilities() {
+    public List<UserAvailability> getUserAvailabilities() {
         return userAvailabilities;
     }
 
-    public void setUserAvailabilities(UserAvailability userAvailabilities) {
+    public void setUserAvailabilities(List<UserAvailability> userAvailabilities) {
         this.userAvailabilities = userAvailabilities;
     }
 
