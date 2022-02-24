@@ -11,13 +11,19 @@
 
 <body>
     <section layout:fragment="content">
-
-        <table class="table">
+		<a th:href="@{/add/course}" >Add Course</a>
+        <table class="table" border="1" style="padding:20px">
             <thead>
                 <tr>
+                	<th scope="col">id</th>
                     <th scope="col">name</th>
                     <th scope="col">prefix</th>
-                    <th scope="col">Action</th>
+                    <th scope="col">type</th>
+                    <th scope="col">unit</th>
+                    <th scope="col">Department Name</th>
+                    <th scope="col">start time</th>
+                    <th scope="col">end time</th>
+                    <th scope="col" colspan="2">Action</th>
                     <th scope="col">Handle</th>
                 </tr>
             </thead>
@@ -25,9 +31,22 @@
 
                 <tr th:each="course: ${courses}">
                     <td th:text="${course.id}" />
+                    <td th:text="${course.name}" />
+                    <td th:text="${course.prefix}" />
+                    <td th:text="${course.type}" />
+                    <td th:text="${course.unit}" />
+                    <td th:text="${course.department.name}" />
+                    <td th:text="${course.startTime}" />
+                    <td th:text="${course.endTime}" />
                     <td>
-                        <a th:href="@{courses/{course_id}/request(course_id=${course.id})}" th:text="add"
-                            target="_blank" />
+                        <a th:href="@{/edit/course/{course_id}(course_id=${course.id})}" 
+                             >Edit </a>
+                    </td>
+                    <td>
+                        <!-- <a th:href="@{courses/{course_id}/request(course_id=${course.id})}" 
+                            target="_blank" >Delete </a> -->
+                            <a th:href="@{/delete/course/{course_id}(course_id=${course.id})}" 
+                             >Delete </a>
                     </td>
                 </tr>
             </tbody>

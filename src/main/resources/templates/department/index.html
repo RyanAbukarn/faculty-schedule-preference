@@ -8,6 +8,7 @@
 
 <body>
     <h1>Departments</h1>
+    <a th:href="@{departments/add/}">Add Department</a>
     <ul th:each="department: ${departments} ">
         <li th:text="| ${department.prefix} : ${department.name} |">
         </li>

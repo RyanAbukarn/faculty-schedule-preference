@@ -14,9 +14,14 @@ public class DepartmentController {
     @Autowired
     private DepartmentRepository repository;
 
-    @GetMapping("")
+    DepartmentController(DepartmentRepository repository) {
+        this.repository = repository;
+    }
+
+    @GetMapping("/")
     public String index(Model model) {
         model.addAttribute("departments", repository.findAll());
         return "department/index";
     }
+
 }
