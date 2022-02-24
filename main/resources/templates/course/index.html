@@ -1,0 +1,38 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{page_layout/layout}">
+
+<head>
+    <title>Courses</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+
+<body>
+    <section layout:fragment="content">
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">name</th>
+                    <th scope="col">prefix</th>
+                    <th scope="col">Action</th>
+                    <th scope="col">Handle</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                <tr th:each="course: ${courses}">
+                    <td th:text="${course.id}" />
+                    <td>
+                        <a th:href="@{courses/{course_id}/request(course_id=${course.id})}" th:text="add"
+                            target="_blank" />
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+</body>
+
+</html>

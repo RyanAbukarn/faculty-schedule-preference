@@ -1,0 +1,40 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Lucida Grande", Helvetica, Arial, Verdana, sans-serif;
+    font-size: 14px;
+}
+
+#calendar {
+    max-width: 900px;
+    margin: 0;
+}
+
+.closeBtn {
+    border-radius: 5px;
+}
+
+.info {
+    width: 720px;
+    height: 720px;
+    padding: 40px;
+
+}
+
+.wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-height: fit-content;
+}
+.Scrolller {
+    height:150px;
+    overflow-y: scroll;
+  }
+.footer {
+    display: flex;
+    justify-content: left;
+    align-items: left;
+    max-height: fit-content;
+    padding: 40px;
+}

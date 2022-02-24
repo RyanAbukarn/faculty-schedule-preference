@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+
+<head>
+    <meta charset="UTF-8" />
+    <link th:href="@{/css/stylesheet.css}" rel="stylesheet" />
+    <title>Layout page</title>
+</head>
+
+<body>
+
+
+    <nav class="fsp-navbar">
+        <div class="fsp-navbar-csunlogo">
+            <img src="https://upload.wikimedia.org/wikipedia/en/thumb/8/8c/CSUNS.svg/50px-CSUNS.svg.png" alt="">
+            <h4>CSUN</h4>
+        </div>
+        <ul class="fsp-navbar-links">
+            <li sec:authorize="hasAnyRole('ADMIN', 'CONTROLLER','SUPERUSER')"><a class="fsp-navbar-link"
+                    href="/users">Users</a></li>
+            <li sec:authorize="hasAnyRole('ADMIN', 'SUPERUSER')"><a class="fsp-navbar-link" href="/terms/">Terms</a>
+            </li> <!-- Not live yet-->
+            <li sec:authorize="hasAnyRole('CONTROLLER','SUPERUSER')"><a class="fsp-navbar-link"
+                    href="/courses/">Courses</a></li> <!-- Not live yet-->
+            <li sec:authorize="hasAnyRole('CONTROLLER','TENURETRACK', 'LECTURER','SUPERUSER')"><a
+                    class="fsp-navbar-link" href="/requests">Requests</a></li>
+            <li sec:authorize="hasAnyRole('TENURETRACK', 'LECTURER','SUPERUSER')"><a class="fsp-navbar-link"
+                    th:href="@{/user_availabilities}">Availabilities</a></li>
+            <li sec:authorize="hasAnyRole('TENURETRACK', 'LECTURER','SUPERUSER')"><a class="fsp-navbar-link" th:href="@{/users/__${#authentication.getPrincipal().getId()}__/user_availability}">My availability</a></li>
+            <li sec:authorize="hasAnyRole('ADMIN', 'CONTROLLER', 'TENURETRACK', 'LECTURER','SUPERUSER')"><a class="fsp-navbar-link" href= "#" th:href="@{/users/logout}">Logout</a></li>
+            <!-- Include more role authorizations later on, testing purposes for now-->
+        </ul>
+    </nav>
+
+    <section layout:fragment="content">
+
+    </section>
+
+</body>
+
+</html>
