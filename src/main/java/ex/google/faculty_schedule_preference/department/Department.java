@@ -2,9 +2,14 @@ package ex.google.faculty_schedule_preference.department;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+
+import ex.google.faculty_schedule_preference.course.Course;
 
 @Entity(name = "Department")
 @Table(name = "departments", uniqueConstraints = {
@@ -17,6 +22,10 @@ public class Department {
     private String name;
     @Column(name = "prefix", nullable = false, columnDefinition = "TEXT")
     private String prefix;
+    
+    @OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="id", nullable=false)
+	private Course course;
 
     public Department() {
     }

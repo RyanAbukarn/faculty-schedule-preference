@@ -1,10 +1,10 @@
 package ex.google.faculty_schedule_preference.user;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,6 +16,7 @@ public class MyUserDetails implements UserDetails {
     // private boolean active;
     private List<GrantedAuthority> authorities;
     private User user;
+
 
     public MyUserDetails(User user) {
         this.username = user.getUsername();
@@ -62,7 +63,8 @@ public class MyUserDetails implements UserDetails {
         return true;
     }
 
-    public long getId() {
+    public long getId()
+    {
         return this.user.getId();
     }
 }
