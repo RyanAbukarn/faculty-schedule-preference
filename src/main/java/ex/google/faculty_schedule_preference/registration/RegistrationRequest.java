@@ -1,10 +1,6 @@
 package ex.google.faculty_schedule_preference.registration;
 
-import ex.google.faculty_schedule_preference.department.Department;
-import ex.google.faculty_schedule_preference.department.DepartmentRepository;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
 
 @AllArgsConstructor
 public class RegistrationRequest {
