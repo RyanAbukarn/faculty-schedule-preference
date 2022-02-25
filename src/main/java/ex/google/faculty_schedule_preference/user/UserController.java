@@ -1,5 +1,6 @@
 package ex.google.faculty_schedule_preference.user;
 
+import ex.google.faculty_schedule_preference.department.DepartmentRepository;
 import ex.google.faculty_schedule_preference.document.Document;
 import ex.google.faculty_schedule_preference.document.DocumentRepository;
 import ex.google.faculty_schedule_preference.permission.Permission;
@@ -51,6 +52,9 @@ public class UserController {
 
     @Autowired
     private DocumentRepository documentRepository;
+
+    @Autowired
+    private DepartmentRepository departmentRepository;
 
     @Value("${boxapi}")
     private String boxapi;
@@ -106,6 +110,13 @@ public class UserController {
             new SecurityContextLogoutHandler().logout(request, response, auth);
         }
         return "redirect:/users/login";
+    }
+
+    @GetMapping("/signup")
+    public String signup(Model model) {
+        model.addAttribute("departments", departmentRepository.findAll());
+        model.addAttribute("user", new User());
+        return "user/signup";
     }
 
     @PostMapping("/upload-resume")
