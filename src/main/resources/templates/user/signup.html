@@ -29,7 +29,7 @@
                 <h2>
                     Sign Up
                 </h2>
-                <form id="signUpForm" name="f" th:action="@{registration/signup}" method="post">
+                <form id="signUpForm"  name="form" th:action="@{registration/signup}" method="POST">
                     <div id="errs" class="errorcontainer"></div>
                     <div th:if="${param.error}" id="alert alert-error" class="alert alert-error">
                         Invalid username and password.
@@ -37,31 +37,32 @@
                     <div th:if="${param.logout}" class="alert alert-success">
                         You have been logged out.
                     </div>
-                    <label for="fullname">Full Name</label>
-                    <input id="fullname" name="fullname" type="text" autocomplete="name"
-                        placeholder="Enter Your Full Name" />
+                    <label for="name">Full Name</label>
+                    <input id="name" name="name" type="text" autocomplete="name"
+                        placeholder="Enter Your Full Name"  required />
 
                     <label for="email">Email</label>
-                    <input id="email" name="email" type="email" autocomplete="email" placeholder="Enter your email">
+                    <input id="email" name="email" type="email" autocomplete="email" placeholder="Enter your email" required />
 
                     <label for="username">Username</label>
                     <input id="username" name="username" type="text" autocomplete="name"
-                        placeholder="Enter Your Username" />
-                    <label for="departments">Department</label>
+                        placeholder="Enter Your Username"  required/>
 
-                    <select th:field="*{departments}">
+                    <label>Department</label>
+
+                    <select name = "department">
                         <option th:each="i : ${departments}" th:value="${i.getId()}" th:text="${i.getName()}"></option>
                     </select>
 
 
-                    <label for="csunID">CSUN ID</label>
-                    <input id="csunID" name="csunID" type="text" placeholder="Enter Your Username" />
+                    <label for="csun_id">CSUN ID</label>
+                    <input id="csun_id" name="csun_id" type="text" placeholder="Enter Your Username" required/>
 
                     <label for="password">Password</label>
                     <input id="password" name="password" type="password" autocomplete="current-password"
-                        placeholder="Enter Your Password" />
-                    <label for="confirmpassword">Confirm Password</label>
-                    <input id="confirmpassword" name="confirmpassword" type="password" autocomplete="current-password"
+                        placeholder="Enter Your Password" required />
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input id="confirmPassword" name="confirmPassword" type="password" autocomplete="current-password"
                         placeholder="Enter Your Password Again" />
                     <input type="submit" name="submit" placeholder="Login">
                     <br>

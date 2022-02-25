@@ -73,6 +73,15 @@ public class User {
         this.password = password;
     }
 
+    public User(String csun_id, String name, String username, String email, String password, Department department) {
+        this.csun_id = csun_id;
+        this.name = name;
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.department = department;
+    }
+
     public User(String csun_id, String name, String username, String email, String password, List<Request> requests) {
         this.csun_id = csun_id;
         this.name = name;

@@ -1,5 +1,7 @@
 package ex.google.faculty_schedule_preference.registration;
 
+import ex.google.faculty_schedule_preference.department.Department;
+import ex.google.faculty_schedule_preference.department.DepartmentRepository;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,6 +13,24 @@ public class RegistrationRequest {
     private String username;
     private String email;
     private String password;
+    private String confirmPassword;
+    private long department;
+
+    public long getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(long department) {
+        this.department = department;
+    }
+
+    public String getConfirmPassword() {
+        return confirmPassword;
+    }
+
+    public void setConfirmPassword(String confirmPassword) {
+        this.confirmPassword = confirmPassword;
+    }
 
     public String getCsun_id() {
         return csun_id;

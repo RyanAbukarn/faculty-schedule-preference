@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 @ToString
 public class RegistrationController {
 
-    private RegistrationService registrationService;
+    private final RegistrationService registrationService;
 
     @PostMapping("signup")
-    public String register(@RequestBody RegistrationRequest request){
+    public String register(RegistrationRequest request){
         return registrationService.register(request);
     }
 }

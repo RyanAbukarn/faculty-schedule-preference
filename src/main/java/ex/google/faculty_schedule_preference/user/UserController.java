@@ -96,6 +96,7 @@ public class UserController {
     @GetMapping("/signup")
     public String signup(Model model) {
         model.addAttribute("departments", departmentRepository.findAll());
+        model.addAttribute("user", new User());
         return "user/signup";
     }
 
