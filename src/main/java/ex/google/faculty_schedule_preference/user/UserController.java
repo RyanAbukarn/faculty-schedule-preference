@@ -6,9 +6,14 @@ import ex.google.faculty_schedule_preference.document.DocumentRepository;
 import ex.google.faculty_schedule_preference.permission.Permission;
 import ex.google.faculty_schedule_preference.permission.PermissionRepository;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,6 +28,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,26 +41,26 @@ import java.util.HashMap;
 
 @Controller
 
-@RequestMapping("user")
+@RequestMapping("users")
 public class UserController {
-    private final UserRepository repository;
-    private final PermissionRepository permissionRepository;
-    private final DocumentRepository documentRepository;
-    private final DepartmentRepository departmentRepository;
+
+    @Autowired
+    private UserRepository repository;
+
+    @Autowired
+    private PermissionRepository permissionRepository;
+
+    @Autowired
+    private DocumentRepository documentRepository;
+
+    @Autowired
+    private DepartmentRepository departmentRepository;
 
     @Value("${boxapi}")
     private String boxapi;
 
-    UserController(UserRepository repository, PermissionRepository permissionRepository,
-            DocumentRepository documentRepository, DepartmentRepository departmentRepository) {
-        this.repository = repository;
-        this.permissionRepository = permissionRepository;
-        this.documentRepository = documentRepository;
-        this.departmentRepository = departmentRepository;
-    }
-
     // function is called to load updateRoles page
-    // http://localhost:3001/user/1/permissions
+    // http://localhost:3001/users/1/permissions
     @RequestMapping(value = "/{user_id}/permissions", method = RequestMethod.GET)
     String getRoles(@PathVariable("user_id") long user_id, Model model) {
         User user = repository.findById(user_id).get();
@@ -85,12 +91,25 @@ public class UserController {
         repository.save(user);
         redirectAttributes.addFlashAttribute("message", "Success");
         redirectAttributes.addFlashAttribute("alertClass", "alert-success");
-        return "redirect:/user/" + user_id + "/permissions";
+        return "redirect:/users/" + user_id + "/permissions";
     }
 
     @GetMapping("/login")
-    public String login() {
-        return "user/login";
+    public String login(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
+            return "user/login";
+        }
+        return "redirect: /";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request, HttpServletResponse response) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null) {
+            new SecurityContextLogoutHandler().logout(request, response, auth);
+        }
+        return "redirect:/users/login";
     }
 
     @GetMapping("/signup")
@@ -129,7 +148,7 @@ public class UserController {
 
         redirectAttributes.addFlashAttribute("message", "Successfully uploaded the resume");
         redirectAttributes.addFlashAttribute("alertClass", "alert-success");
-        return "redirect:/user/upload-resume";
+        return "redirect:/users/upload-resume";
     }
 
     @GetMapping("/upload-resume")
@@ -138,8 +157,8 @@ public class UserController {
     }
 
     // Function sends User data to View where Controller, Admin or Superuser have
-    // access to
-    @GetMapping("/manage")
+    // access to.
+    @GetMapping("")
     public String manageUsers(Model model, HttpServletRequest request,
             @AuthenticationPrincipal UserDetails userDetails) {
         List<User> users;
@@ -155,7 +174,7 @@ public class UserController {
 
         model.addAttribute("users", users);
 
-        return "user/manage";
+        return "user/index";
     }
 
 }

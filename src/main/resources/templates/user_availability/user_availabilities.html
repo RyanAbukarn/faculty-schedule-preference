@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{page_layout/layout}">
+
+<head>
+    <title>User Availabilities</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link th:href="@{/css/request/general.css}" rel="stylesheet" />
+</head>
+
+<body>
+    <section layout:fragment="content">
+        <h1 class="title">User Availabilities</h1>
+        <table class="fsp-table fsp-table-striped">
+
+            <thead>
+                <tr>
+                    <th scope="col">Term</th>
+                    <th scope="col">Min Unit</th>
+                    <th scope="col">Max Unit</th>
+                    <th scope="col">Releace Time</th>
+                    <th scope="col">Action</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="userAvailability: ${userAvailabilities}">
+                    <td th:text="${userAvailability.getTerm().getPrefix()}" />
+                    <td th:text="${userAvailability.getMinUnit()}" />
+                    <td th:text="${userAvailability.getMaxUnit()}" />
+                    <td th:text="${userAvailability.getReleaseTime()}" />
+                    <td>
+                        <a th:href="|/users/${userAvailability.getUser().getId()}/user_availability/${userAvailability.getId()}|"
+                            th:text="View" />
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+
+</body>
+
+</html>

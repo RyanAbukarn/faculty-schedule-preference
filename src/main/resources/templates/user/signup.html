@@ -29,7 +29,7 @@
                 <h2>
                     Sign Up
                 </h2>
-                <form id="signUpForm"  name="form" th:action="@{registration/signup}" method="POST">
+                <form id="signUpForm" name="form" th:action="@{registration/signup}" method="POST">
                     <div id="errs" class="errorcontainer"></div>
                     <div th:if="${param.error}" id="alert alert-error" class="alert alert-error">
                         Invalid username and password.
@@ -38,25 +38,26 @@
                         You have been logged out.
                     </div>
                     <label for="name">Full Name</label>
-                    <input id="name" name="name" type="text" autocomplete="name"
-                        placeholder="Enter Your Full Name"  required />
+                    <input id="name" name="name" type="text" autocomplete="name" placeholder="Enter Your Full Name"
+                        required />
 
                     <label for="email">Email</label>
-                    <input id="email" name="email" type="email" autocomplete="email" placeholder="Enter your email" required />
+                    <input id="email" name="email" type="email" autocomplete="email" placeholder="Enter your email"
+                        required />
 
                     <label for="username">Username</label>
                     <input id="username" name="username" type="text" autocomplete="name"
-                        placeholder="Enter Your Username"  required/>
+                        placeholder="Enter Your Username" required />
 
                     <label>Department</label>
 
-                    <select name = "department">
+                    <select name="department">
                         <option th:each="i : ${departments}" th:value="${i.getId()}" th:text="${i.getName()}"></option>
                     </select>
 
 
                     <label for="csun_id">CSUN ID</label>
-                    <input id="csun_id" name="csun_id" type="text" placeholder="Enter Your Username" required/>
+                    <input id="csun_id" name="csun_id" type="text" placeholder="Enter Your Username" required />
 
                     <label for="password">Password</label>
                     <input id="password" name="password" type="password" autocomplete="current-password"
