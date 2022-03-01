@@ -96,7 +96,7 @@ public class UserController {
         if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
             return "user/login";
         }
-        return "redirect: /";
+        return "redirect:../";
     }
 
     @GetMapping("/logout")
