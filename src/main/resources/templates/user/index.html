@@ -5,7 +5,6 @@
 <head>
 	<title>Manage Users</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<link th:href="@{/css/request/general.css}" rel="stylesheet" />
 </head>
 
 <body>
@@ -20,9 +19,8 @@
 					<th scope="col">Full name</th>
 					<th scope="col">Email</th>
 					<th scope="col">Department(s)</th>
-					<th scope="col">View User availability</th>
-					<th scope="col">Edit User Permissions</th>
-					<th scope="col">Edit User Departments</th>
+					<th scope="col">Action</th>
+
 				</tr>
 			</thead>
 			<tbody>
@@ -32,24 +30,38 @@
 					<td th:text="${user.getName()}" />
 					<td th:text="${user.getEmail()}" />
 					<td>
-						<div th:each="userDepartment : ${user.getDepartments()}">
-							<span th:text="${userDepartment.name}">[name]</span>
-							<span> | </span> <!-- Try to make it so that this line doesn't show after the last element of the department set-->
-						</div>
+						<select>
+							<option th:each="userDepartment : ${user.getDepartments()}">
+								<span th:text="${userDepartment.name}">[name]</span>
+							</option>
+						</select>
 					</td>
 					<td>
-						<a class="fsp-navbar-link"
-							th:href="@{/users/__${user.getId()}__/user_availability}">Availability</a>
-					</td>
-					<td>
-						<a class="fsp-navbar-link" th:href="@{/users/__${user.getId()}__/permissions}">Permissions</a>
-					</td>
-					<td>
-						<a class="fsp-navbar-link" th:href="@{/users/__${user.getId()}__/departments}">Departments</a>
+						<details>
+							<summary>Actions</summary>
+							<br>
+							<th:block>
+								<br>
+								<a th:href="@{/users/__${user.getId()}__/user_availability}">Availability</a>
+								<br>
+								<br>
+								<a th:href="@{/users/__${user.getId()}__/permissions}">Permissions</a>
+								<br>
+								<br>
+								<a th:href="@{/users/__${user.getId()}__/departments}">Departments</a>
+								<br>
+							</th:block>
+						</details>
 					</td>
 				</tr>
 			</tbody>
 		</table>
 	</section>
+	<script>
+		$(document).ready(function () {
+			$('.dropdown-toggle').dropdown();
+		});
+	</script>
 </body>
+
 </html>

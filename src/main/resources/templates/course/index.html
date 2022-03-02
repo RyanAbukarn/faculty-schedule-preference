@@ -12,22 +12,22 @@
 <body>
     <section layout:fragment="content">
 
-        <table class="table">
+        <table class="fsp-table fsp-table-striped">
             <thead>
                 <tr>
                     <th scope="col">name</th>
                     <th scope="col">prefix</th>
                     <th scope="col">Action</th>
-                    <th scope="col">Handle</th>
                 </tr>
             </thead>
             <tbody>
 
                 <tr th:each="course: ${courses}">
                     <td th:text="${course.id}" />
+                    <td th:text="${course.prefix}" />
+
                     <td>
-                        <a th:href="@{courses/{course_id}/request(course_id=${course.id})}" th:text="add"
-                            target="_blank" />
+                        <a th:href="@{courses/{course_id}/request(course_id=${course.id})}">Request to teach</a>
                     </td>
                 </tr>
             </tbody>

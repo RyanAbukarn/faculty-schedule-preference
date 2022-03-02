@@ -74,7 +74,8 @@ public class User {
         this.password = password;
     }
 
-    public User(String csun_id, String name, String username, String email, String password, Set<Department> departments) {
+    public User(String csun_id, String name, String username, String email, String password,
+            Set<Department> departments) {
         this.csun_id = csun_id;
         this.name = name;
         this.username = username;
