@@ -19,9 +19,10 @@
 					<th scope="col">CSUN ID</th>
 					<th scope="col">Full name</th>
 					<th scope="col">Email</th>
-					<th scope="col">Department</th>
+					<th scope="col">Department(s)</th>
 					<th scope="col">View User availability</th>
 					<th scope="col">Edit User Permissions</th>
+					<th scope="col">Edit User Departments</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -30,7 +31,12 @@
 					<td th:text="${user.getCsun_id()}" />
 					<td th:text="${user.getName()}" />
 					<td th:text="${user.getEmail()}" />
-					<td th:text="${user.getDepartment().getName()}" />
+					<td>
+						<div th:each="userDepartment : ${user.getDepartments()}">
+							<span th:text="${userDepartment.name}">[name]</span>
+							<span> | </span> <!-- Try to make it so that this line doesn't show after the last element of the department set-->
+						</div>
+					</td>
 					<td>
 						<a class="fsp-navbar-link"
 							th:href="@{/users/__${user.getId()}__/user_availability}">Availability</a>
@@ -38,12 +44,12 @@
 					<td>
 						<a class="fsp-navbar-link" th:href="@{/users/__${user.getId()}__/permissions}">Permissions</a>
 					</td>
+					<td>
+						<a class="fsp-navbar-link" th:href="@{/users/__${user.getId()}__/departments}">Departments</a>
+					</td>
 				</tr>
 			</tbody>
 		</table>
 	</section>
-
-
 </body>
-
 </html>

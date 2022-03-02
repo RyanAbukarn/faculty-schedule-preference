@@ -2,6 +2,7 @@ package ex.google.faculty_schedule_preference.user;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -14,7 +15,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -54,10 +54,11 @@ public class User {
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "user_permissions", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "permission_id", referencedColumnName = "id"))
-    private List<Permission> permissions;
+    private Set<Permission> permissions;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    private Department department;
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "user_departments", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "department_id", referencedColumnName = "id"))
+    private Set<Department> departments;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserAvailability> userAvailabilities;
@@ -73,13 +74,13 @@ public class User {
         this.password = password;
     }
 
-    public User(String csun_id, String name, String username, String email, String password, Department department) {
+    public User(String csun_id, String name, String username, String email, String password, Set<Department> departments) {
         this.csun_id = csun_id;
         this.name = name;
         this.username = username;
         this.email = email;
         this.password = password;
-        this.department = department;
+        this.departments = departments;
     }
 
     public User(String csun_id, String name, String username, String email, String password, List<Request> requests) {
@@ -91,19 +92,19 @@ public class User {
         this.requests = requests;
     }
 
-    public Department getDepartment() {
-        return department;
+    public Set<Department> getDepartments() {
+        return departments;
     }
 
-    public void setDepartment(Department department) {
-        this.department = department;
+    public void setDepartment(Set<Department> departments) {
+        this.departments = departments;
     }
 
-    public List<Permission> getPermissions() {
+    public Set<Permission> getPermissions() {
         return permissions;
     }
 
-    public void setPermissions(List<Permission> permissions) {
+    public void setPermissions(Set<Permission> permissions) {
         this.permissions = permissions;
     }
 
