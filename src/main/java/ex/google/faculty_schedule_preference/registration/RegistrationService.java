@@ -1,5 +1,6 @@
 package ex.google.faculty_schedule_preference.registration;
 
+import ex.google.faculty_schedule_preference.department.Department;
 import ex.google.faculty_schedule_preference.department.DepartmentRepository;
 import ex.google.faculty_schedule_preference.user.MyUserDetailsService;
 import ex.google.faculty_schedule_preference.user.User;
@@ -7,6 +8,9 @@ import lombok.AllArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 @AllArgsConstructor
@@ -31,6 +35,9 @@ public class RegistrationService {
         }
 
         System.out.println(request.getDepartment());
+        // I assume only one department is added at the signup page...
+        Set<Department> department = new HashSet<Department>();
+        department.add(departmentRepository.findById(request.getDepartment()).get());
 
         return myUserDetailsService.signUpUser(
                 new User(
@@ -39,7 +46,6 @@ public class RegistrationService {
                         request.getUsername(),
                         request.getEmail(),
                         request.getPassword(),
-                        departmentRepository.findById(request.getDepartment()).get()));
-
+                        department));
     }
 }
