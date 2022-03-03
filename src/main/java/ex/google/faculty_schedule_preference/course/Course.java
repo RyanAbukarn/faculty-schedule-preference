@@ -48,10 +48,10 @@ public class Course {
     private int type;
 
     @Column(name = "start_time", nullable = false)
-    private Time startTime;
+    private String startTime;
 
     @Column(name = "end_time", nullable = false)
-    private Time endTime;
+    private String endTime;
 
     @Column(name = "status", nullable = false)
     private int status;
@@ -65,8 +65,8 @@ public class Course {
     public Course() {
     }
 
-    public Course(String name, String prefix, double unit, int type, String daysOfWeek, Time startTime,
-            Time endTime) {
+    public Course(String name, String prefix, double unit, int type, String daysOfWeek, String startTime,
+            String endTime) {
         this.name = name;
         this.prefix = prefix;
         this.unit = unit;
@@ -77,6 +77,18 @@ public class Course {
 
     public long getId() {
         return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     public String getName() {
@@ -111,19 +123,19 @@ public class Course {
         this.type = type;
     }
 
-    public Time getStartTime() {
+    public String getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Time startTime) {
+    public void setStartTime(String startTime) {
         this.startTime = startTime;
     }
 
-    public Time getEndTime() {
+    public String getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(Time endTime) {
+    public void setEndTime(String endTime) {
         this.endTime = endTime;
     }
 
@@ -141,6 +153,22 @@ public class Course {
 
     public void setTerm(Term term) {
         this.term = term;
+    }
+
+    public Map<Integer, String> getWeekDays() {
+        return this.weekDays;
+    }
+
+    public void setWeekDays(Map<Integer, String> weekDays) {
+        this.weekDays = weekDays;
+    }
+
+    public Map<Integer, String> getClassType() {
+        return classType;
+    }
+
+    public void setClassType(Map<Integer, String> classType) {
+        this.classType = classType;
     }
 
 }

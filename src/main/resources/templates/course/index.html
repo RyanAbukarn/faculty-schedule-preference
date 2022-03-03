@@ -1,38 +1,117 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
 
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-    layout:decorate="~{page_layout/layout}">
-
-<head>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{page_layout/layout}"
+>
+  <head>
     <title>Courses</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-</head>
 
-<body>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+  </head>
+
+  <body>
+
     <section layout:fragment="content">
-
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">name</th>
-                    <th scope="col">prefix</th>
-                    <th scope="col">Action</th>
-                    <th scope="col">Handle</th>
-                </tr>
-            </thead>
-            <tbody>
-
-                <tr th:each="course: ${courses}">
-                    <td th:text="${course.id}" />
-                    <td>
-                        <a th:href="@{courses/{course_id}/request(course_id=${course.id})}" th:text="add"
-                            target="_blank" />
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <div class ="container">
+            <div class = "row">
+                <h1 style="color:#aa2d2d;"> List of Courses </h1>
+            </div>
+            
+            <div class = "row">
+                <div class = "col-lg-3">
+                    <a th:href="@{/courses/add}"  class = "btn fsp-button"> Add Course</a>
+                </div>
+                <div class = "col-lg-9" th:switch="${search}">
+                    <form th:case="'true'" th:action="@{/courses/search}"  method="POST">
+                        <div class="col-lg-9">
+                            <div class="form-group ">
+                                <select class="form-control" id="departments" name="departments">
+                        
+                                <option
+                                    th:each="department : ${departments}"
+                                    th:value="${department.prefix}"
+                                    th:text="${department.name}"
+                                >
+                                
+                                </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class = "col-lg-3">
+                            <button type="submit" class = "btn">
+                                Search
+                            </button>
+                        </div>
+                    </form>
+                    <a th:case="'false'" th:href="@{/courses}" class = "btn fsp-button btn-sm mb-3"> Get All Courses</a>
+                </div>
+            </div>
+            <table  class = "fsp-table" >
+                <thead >
+                    <tr>
+                        <th scope="col">id</th>
+                        <th scope="col">name</th>
+                        <th scope="col">prefix</th>
+                        <th scope="col">type</th>
+                        <th scope="col">unit</th>
+                        <th scope="col">Department Name</th>
+                        <th scope="col">start time</th>
+                        <th scope="col">end time</th>
+                        <th scope="col">Days</th>
+                        <th scope="col">Class-Type</th>
+                        <!-- <th scope="col">Duration</th> -->
+                        <th scope="col" colspan="2">Action</th>
+                        <th scope="col">Handle</th>
+                    </tr>
+                </thead>
+                
+                <tbody>
+                    <tr th:each="course: ${courses}">
+                        <td th:text="${course.id}" />
+                        <td th:text="${course.name}" />
+                        <td th:text="${course.prefix}" />
+                        <td th:text="${course.type}" />
+                        <td th:text="${course.unit}" />
+                        <td th:text="${course.department.name}" />
+                        <td th:text="${course.startTime}" />
+                        <td th:text="${course.endTime}" />
+                        <td >
+                          <span th:each="day : ${course.weekDays.entrySet()}"  th:text="${day.getValue()+','}"></span>
+                        </td>
+                        <td >
+                          <span th:each="classtype : ${course.classType.entrySet()}" th:text="${classtype.getValue()+','}"></span>
+                        </td>
+                        <!-- <td th:text="${course.getTimeDuration(course.startTime,course.endTime)}" /> -->
+                        <td>
+                          <a th:href="@{/courses/edit/{course_id}(course_id=${course.id})}"
+                         
+                            >Edit
+                          </a>
+                        </td>
+                        <td>
+                          <!-- <a th:href="@{courses/{course_id}/request(course_id=${course.id})}" 
+                                        target="_blank" >Delete </a> -->
+                          <!-- <a th:href="@{/courses/edit/{course_id}(course_id=${course.id})}"
+                         
+                            >Delete
+                          </a> -->
+                        </td>
+                      </tr>
+                      <tr th:if="${courses} == null">
+                          No Records Found
+                      </tr>
+                </tbody>
+            
+            </table>
     </section>
-</body>
-
+  </body>
 </html>
