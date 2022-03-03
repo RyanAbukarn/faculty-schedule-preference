@@ -1,5 +1,7 @@
 package ex.google.faculty_schedule_preference.user;
 
+import ex.google.faculty_schedule_preference.department.Department;
+import ex.google.faculty_schedule_preference.department.DepartmentRepository;
 import ex.google.faculty_schedule_preference.document.Document;
 import ex.google.faculty_schedule_preference.document.DocumentRepository;
 import ex.google.faculty_schedule_preference.permission.Permission;
@@ -25,6 +27,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -37,6 +40,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.HashMap;
+import java.util.HashSet;
 
 @Controller
 
@@ -51,6 +55,9 @@ public class UserController {
 
     @Autowired
     private DocumentRepository documentRepository;
+
+    @Autowired
+    private DepartmentRepository departmentRepository;
 
     @Value("${boxapi}")
     private String boxapi;
@@ -83,7 +90,8 @@ public class UserController {
         // re-add what is checked
         User user = repository.findById(user_id).get();
         user.getPermissions().clear();
-        user.setPermissions(permissionRepository.findAllById(permissions));
+        Set<Permission> permissionsSet = new HashSet<>(permissionRepository.findAllById(permissions));
+        user.setPermissions(permissionsSet);
         repository.save(user);
         redirectAttributes.addFlashAttribute("message", "Success");
         redirectAttributes.addFlashAttribute("alertClass", "alert-success");
@@ -96,7 +104,7 @@ public class UserController {
         if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
             return "user/login";
         }
-        return "redirect: /";
+        return "redirect:../";
     }
 
     @GetMapping("/logout")
@@ -106,6 +114,13 @@ public class UserController {
             new SecurityContextLogoutHandler().logout(request, response, auth);
         }
         return "redirect:/users/login";
+    }
+
+    @GetMapping("/signup")
+    public String signup(Model model) {
+        model.addAttribute("departments", departmentRepository.findAll());
+        model.addAttribute("user", new User());
+        return "user/signup";
     }
 
     @PostMapping("/upload-resume")
@@ -145,21 +160,69 @@ public class UserController {
         return "user/upload_resume";
     }
 
+    @GetMapping("/{user_id}/departments")
+    public String getDepartments(@PathVariable("user_id") long user_id, Model model) {
+        // get the requested user_id
+        User user = repository.findById(user_id).get();
+        model.addAttribute("user", user);
+
+        List<Department> departmentsList = departmentRepository.findAll();
+
+        // pre-fill departments to be true if the user is in department, otherwise put
+        // it as false
+        HashMap<String, Boolean> departments = new HashMap<String, Boolean>();
+        for (Department d : departmentsList) {
+            departments.put(d.getName(), false);
+        }
+        for (Department userDepartment : user.getDepartments()) {
+            departments.put(userDepartment.getName(), true);
+        }
+        model.addAttribute("departments", departments);
+
+        return "department/updateDepartments";
+    }
+
+    @PostMapping("/{user_id}/departments")
+    public String postDepartments(@PathVariable("user_id") long user_id,
+            @RequestParam("departments") List<String> departments,
+            RedirectAttributes redirectAttributes) {
+        User user = repository.findById(user_id).get();
+        for (String department : departments) {
+            System.out.println(department);
+        }
+        // I have the department names but I want to get the Departments
+        Set<Department> departmentsSet = new HashSet<Department>();
+        for (String department : departments) {
+            departmentsSet.add(departmentRepository.findByName(department));
+        }
+        user.getDepartments().clear();
+        user.setDepartment(departmentsSet);
+        repository.save(user);
+        redirectAttributes.addFlashAttribute("message", "Success");
+        redirectAttributes.addFlashAttribute("alertClass", "alert-success");
+        return "redirect:/users/" + user_id + "/departments";
+    }
+
     // Function sends User data to View where Controller, Admin or Superuser have
     // access to.
     @GetMapping("")
     public String manageUsers(Model model, HttpServletRequest request,
             @AuthenticationPrincipal UserDetails userDetails) {
         List<User> users;
-        User currentUser = repository.findByUsername(userDetails.getUsername()).get();
+        users = repository.findAll();
+        // User currentUser =
+        // repository.findByUsername(userDetails.getUsername()).get();
+        // make it so that I can't edit permissions of users that are not in my
+        // department as a controller
         // if the current user is an admin or superuser send all users to View
-        if (request.isUserInRole("ROLE_ADMIN") || request.isUserInRole("ROLE_SUPERUSER")) {
-            users = repository.findAll();
-        } else {
-            // if the current user is a controller then only send users within the same
-            // department
-            users = repository.findAllByDepartment(currentUser.getDepartment());
-        }
+        // if (request.isUserInRole("ROLE_ADMIN") ||
+        // request.isUserInRole("ROLE_SUPERUSER")) {
+        // users = repository.findAll();
+        // } else {
+        // if the current user is a controller then only send users within the same
+        // department
+        // users = repository.findAllByDepartmentsIn(currentUser.getDepartments());
+        // }
 
         model.addAttribute("users", users);
 
