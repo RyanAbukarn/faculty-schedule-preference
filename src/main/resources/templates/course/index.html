@@ -22,7 +22,7 @@
 
       <div class="row">
         <div class="col-lg-3">
-          <a th:href="@{/courses/add}" class="btn fsp-button"> Add Course</a>
+          <a th:href="@{/courses/new}" class="btn fsp-button"> Add Course</a>
         </div>
         <div class="col-lg-9" th:switch="${search}">
           <form th:case="'true'" th:action="@{/courses/search}" method="POST">
@@ -75,12 +75,7 @@
             <td th:text="${course.department.name}" />
             <td th:text="${course.startTime}" />
             <td th:text="${course.endTime}" />
-            <td>
-              <span th:each="day : ${course.weekDays.entrySet()}" th:text="${day.getValue()+','}"></span>
-            </td>
-            <td>
-              <span th:each="classtype : ${course.classType.entrySet()}" th:text="${classtype.getValue()+','}"></span>
-            </td>
+
             <!-- <td th:text="${course.getTimeDuration(course.startTime,course.endTime)}" /> -->
             <td>
               <a th:href="@{/courses/edit/{course_id}(course_id=${course.id})}">Edit

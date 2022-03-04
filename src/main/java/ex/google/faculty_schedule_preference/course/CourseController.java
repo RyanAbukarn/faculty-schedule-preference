@@ -1,9 +1,11 @@
 package ex.google.faculty_schedule_preference.course;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -40,75 +42,81 @@ public class CourseController {
         return "course/index";
     }
 
-    @GetMapping("/add")
-    public String addCourseForm(Model model) {
+    @GetMapping("/new")
+    public String new_(Model model) {
 
         Course course = new Course();
-        // course.setName("Java 17");
-        // System.out.println(course.getName());
-        System.out.println(course.getClassType());
+
         model.addAttribute("course", course);
-        model.addAttribute("weekDays", course.getWeekDays().entrySet());
-        model.addAttribute("classType", course.getClassType().entrySet());
+        model.addAttribute("weekDays", Course.weekDays);
+        model.addAttribute("classType", Course.classType);
         model.addAttribute("departments", depRepo.findAll());
-        // foreach(Department department : departments)
-        // { System.out.println(department.name)}
-        //
-        //
         return "course/courseForm";
     }
 
-    @PostMapping("/insert")
-    public String insertCourse(
+    @PostMapping("/create")
+    public String create(
             @ModelAttribute("course") Course course,
-            @RequestParam("departments") String dept,
+            @RequestParam("departments") Long dept_id,
             @RequestParam("daysOfWeek") String[] weekDays,
-            @RequestParam("classTypes") String classType) {
-        Map<Integer, String> newWeekDays = new HashMap<Integer, String>();
-        Map<Integer, String> newClassType = Map.of(1, classType);
-        int i = 0;
+            @RequestParam("classTypes") int classType) {
+        Map<String, Boolean> newWeekDays = new HashMap<String, Boolean>();
         for (String day : weekDays)
-            newWeekDays.put(i++, day);
+            newWeekDays.put(day, true);
 
-        Department department = depRepo.findByPrefix(dept);
+        JSONObject weekDaysJson = new JSONObject(newWeekDays);
+        Department department = depRepo.findById(dept_id).get();
         course.setDepartment(department);
-        course.setWeekDays(newWeekDays);
-        course.setClassType(newClassType);
+        course.setWeekSchedule(weekDaysJson.toString());
+        course.setType(classType);
         course.setStatus(1);
-        course.setTerm(termRepo.getById((long) 1));
+        course.setTerm(termRepo.getById(1l));
         courseRepo.save(course);
         return "redirect:/courses";
     }
 
-    @GetMapping("/edit/{course_id}")
+    @GetMapping("{course_id}/edit")
     public String editCourseForm(@PathVariable long course_id, Model model) {
+        Course course = courseRepo.findById(course_id).get();
+
+        HashMap<String, Boolean> courseWeekDays = new HashMap<String, Boolean>();
+        JSONObject jObject = new JSONObject(course.getWeekSchedule());
+        Iterator<?> keys = jObject.keys();
+
+        while (keys.hasNext()) {
+            String key = (String) keys.next();
+            Boolean value = jObject.getBoolean(key);
+            courseWeekDays.put(key, value);
+        }
+
         model.addAttribute("course", courseRepo.findById(course_id).get());
+        model.addAttribute("weekDays", Course.weekDays);
+        model.addAttribute("courseWeekDays", courseWeekDays);
+
         model.addAttribute("departments", depRepo.findAll());
         return "course/editForm";
     }
 
-    @PostMapping("/update/{id}")
-    public String updateCourse(@PathVariable long id, @ModelAttribute("course") Course course,
+    @PostMapping("{course_id}/update")
+    public String updateCourse(@PathVariable long course_id, @ModelAttribute("course") Course requestCourse,
+            @RequestParam("daysOfWeek") String[] weekDays,
             @RequestParam("departments") String dept) {
+        Map<String, Boolean> newWeekDays = new HashMap<String, Boolean>();
+        for (String day : weekDays)
+            newWeekDays.put(day, true);
 
+        JSONObject weekDaysJson = new JSONObject(newWeekDays);
         Department department = depRepo.findByPrefix(dept);
-        Course existingCourse = courseRepo.getById(id);
-        existingCourse.setId(id);
-        // existingCourse.setId(Long.parseLong(String.valueOf(course.getId())));
-        existingCourse.setName(course.getName());
-        existingCourse.setPrefix(course.getPrefix());
-        existingCourse.setType(course.getType());
-        existingCourse.setUnit(course.getUnit());
-        existingCourse.setDepartment(department);
-        existingCourse.setStartTime(course.getStartTime());
-        existingCourse.setEndTime(course.getEndTime());
-        courseRepo.save(existingCourse);
-        return "redirect:/courses";
-    }
-
-    @GetMapping("/delete/{course_id}")
-    public String deleteCourse(@PathVariable long course_id) {
-        courseRepo.deleteById(course_id);
+        Course course = courseRepo.getById(course_id);
+        course.setName(requestCourse.getName());
+        course.setPrefix(requestCourse.getPrefix());
+        course.setType(requestCourse.getType());
+        course.setUnit(requestCourse.getUnit());
+        course.setWeekSchedule(weekDaysJson.toString());
+        course.setDepartment(department);
+        course.setStartTime(requestCourse.getStartTime());
+        course.setEndTime(requestCourse.getEndTime());
+        courseRepo.save(course);
         return "redirect:/courses";
     }
 

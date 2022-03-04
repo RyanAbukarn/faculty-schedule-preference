@@ -22,23 +22,23 @@ import ex.google.faculty_schedule_preference.term.Term;
         @UniqueConstraint(name = "course_prefix_unique", columnNames = "prefix") })
 public class Course {
     @Transient
-    private Map<Integer, String> weekDays = Map.of(1, "Sun", 2, "Mon", 3, "Tue", 4, "Wed", 5, "Thu", 6, "Fri", 7,
+    static Map<Integer, String> weekDays = Map.of(1, "Sun", 2, "Mon", 3, "Tue", 4, "Wed", 5, "Thu", 6, "Fri", 7,
             "Sat");
     @Transient
-    private Map<Integer, String> classType = Map.of(1, "Online", 2, "In-person", 3, "Hybrid");
+    static Map<Integer, String> classType = Map.of(1, "Online", 2, "In-person", 3, "Hybrid");
 
     @Transient
-    private Map<Integer, String> statusEnum = Map.of(1, "open", 2, "under_review", 3, "closed");
+    static Map<Integer, String> statusEnum = Map.of(1, "open", 2, "under_review", 3, "closed");
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false)
     private long id;
 
-    @Column(name = "course_name", nullable = false, columnDefinition = "TEXT")
+    @Column(name = "name", nullable = false, columnDefinition = "TEXT")
     private String name;
 
-    @Column(name = "course_description", nullable = false, columnDefinition = "TEXT")
+    @Column(name = "description", nullable = false, columnDefinition = "TEXT")
     private String description;
 
     @Column(name = "prefix", nullable = false, columnDefinition = "TEXT")
@@ -58,6 +58,9 @@ public class Course {
 
     @Column(name = "status", nullable = false)
     private int status;
+
+    @Column(name = "weekSchedule", nullable = false)
+    private String weekSchedule;
 
     @OneToOne(fetch = FetchType.LAZY)
     private Department department;
@@ -167,20 +170,12 @@ public class Course {
         this.term = term;
     }
 
-    public Map<Integer, String> getWeekDays() {
-        return this.weekDays;
+    public String getWeekSchedule() {
+        return weekSchedule;
     }
 
-    public void setWeekDays(Map<Integer, String> weekDays) {
-        this.weekDays = weekDays;
-    }
-
-    public Map<Integer, String> getClassType() {
-        return classType;
-    }
-
-    public void setClassType(Map<Integer, String> classType) {
-        this.classType = classType;
+    public void setWeekSchedule(String weekSchedule) {
+        this.weekSchedule = weekSchedule;
     }
 
 }

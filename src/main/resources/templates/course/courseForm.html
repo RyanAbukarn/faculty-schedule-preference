@@ -1,143 +1,104 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
 
-<html
-  xmlns:th="http://www.thymeleaf.org"
-  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-  layout:decorate="~{page_layout/layout}"
->
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{page_layout/layout}">
 
 
-  <head>
-    <title>Add Courses</title>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  </head>
+<head>
+  <title>Add Courses</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
 
-  <body>
-    <section layout:fragment="content">
-      <!-- <div class = "container mt-5"> -->
-       
-        <div class = "row">
-         
-          <div class =" container justify-content-center">
-            <a th:href="@{/courses}" class = "btn fsp-button">
-              <- Home
-              </a>
-            <h1 class = "text-center" style="color:#aa2d2d;"> Create New Course </h1>
-            
-              <form th:action="@{/courses/insert}" th:object="${course}" method="POST" class="fsp-form">
-                <div class ="form-group">
-                  <label> Course Name </label>
-                  <input
-                  type="text"
-                  name="name"
-                  th:field="*{name}"
-                  class = "form-control"
-                  placeholder="Enter Course Name" 
-                  />
+<body>
+  <section layout:fragment="content">
+    <!-- <div class = "container mt-5"> -->
+
+    <div class="row">
+
+      <div class=" container justify-content-center">
+        <a th:href="@{/courses}" class="btn fsp-button">
+          <- Home </a> <h1 class="text-center" style="color:#aa2d2d;"> Create New Course </h1>
+
+            <form th:action="@{/courses/create}" th:object="${course}" method="POST" class="fsp-form">
+              <div class="form-group">
+                <label> Course Name </label>
+                <input type="text" name="name" th:field="*{name}" class="form-control"
+                  placeholder="Enter Course Name" />
+              </div>
+
+              <div class="form-group">
+                <label> Course Prefix </label>
+                <input type="text" name="prefix" th:field="*{prefix}" class="form-control"
+                  placeholder="Enter Course Prefix" />
+              </div>
+
+              <div class="form-group">
+                <label> Course Units </label>
+                <input type="text" name="unit" th:field="*{unit}" class="form-control"
+                  placeholder="Enter Course Units " />
+              </div>
+
+              <div class="form-group">
+                <label> Course Type</label>
+                <input type="number" name="type" th:field="*{type}" class="form-control" />
+              </div>
+
+              <div class="form-group">
+                <label>Select Department </label>
+                <select class="form-control" id="departments" name="departments">
+
+                  <option th:each="department : ${departments}" th:value="${department.id}"
+                    th:text="${department.name}">
+
+                  </option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label> Start Time </label>
+                <input type="time" name="startTime" th:field="*{startTime}" />
+              </div>
+
+              <div class="form-group">
+                <label> End Time </label>
+                <input type="time" name="endTime" th:field="*{endTime}" />
+              </div>
+
+              <div class="form-group">
+                <label>
+                  Select Days </label>
+                <div th:each="day : ${weekDays}">
+                  <input name="daysOfWeek" th:value="${day.getValue()}" type="checkbox" id="weekDays">
+                  <span th:text="${day.getValue()}"></span>
                 </div>
-                
-                <div class ="form-group">
-                  <label> Course Prefix </label>
-                  <input
-                  type="text"
-                  name="prefix"
-                  th:field="*{prefix}"
-                  class = "form-control"
-                  placeholder="Enter Course Prefix" 
-                  />
-                </div>
+              </div>
 
-                <div class ="form-group">
-                  <label> Course Units  </label>
-                  <input
-                  type="text"
-                  name="unit"
-                  th:field="*{unit}"
-                  class = "form-control"
-                  placeholder="Enter Course Units " 
-                  />
-                </div>
 
-                <div class ="form-group">
-                  <label> Course Type</label>
-                  <input
-                  type="number" 
-                  name="type" 
-                  th:field="*{type}"
-                  class = "form-control"
-                  />
-                </div>
+              <div class="form-group">
+                <label>Select Class Type </label>
+                <select class="form-control" id="classType" name="classTypes">
 
-                <div class="form-group">
-                  <label>Select Department </label>
-                  <select class="form-control" id="departments" name="departments">
-                
-                    <option
-                    th:each="department : ${departments}"
-                    th:value="${department.prefix}"
-                    th:text="${department.name}"
-                    >
-                    
-                    </option>
-                  </select>
-                  </div>
-                
-                <div class ="form-group">
-                  <label> Start Time </label>
-                  <input
-                  type="time" 
-                  name="startTime" 
-                  th:field="*{startTime}"
-                  />
-                </div>
+                  <option th:each="type : ${classType}" th:value="${type.getKey()}" th:text="${type.getValue()}">
 
-                <div class ="form-group">
-                  <label> End Time </label>
-                  <input
-                  type="time" 
-                  name="endTime" 
-                  th:field="*{endTime}"
-                  />
-                </div>
+                  </option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Description</label>
+                <input type="text" name="description" th:field="*{description}" />
+              </div>
 
-                <div class="form-group">
-                  <label>Select Days </label>
-                  <select class="form-control" id="weekDays" name="daysOfWeek" multiple>
-                
-                    <option
-                    th:each="day : ${course.getWeekDays().entrySet()}"
-                    th:value="${day.getValue()}"
-                    th:text="${day.getValue()}"
-                    >
-                    
-                    </option>
-                  </select>
-                  </div>
+              <div class="box-footer">
+                <button type="submit" class="fsp-button">
+                  Add Course
+                </button>
+              </div>
+            </form>
+      </div>
+    </div>
+    <!-- </div> -->
+  </section>
+</body>
 
-                  <div class="form-group">
-                    <label>Select Class Type </label>
-                    <select class="form-control" id="classType" name="classTypes" >
-                  
-                      <option
-                      th:each="type : ${course.getClassType().entrySet()}"
-                      th:value="${type.getValue()}"
-                      th:text="${type.getValue()}"
-                      >
-                      
-                      </option>
-                    </select>
-                    </div>
-                
-                <div class = "box-footer">
-                  <button type="submit" class = "fsp-button">
-                    Add Course
-                  </button>
-                </div>
-              </form>
-          </div>
-        </div>
-      <!-- </div> -->
-    </section>
-  </body>
 </html>
