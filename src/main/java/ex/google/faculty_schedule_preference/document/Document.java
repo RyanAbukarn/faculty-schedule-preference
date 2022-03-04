@@ -20,7 +20,7 @@ public class Document {
     @Transient
     public static Map<String, Integer> typeValues = Map.of("RESUME", 1);
     @Transient
-    private Map<Integer, String> humanTypeValues = Map.of(1, "RESUME");
+    private static Map<Integer, String> humanTypeValues = Map.of(1, "RESUME");
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

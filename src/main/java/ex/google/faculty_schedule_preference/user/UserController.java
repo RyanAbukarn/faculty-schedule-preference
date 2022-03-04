@@ -158,7 +158,7 @@ public class UserController {
         BoxFolder rootFolder = childFolderInfo.getResource();
         rootFolder.uploadFile(file.getInputStream(), file.getOriginalFilename());
 
-        redirectAttributes.addFlashAttribute("message", "Successfully uploaded the resume");
+        redirectAttributes.addFlashAttribute("message");
         redirectAttributes.addFlashAttribute("alertClass", "alert-success");
         return "redirect:/users/upload-resume";
     }
