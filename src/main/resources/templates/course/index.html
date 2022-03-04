@@ -15,15 +15,17 @@
         <table class="fsp-table fsp-table-striped">
             <thead>
                 <tr>
-                    <th scope="col">name</th>
-                    <th scope="col">prefix</th>
+                    <th scope="col">Name</th>
+                    <th scopr = "col">Description</th>
+                    <th scope="col">Prefix</th>
                     <th scope="col">Action</th>
                 </tr>
             </thead>
             <tbody>
 
                 <tr th:each="course: ${courses}">
-                    <td th:text="${course.id}" />
+                    <td th:text="${course.name}" />
+                    <td th:text="${course.description}" />
                     <td th:text="${course.prefix}" />
 
                     <td>

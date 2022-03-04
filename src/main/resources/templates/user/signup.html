@@ -29,7 +29,7 @@
                 <h2>
                     Sign Up
                 </h2>
-                <form id="signUpForm" name="form" th:action="@{registration/signup}" method="POST">
+                <form id="signUpForm" name="form" th:action="@{signup}" method="POST">
                     <div id="errs" class="errorcontainer"></div>
                     <div th:if="${param.error}" id="alert alert-error" class="alert alert-error">
                         Invalid username and password.
