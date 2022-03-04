@@ -7,13 +7,12 @@
     <meta charset="UTF-8" />
     <title>Update Departments Page</title>
     <link th:href="@{/css/permission/general.css}" rel="stylesheet" />
-
-    <!-- <link rel="stylesheet" href="/src/main/resources/static/css/stylesheet.css">
-    <link rel="stylesheet" href="/src/main/resources/static/css/permission/general.css"> for testing purposes. -->
 </head>
 
 <body>
     <section layout:fragment="content">
+
+        <div th:if="${message}" th:text="${message}" th:class="${'alert ' + alertClass}" />
 
         <form action="#" method="POST" th:action="@{/users/__${user.getId()}__/departments}" class="fsp-form">
             <h1 id="roles-h2">Update User Departments</h1>
@@ -21,12 +20,12 @@
                 <span id="roles-csun-id">CSUN ID:</span>
                 <span id="roles-id-number" th:text="${user.csun_id}">Default</span>
             </div>
-            <div id = "roles-container">
+            <div id="roles-container">
                 <div th:each="department : ${departments}">
                     <div>
-                        <input name = "departments" th:value = "${department.key}" type = "checkbox"
-                        id = "departments" th:checked = "${departments.get(department.key)}">
-                        <span th:text="${department.key}"></span>
+                        <input name="departments" th:value="${department.getId()}" type="checkbox" id="departments"
+                            th:checked="${userDepartments.get(department.getName())}">
+                        <span th:text="${department.getName()}"></span>
                     </div>
                 </div>
                 <input type="submit" id="submit" value="Submit" class="fsp-button">

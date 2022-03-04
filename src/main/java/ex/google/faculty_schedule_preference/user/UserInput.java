@@ -1,9 +1,6 @@
-package ex.google.faculty_schedule_preference.registration;
+package ex.google.faculty_schedule_preference.user;
 
-import lombok.AllArgsConstructor;
-
-@AllArgsConstructor
-public class RegistrationRequest {
+public class UserInput {
     private String csun_id;
     private String name;
     private String username;
