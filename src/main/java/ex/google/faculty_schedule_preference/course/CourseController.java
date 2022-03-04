@@ -51,7 +51,7 @@ public class CourseController {
         model.addAttribute("weekDays", Course.weekDays);
         model.addAttribute("classType", Course.classType);
         model.addAttribute("departments", depRepo.findAll());
-        return "course/courseForm";
+        return "course/new";
     }
 
     @PostMapping("/create")
@@ -76,7 +76,7 @@ public class CourseController {
     }
 
     @GetMapping("{course_id}/edit")
-    public String editCourseForm(@PathVariable long course_id, Model model) {
+    public String edit(@PathVariable long course_id, Model model) {
         Course course = courseRepo.findById(course_id).get();
 
         HashMap<String, Boolean> courseWeekDays = new HashMap<String, Boolean>();
@@ -94,11 +94,11 @@ public class CourseController {
         model.addAttribute("courseWeekDays", courseWeekDays);
 
         model.addAttribute("departments", depRepo.findAll());
-        return "course/editForm";
+        return "course/edit";
     }
 
     @PostMapping("{course_id}/update")
-    public String updateCourse(@PathVariable long course_id, @ModelAttribute("course") Course requestCourse,
+    public String update(@PathVariable long course_id, @ModelAttribute("course") Course requestCourse,
             @RequestParam("daysOfWeek") String[] weekDays,
             @RequestParam("departments") String dept) {
         Map<String, Boolean> newWeekDays = new HashMap<String, Boolean>();
