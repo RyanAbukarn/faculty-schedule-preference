@@ -209,8 +209,7 @@ public class UserController {
     public String manageUsers(Model model, HttpServletRequest request,
             @AuthenticationPrincipal UserDetails userDetails) {
         User currentUser = repository.findByUsername(userDetails.getUsername()).get();
-        List<User> userList;
-        userList = repository.findAll();
+        List<User> userList = repository.findAll();
         HashMap<User, Boolean> users = new HashMap<User, Boolean>();
         Set<Permission> currentUserPermissions = currentUser.getPermissions();
         Boolean isAdminOrSuperUser = false;
