@@ -2,14 +2,20 @@ package ex.google.faculty_schedule_preference.user;
 
 
 import antlr.BaseAST;
+import ex.google.faculty_schedule_preference.permission.Permission;
+import ex.google.faculty_schedule_preference.permission.PermissionRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class MyUserDetailsService implements UserDetailsService {
@@ -17,7 +23,13 @@ public class MyUserDetailsService implements UserDetailsService {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    private PermissionRepository permissionRepository;
+
     BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -41,11 +53,18 @@ public class MyUserDetailsService implements UserDetailsService {
             throw new IllegalStateException("Username is already in use");
         }
 
-        String encodedPassword = bCryptPasswordEncoder.encode(user.getPassword());
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
+        //System.out.println(user.getPassword());
 
         user.setPassword(encodedPassword);
+        Permission lecturePermission = permissionRepository.getById(4L);
+        System.out.println(lecturePermission.getRole());
+        Set<Permission> permissions = new HashSet<>(); // by default a new user will have the role of lecturer
+        permissions.add(lecturePermission);
+        user.setPermissions(permissions);
 
         userRepository.save(user);
+        
 
         //TODO: Send confirmation token
 

@@ -203,26 +203,44 @@ public class UserController {
         return "redirect:/users/" + user_id + "/departments";
     }
 
-    // Function sends User data to View where Controller, Admin or Superuser have
+    // Function sends User data to View where Controller, Admin or SuperUser have
     // access to.
     @GetMapping("")
     public String manageUsers(Model model, HttpServletRequest request,
             @AuthenticationPrincipal UserDetails userDetails) {
-        List<User> users;
-        users = repository.findAll();
-        // User currentUser =
-        // repository.findByUsername(userDetails.getUsername()).get();
-        // make it so that I can't edit permissions of users that are not in my
-        // department as a controller
-        // if the current user is an admin or superuser send all users to View
-        // if (request.isUserInRole("ROLE_ADMIN") ||
-        // request.isUserInRole("ROLE_SUPERUSER")) {
-        // users = repository.findAll();
-        // } else {
-        // if the current user is a controller then only send users within the same
-        // department
-        // users = repository.findAllByDepartmentsIn(currentUser.getDepartments());
-        // }
+        User currentUser = repository.findByUsername(userDetails.getUsername()).get();
+        List<User> userList;
+        userList = repository.findAll();
+        HashMap<User, Boolean> users = new HashMap<User, Boolean>();
+        Set<Permission> currentUserPermissions = currentUser.getPermissions();
+        Boolean isAdminOrSuperUser = false;
+
+        // if the current user has an id of 1 (Admin) or 5 (SuperUser) then say the currentUser is of that Role
+        for (Permission p : currentUserPermissions){
+            if (p.getId() == 1 || p.getId() == 5){ 
+                isAdminOrSuperUser = true;
+                continue;
+            }
+        }
+
+        // if current User is Admin or SuperUser then allow the current User to edit all users permissions
+        if (isAdminOrSuperUser){
+            for (User u : userList){
+                users.put(u, true);
+            }
+        }
+        // if the current User is a controller then only allow them to edit users within same department(s)
+        else{
+            for (User u : userList){
+                users.put(u, false);
+                for (Department d : currentUser.getDepartments()){
+                    if (u.getDepartments().contains(d)){
+                        users.put(u, true);
+                        continue;
+                    }
+                }
+            }
+        }
 
         model.addAttribute("users", users);
 
