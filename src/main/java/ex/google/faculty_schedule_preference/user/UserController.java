@@ -59,6 +59,9 @@ public class UserController {
     @Autowired
     private DepartmentRepository departmentRepository;
 
+    @Autowired
+    private UserService userService;
+
     @Value("${boxapi}")
     private String boxapi;
 
@@ -123,6 +126,11 @@ public class UserController {
         return "user/signup";
     }
 
+    @PostMapping("/signup")
+    public String register(UserInput request) {
+        return userService.register(request);
+    }
+
     @PostMapping("/upload-resume")
     public String postUploadFile(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes,
             @AuthenticationPrincipal UserDetails userDetails) throws IOException, NoSuchAlgorithmException {
@@ -166,37 +174,26 @@ public class UserController {
         User user = repository.findById(user_id).get();
         model.addAttribute("user", user);
 
-        List<Department> departmentsList = departmentRepository.findAll();
+        List<Department> departments = departmentRepository.findAll();
+        HashMap<String, Boolean> userDepartments = new HashMap<String, Boolean>();
 
-        // pre-fill departments to be true if the user is in department, otherwise put
-        // it as false
-        HashMap<String, Boolean> departments = new HashMap<String, Boolean>();
-        for (Department d : departmentsList) {
-            departments.put(d.getName(), false);
-        }
         for (Department userDepartment : user.getDepartments()) {
-            departments.put(userDepartment.getName(), true);
+            userDepartments.put(userDepartment.getName(), true);
         }
+        model.addAttribute("userDepartments", userDepartments);
         model.addAttribute("departments", departments);
 
-        return "department/updateDepartments";
+        return "user/edit_user_departments";
     }
 
     @PostMapping("/{user_id}/departments")
     public String postDepartments(@PathVariable("user_id") long user_id,
-            @RequestParam("departments") List<String> departments,
+            @RequestParam("departments") List<Long> departments,
             RedirectAttributes redirectAttributes) {
         User user = repository.findById(user_id).get();
-        for (String department : departments) {
-            System.out.println(department);
-        }
-        // I have the department names but I want to get the Departments
-        Set<Department> departmentsSet = new HashSet<Department>();
-        for (String department : departments) {
-            departmentsSet.add(departmentRepository.findByName(department));
-        }
         user.getDepartments().clear();
-        user.setDepartment(departmentsSet);
+        Set<Department> departmentSet = new HashSet<>(departmentRepository.findAllById(departments));
+        user.setDepartment(departmentSet);
         repository.save(user);
         redirectAttributes.addFlashAttribute("message", "Success");
         redirectAttributes.addFlashAttribute("alertClass", "alert-success");
@@ -209,37 +206,11 @@ public class UserController {
     public String manageUsers(Model model, HttpServletRequest request,
             @AuthenticationPrincipal UserDetails userDetails) {
         User currentUser = repository.findByUsername(userDetails.getUsername()).get();
-        List<User> userList = repository.findAll();
-        HashMap<User, Boolean> users = new HashMap<User, Boolean>();
-        Set<Permission> currentUserPermissions = currentUser.getPermissions();
-        Boolean isAdminOrSuperUser = false;
-
-        // if the current user has an id of 1 (Admin) or 5 (SuperUser) then say the currentUser is of that Role
-        for (Permission p : currentUserPermissions){
-            if (p.getId() == 1 || p.getId() == 5){ 
-                isAdminOrSuperUser = true;
-                continue;
-            }
-        }
-
-        // if current User is Admin or SuperUser then allow the current User to edit all users permissions
-        if (isAdminOrSuperUser){
-            for (User u : userList){
-                users.put(u, true);
-            }
-        }
-        // if the current User is a controller then only allow them to edit users within same department(s)
-        else{
-            for (User u : userList){
-                users.put(u, false);
-                for (Department d : currentUser.getDepartments()){
-                    if (u.getDepartments().contains(d)){
-                        users.put(u, true);
-                        continue;
-                    }
-                }
-            }
-        }
+        List<User> users;
+        if (request.isUserInRole("ROLE_ADMIN") || request.isUserInRole("ROLE_SUPERUSER"))
+            users = repository.findAll();
+        else
+            users = repository.findAllByDepartmentsIn(currentUser.getDepartments());
 
         model.addAttribute("users", users);
 

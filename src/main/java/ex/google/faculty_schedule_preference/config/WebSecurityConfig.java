@@ -30,19 +30,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/*").authenticated()
                 .antMatchers("/requests/**").hasAnyRole("CONTROLLER", "SUPERUSER")
                 .antMatchers(
-                    "/my-requests/**",
-                    "/courses/{course_id}/request"
-                    ).hasAnyRole("TENURETRACK", "LECTURER", "SUPERUSER")
+                        "/my-requests/**",
+                        "/courses/{course_id}/request")
+                .hasAnyRole("TENURETRACK", "LECTURER", "SUPERUSER")
                 .antMatchers(
-                    "/users/",
-                    "/terms/",
-                    "/users/{user_id}/permissions"
-                    ).hasAnyRole("ADMIN", "CONTROLLER", "SUPERUSER")
+                        "/users/",
+                        "/terms/",
+                        "/users/{user_id}/permissions")
+                .hasAnyRole("ADMIN", "CONTROLLER", "SUPERUSER")
                 .antMatchers(
-                    "/",
-                    "/users/signup",
-                    "users/registration/signup"
-                    ).permitAll()
+                        "/",
+                        "/users/signup")
+                .permitAll()
                 .and().formLogin()
                 .loginPage("/users/login")
                 .loginProcessingUrl("/users/login")

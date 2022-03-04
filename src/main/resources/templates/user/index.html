@@ -25,13 +25,13 @@
 			</thead>
 			<tbody>
 				<tr th:each="user: ${users}">
-					<td th:text="${user.key.getId()}" />
-					<td th:text="${user.key.getCsun_id()}" />
-					<td th:text="${user.key.getName()}" />
-					<td th:text="${user.key.getEmail()}" />
+					<td th:text="${user.getId()}" />
+					<td th:text="${user.getCsun_id()}" />
+					<td th:text="${user.getName()}" />
+					<td th:text="${user.getEmail()}" />
 					<td>
 						<select>
-							<option th:each="userDepartment : ${user.key.getDepartments()}">
+							<option th:each="userDepartment : ${user.getDepartments()}">
 								<span th:text="${userDepartment.name}">[name]</span>
 							</option>
 						</select>
@@ -42,16 +42,16 @@
 							<br>
 							<th:block>
 								<br>
-								<a th:href="@{/users/__${user.key.getId()}__/user_availability}">Availability</a>
+								<a th:href="@{/users/__${user.getId()}__/user_availability}">Availability</a>
 								<br>
 								<br>
 								<!-- Check if the current user can edit user permissions -->
-								<div th:if="${user.value == true}">
-									<a th:href="@{/users/__${user.key.getId()}__/permissions}">Permissions</a>
+								<div th:if="${true}">
+									<a th:href="@{/users/__${user.getId()}__/permissions}">Permissions</a>
 									<br>
 									<br>
 								</div>
-								<a th:href="@{/users/__${user.key.getId()}__/departments}">Departments</a>
+								<a th:href="@{/users/__${user.getId()}__/departments}">Departments</a>
 								<br>
 							</th:block>
 						</details>
