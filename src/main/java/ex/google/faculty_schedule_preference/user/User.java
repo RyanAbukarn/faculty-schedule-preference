@@ -1,6 +1,7 @@
 package ex.google.faculty_schedule_preference.user;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -54,11 +55,11 @@ public class User {
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "user_permissions", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "permission_id", referencedColumnName = "id"))
-    private Set<Permission> permissions;
+    private Set<Permission> permissions = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "user_departments", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "department_id", referencedColumnName = "id"))
-    private Set<Department> departments;
+    private Set<Department> departments = new HashSet<>();;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserAvailability> userAvailabilities;
@@ -82,6 +83,16 @@ public class User {
         this.email = email;
         this.password = password;
         this.departments = departments;
+    }
+
+    public User(String csun_id, String name, String username, String email, String password,
+            Department department) {
+        this.csun_id = csun_id;
+        this.name = name;
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.departments.add(department);
     }
 
     public User(String csun_id, String name, String username, String email, String password, List<Request> requests) {
@@ -175,6 +186,10 @@ public class User {
 
     public void setDocuments(List<Document> documents) {
         this.documents = documents;
+    }
+
+    public void pushBackPermissions(Permission permission) {
+        this.permissions.add(permission);
     }
 
     public Document getResume() {

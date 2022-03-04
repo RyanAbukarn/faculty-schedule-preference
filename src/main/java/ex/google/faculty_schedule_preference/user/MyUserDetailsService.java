@@ -1,12 +1,13 @@
 package ex.google.faculty_schedule_preference.user;
 
+import ex.google.faculty_schedule_preference.permission.Permission;
+import ex.google.faculty_schedule_preference.permission.PermissionRepository;
 
-import antlr.BaseAST;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -15,9 +16,13 @@ import java.util.Optional;
 public class MyUserDetailsService implements UserDetailsService {
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
-    BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+    @Autowired
+    private PermissionRepository permissionRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -28,28 +33,30 @@ public class MyUserDetailsService implements UserDetailsService {
         return user.map(MyUserDetails::new).get();
     }
 
-    public String signUpUser(User user){
+    public String signUpUser(User user) {
         boolean emailExists = userRepository.findByUsername(user.getEmail()).isPresent();
 
         boolean usernameExists = userRepository.findByUsername(user.getUsername()).isPresent();
 
-        if (emailExists){
+        if (emailExists) {
             throw new IllegalStateException("Email Already taken");
         }
 
-        if (usernameExists){
+        if (usernameExists) {
             throw new IllegalStateException("Username is already in use");
         }
 
-        String encodedPassword = bCryptPasswordEncoder.encode(user.getPassword());
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
 
         user.setPassword(encodedPassword);
+        Permission lecturePermission = permissionRepository.getById(4L);
+        user.pushBackPermissions(lecturePermission);
 
         userRepository.save(user);
 
-        //TODO: Send confirmation token
+        // TODO: Send confirmation token
 
-        return "it works";
+        return "redirect:/";
     }
 
 }

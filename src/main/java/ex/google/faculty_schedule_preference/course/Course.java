@@ -38,6 +38,9 @@ public class Course {
     @Column(name = "course_name", nullable = false, columnDefinition = "TEXT")
     private String name;
 
+    @Column(name = "course_description", nullable = false, columnDefinition = "TEXT")
+    private String description;
+
     @Column(name = "prefix", nullable = false, columnDefinition = "TEXT")
     private String prefix;
 
@@ -65,9 +68,10 @@ public class Course {
     public Course() {
     }
 
-    public Course(String name, String prefix, double unit, int type, String daysOfWeek, Time startTime,
+    public Course(String name, String description, String prefix, double unit, int type, String daysOfWeek, Time startTime,
             Time endTime) {
         this.name = name;
+        this.description = description;
         this.prefix = prefix;
         this.unit = unit;
         this.type = type;
@@ -85,6 +89,14 @@ public class Course {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getPrefix() {
