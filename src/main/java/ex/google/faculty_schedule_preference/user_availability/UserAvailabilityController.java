@@ -65,7 +65,6 @@ public class UserAvailabilityController {
                   @PathVariable long user_id,
                   RedirectAttributes redirectAttributes) {
             User user = userRepository.findById(user_id).get();
-            userAvailability.setTimes(userAvailability.getTimes());
             userAvailability.setUser(user);
             repository.save(userAvailability);
             redirectAttributes.addFlashAttribute("message", "Successfully updated availability and units");

@@ -14,7 +14,8 @@
 	<section layout:fragment="content">
 
 		<div th:if="${message}" th:text="${message}" th:class="${'alert ' + alertClass}" />
-
+		<input name="times" th:value="*{request.times}" type="hidden" id="times">
+		<input th:value="*{request.approvedTime}" type="hidden" id="theApprovedTime">
 		<div class="wrap">
 			<div class="info">
 
@@ -92,7 +93,10 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-					<button type="button" id="approve" class="btn btn-primary">YES</button>
+					<form th:action="@{/requests/__${request.getId()}__/approved-time}" method="post">
+						<input name="approvedTime" type="hidden" id="approvedTime">
+						<button type="submit" class="btn btn-primary"  data-bs-dismiss="modal">Yes</button>
+					</form>
 				</div>
 			</div>
 		</div>
@@ -112,7 +116,7 @@
 				'denied':3,
 				'accpeted':4,
 			}
-			let showModel;
+			let theApprovedTime="";
 			let calendarEL = $('#calendar');
 			let currentDate = "2012-05-25";
 			let approved_date;
@@ -136,61 +140,34 @@
 					center: '',
 					right: ''
 				},
-				events: function (start, end,_, callback) {
-					$.ajax({
-						type: "GET",
-						contentType: "application/json",
-						url: `/api${window.location.pathname}`,
-						dataType: 'json',
-						cache: false,
-						timeout: 600000,
-						success: function (data) {
-							showModel = data.status == Status["new"]
-							callback(JSON.parse(data.event));
-						},
-					})
+				events: function (_, _,_, callback) {
+					theApprovedTime = $("#theApprovedTime").val();
+					if (theApprovedTime != "")
+						callback(JSON.parse("["+theApprovedTime+"]"));
+					else
+						callback(JSON.parse($("#times").val()));
 				},
 				eventClick: function (info) {
-					if (showModel) {
-						$("#createEventModal").modal("show");
-						approved_date = {
-							title: info.title,
-							start: info.start.toISOString(),
-							end: info.end.toISOString(),
-						};
-					}
+					
+					$("#createEventModal").modal("show");
+					approved_date = {
+						color: "#AFE1AF",
+						title: info.title,
+						start: info.start.toISOString(),
+						end: info.end.toISOString(),
+					};
+					$('#approvedTime').val(JSON.stringify(approved_date));
+					
 				}
 			});
+
 			$('#calendar').fullCalendar('gotoDate', currentDate);
 	
 			$('#my-draggable').draggable({
 				zIndex: 999,
 				revert: true, // will cause the event to go back to its
 			});
-			$("#approve").click(event => {
-				event.preventDefault();
-				$("#createEventModal").modal("hide");
-				fire_ajax_submit();
-			});
-	
-			function fire_ajax_submit() {
-				$.ajax({
-					type: "POST",
-					contentType: "application/json",
-					url: `/api${window.location.pathname}`,
-					data: JSON.stringify(approved_date),
-					dataType: 'json',
-					cache: false,
-					timeout: 600000,
-					success: function (data) {
-						location.reload();
-					},
-					error: function (e) {
-						location.reload();
-					}
-				});
-			}
-	
+			
 		});
 	</script>
 </section>
