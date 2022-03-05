@@ -33,7 +33,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/courses/{course_id}/request")
                 .hasAnyRole("TENURETRACK", "LECTURER", "SUPERUSER")
                 .antMatchers(
-                        "/users/**",
+                        "/users/",
                         "/terms/**",
                         "/users/{user_id}/permissions")
                 .hasAnyRole("ADMIN", "CONTROLLER", "SUPERUSER")
