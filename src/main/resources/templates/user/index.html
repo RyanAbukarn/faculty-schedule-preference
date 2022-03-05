@@ -45,12 +45,9 @@
 								<a th:href="@{/users/__${user.getId()}__/user_availability}">Availability</a>
 								<br>
 								<br>
-								<!-- Check if the current user can edit user permissions -->
-								<div th:if="${true}">
-									<a th:href="@{/users/__${user.getId()}__/permissions}">Permissions</a>
-									<br>
-									<br>
-								</div>
+								<a th:href="@{/users/__${user.getId()}__/permissions}">Permissions</a>
+								<br>
+								<br>
 								<a th:href="@{/users/__${user.getId()}__/departments}">Departments</a>
 								<br>
 							</th:block>
