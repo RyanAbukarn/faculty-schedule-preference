@@ -82,12 +82,7 @@
               </a>
             </td>
             <td>
-              <!-- <a th:href="@{courses/{course_id}/request(course_id=${course.id})}" 
-                                        target="_blank" >Delete </a> -->
-              <!-- <a th:href="@{/courses/edit/{course_id}(course_id=${course.id})}"
-                         
-                            >Delete
-                          </a> -->
+              <a th:href="@{courses/{course_id}/request(course_id=${course.id})}" target="_blank">Request </a>
             </td>
           </tr>
           <tr th:if="${courses} == null">

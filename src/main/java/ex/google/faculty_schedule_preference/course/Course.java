@@ -1,7 +1,6 @@
 package ex.google.faculty_schedule_preference.course;
 
 import javax.persistence.Transient;
-import java.sql.Time;
 import java.util.Map;
 
 import javax.persistence.Column;
@@ -72,6 +71,17 @@ public class Course {
     }
 
     public Course(String name, String prefix, double unit, int type, String daysOfWeek, String startTime,
+            String endTime) {
+        this.name = name;
+        this.prefix = prefix;
+        this.unit = unit;
+        this.type = type;
+        this.startTime = startTime;
+        this.endTime = endTime;
+    }
+
+    public Course(String name, String description, String prefix, double unit, int type, String daysOfWeek,
+            String startTime,
             String endTime) {
         this.name = name;
         this.description = description;
