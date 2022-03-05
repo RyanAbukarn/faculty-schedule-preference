@@ -19,7 +19,8 @@ public class FacultySchedulePreferenceApplication {
 	}
 
 	@Bean
-	public ApplicationRunner DDBInitializer(DepartmentRepository repo, PermissionRepository permissionRepository) {
+	public ApplicationRunner DDBInitializer(DepartmentRepository repo,
+			PermissionRepository permissionRepository) {
 		return (args) -> {
 			System.out.println("running"); // debug
 			// Create departments HashMap
@@ -65,7 +66,6 @@ public class FacultySchedulePreferenceApplication {
 				if (!permissionRepository.existsById(id))
 					permissionRepository.save(new Permission(id, prm));
 			});
-
 		};
 
 	}

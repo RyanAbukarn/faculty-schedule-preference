@@ -47,6 +47,10 @@ public class Request {
     @Column(name = "times", nullable = false, columnDefinition = "TEXT")
     private String times;
 
+    @JsonProperty("approved_time")
+    @Column(name = "approved_time", nullable = false, columnDefinition = "TEXT")
+    private String approvedTime;
+
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
     @OneToOne(fetch = FetchType.LAZY)
@@ -130,6 +134,14 @@ public class Request {
 
     public void setTerm(Term term) {
         this.term = term;
+    }
+
+    public String getApprovedTime() {
+        return approvedTime;
+    }
+
+    public void setApprovedTime(String approvedTime) {
+        this.approvedTime = approvedTime;
     }
 
 }

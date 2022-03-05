@@ -25,7 +25,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http.csrf(csrf -> csrf.disable());
         http.authorizeRequests()
                 .antMatchers("/*").authenticated()
                 .antMatchers("/requests/**").hasAnyRole("CONTROLLER", "SUPERUSER")
@@ -34,8 +33,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/courses/{course_id}/request")
                 .hasAnyRole("TENURETRACK", "LECTURER", "SUPERUSER")
                 .antMatchers(
-                        "/users/",
-                        "/terms/",
+                        "/users/**",
+                        "/terms/**",
                         "/users/{user_id}/permissions")
                 .hasAnyRole("ADMIN", "CONTROLLER", "SUPERUSER")
                 .antMatchers(

@@ -28,9 +28,12 @@
                 </div>
             </div>
             <div>
-                <div id='calendar'></div>
                 <br>
-                <button id="submit_request" type="button" class="btn btn-primary">submit</button>
+                <form method="POST" th:action="@{/courses/__${course.getId()}__/request/create}" th:object="${request}">
+                    <div id='calendar'></div>
+                    <button type="submit">Register</button>
+                    <input name="times" th:value="*{times}" type="hidden" id="times">
+                </form>
             </div>
 
         </div>
@@ -123,7 +126,11 @@
                             $("#calendar").fullCalendar("removeEvents", event._id);
                             $("#priorities").append(new Option(event.title, Direction2[event
                                 .title]));
+                            updateHidenInoput();
+
                         });
+                        updateHidenInoput();
+
                     }
                 });
                 $('#calendar').fullCalendar('gotoDate', currentDate);
@@ -133,10 +140,14 @@
                     $(`#priorities option[value='${$("#priorities").val()}']`).remove();
                     $("#createEventModal").modal("hide");
                 });
-                $("#submit_request").click(event => {
-                    event.preventDefault();
-                    fire_ajax_submit();
-                });
+
+                function convertToJson(value, _, _) {
+                    dates.push({
+                        title: value.title,
+                        start: value.start.toISOString(),
+                        end: value.end.toISOString()
+                    })
+                };
 
                 function addevent(title, start, end) {
                     calendarEL.fullCalendar('renderEvent', {
@@ -146,32 +157,12 @@
                     }, true);
                 };
 
-                function convertToJson(value, _, _) {
-                    dates.push({
-                        title: value.title,
-                        start: value.start.toISOString(),
-                        end: value.end.toISOString()
-                    })
+                function updateHidenInoput() {
+                    dates = [];
+                    calendarEL.fullCalendar("clientEvents").forEach(convertToJson);
+                    $('#times').val(JSON.stringify(dates));
                 }
 
-                function fire_ajax_submit() {
-                    calendarEL.fullCalendar("clientEvents").forEach(convertToJson);
-                    $.ajax({
-                        type: "POST",
-                        contentType: "application/json",
-                        url: window.location.pathname,
-                        data: JSON.stringify(dates),
-                        dataType: 'json',
-                        cache: false,
-                        timeout: 600000,
-                        success: function (data) {
-                            location.reload();
-                        },
-                        error: function (e) {
-                            location.reload();
-                        }
-                    });
-                }
 
             });
         </script>
