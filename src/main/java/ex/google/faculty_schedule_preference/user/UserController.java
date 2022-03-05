@@ -206,13 +206,10 @@ public class UserController {
     public String manageUsers(Model model, HttpServletRequest request,
             @AuthenticationPrincipal UserDetails userDetails) {
         User currentUser = repository.findByUsername(userDetails.getUsername()).get();
-        List<User> users;
         if (request.isUserInRole("ROLE_ADMIN") || request.isUserInRole("ROLE_SUPERUSER"))
-            users = repository.findAll();
+            model.addAttribute("users", repository.findAll());
         else
-            users = repository.findAllByDepartmentsIn(currentUser.getDepartments());
-
-        model.addAttribute("users", users);
+            model.addAttribute("users", repository.findAllByDepartmentsIn(currentUser.getDepartments()));
 
         return "user/index";
     }
