@@ -3,13 +3,13 @@
     layout:decorate="~{page_layout/layout}">
 
 <head>
-    <title>User Availabilities</title>
+    <title>My Availabilities</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 
 <body>
     <section layout:fragment="content">
-        <h1 class="title">User Availabilities</h1>
+        <h1 class="title" th:text="|${title} Availabilities|"></h1>
         <table class="fsp-table fsp-table-striped">
 
             <thead>
@@ -29,12 +29,14 @@
                     <td th:text="${userAvailability.getMaxUnit()}" />
                     <td th:text="${userAvailability.getReleaseTime()}" />
                     <td>
-                        <a th:href="|/users/${userAvailability.getUser().getId()}/user_availability/${userAvailability.getId()}|"
-                            th:text="View" />
+                        <a th:href="|/my_availabilities/${userAvailability.getId()}|" th:text="View" />
                     </td>
                 </tr>
             </tbody>
         </table>
+        <div class="col-lg-3">
+            <a th:href="@{/my_availability/new}" class="btn fsp-button"> Add Availability</a>
+        </div>
     </section>
 
 

@@ -62,9 +62,6 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private MyUserDetailsService myUserDetailsService;
-
     @Value("${boxapi}")
     private String boxapi;
 
@@ -105,25 +102,13 @@ public class UserController {
     }
 
     @GetMapping("/login")
-    public String login(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+    public String login(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User currentUser = repository.findByUsername(userDetails.getUsername()).get();
-        if (authentication == null || authentication instanceof AnonymousAuthenticationToken || currentUser.getEnabled() == false) {
-                return "user/login";
+        if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
+            return "user/login";
         }
         return "redirect:../";
     }
-//
-//    @PostMapping("/login")
-//    public String postLogin( @AuthenticationPrincipal UserDetails userDetails){
-//        User currentUser = repository.findByUsername(userDetails.getUsername()).get();
-//        if(currentUser.getEnabled() == false){
-//            return "redirect:user/login";
-//        }else{
-//
-//        }
-//        return "redirect:../";
-//    }
 
     @GetMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response) {
@@ -146,12 +131,7 @@ public class UserController {
         return userService.register(request);
     }
 
-    @GetMapping(path = "/signup/confirm")
-    public String confirm(@RequestParam("token")String token){
-        return userService.confirmToken(token);
-    }
-
-    @PostMapping("/upload-resume")
+    @PostMapping("/upload_resume")
     public String postUploadFile(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes,
             @AuthenticationPrincipal UserDetails userDetails) throws IOException, NoSuchAlgorithmException {
         BoxAPIConnection api = new BoxAPIConnection(boxapi);
@@ -180,10 +160,10 @@ public class UserController {
 
         redirectAttributes.addFlashAttribute("message");
         redirectAttributes.addFlashAttribute("alertClass", "alert-success");
-        return "redirect:/users/upload-resume";
+        return "redirect:/users/upload_resume";
     }
 
-    @GetMapping("/upload-resume")
+    @GetMapping("/upload_resume")
     public String uploadFile() {
         return "user/upload_resume";
     }

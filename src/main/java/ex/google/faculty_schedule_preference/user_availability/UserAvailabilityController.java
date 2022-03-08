@@ -1,8 +1,8 @@
 package ex.google.faculty_schedule_preference.user_availability;
 
-import javax.sql.DataSource;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,11 +26,8 @@ public class UserAvailabilityController {
       @Autowired
       private TermRepository termRepository;
 
-      @Autowired
-      DataSource dataSource;
-
       @GetMapping("user_availabilities")
-      public String Index(Model model) {
+      public String index(Model model) {
             model.addAttribute("userAvailabilities", repository.findAll());
             return "user_availability/index";
       }
@@ -39,36 +36,56 @@ public class UserAvailabilityController {
       public String userAvailabilities(@PathVariable("user_id") long user_id, Model model) {
             User user = userRepository.findById(user_id).get();
             model.addAttribute("userAvailabilities", user.getUserAvailabilities());
+            model.addAttribute("title", user.getName() + "'s");
+
             return "user_availability/user_availabilities";
       }
 
       @GetMapping("users/{user_id}/user_availability/{user_availability_id}")
-      public String Index(@PathVariable("user_id") long user_id,
+      public String view(@PathVariable("user_id") long user_id,
                   @PathVariable("user_availability_id") long user_availability_id, Model model) {
             model.addAttribute("user", userRepository.findById(user_id).get());
             model.addAttribute("user_availability", repository.findById(user_availability_id).get());
             return "user_availability/view";
       }
 
-      @GetMapping("users/{user_id}/user_availability/new")
-      public String new_(@PathVariable("user_id") long user_id, Model model) {
-            User user = userRepository.findById(user_id).get();
+      @GetMapping("my_availabilities")
+      public String myAvailabilities(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+            User currentUser = userRepository.findByUsername(userDetails.getUsername()).get();
+            model.addAttribute("userAvailabilities", currentUser.getUserAvailabilities());
+            model.addAttribute("title", "My");
+
+            return "user_availability/user_availabilities";
+      }
+
+      @GetMapping("my_availabilities/{id}")
+      public String viewMyAvailability(Model model, @PathVariable("id") long id,
+                  @AuthenticationPrincipal UserDetails userDetails) {
+            User currentUser = userRepository.findByUsername(userDetails.getUsername()).get();
+            model.addAttribute("user", currentUser);
+            model.addAttribute("user_availability", repository.findById(id).get());
+            return "user_availability/view";
+      }
+
+      @GetMapping("my_availability/new")
+      public String myAvailabilityNew(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+            User currentUser = userRepository.findByUsername(userDetails.getUsername()).get();
             model.addAttribute("terms", termRepository.findAll());
-            model.addAttribute("user", user);
+            model.addAttribute("user", currentUser);
             model.addAttribute("user_availability", new UserAvailability());
             return "user_availability/new";
       }
 
       // Post: api/UserAvailability/Create
-      @PostMapping("users/{user_id}/user_availability/create")
-      public String SubmitEvent(@ModelAttribute UserAvailability userAvailability,
-                  @PathVariable long user_id,
+      @PostMapping("my_availability/create")
+      public String myAvailabilityCreate(@ModelAttribute UserAvailability userAvailability,
+                  @AuthenticationPrincipal UserDetails userDetails,
                   RedirectAttributes redirectAttributes) {
-            User user = userRepository.findById(user_id).get();
-            userAvailability.setUser(user);
+            User currentUser = userRepository.findByUsername(userDetails.getUsername()).get();
+            userAvailability.setUser(currentUser);
             repository.save(userAvailability);
             redirectAttributes.addFlashAttribute("message", "Successfully updated availability and units");
             redirectAttributes.addFlashAttribute("alertClass", "alert-success");
-            return "redirect: user_availability/index";
+            return "redirect: /my_availabilities";
       }
 }
