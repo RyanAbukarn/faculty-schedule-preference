@@ -62,6 +62,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private MyUserDetailsService myUserDetailsService;
+
     @Value("${boxapi}")
     private String boxapi;
 
@@ -102,13 +105,25 @@ public class UserController {
     }
 
     @GetMapping("/login")
-    public String login(Model model) {
+    public String login(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
-            return "user/login";
+        User currentUser = repository.findByUsername(userDetails.getUsername()).get();
+        if (authentication == null || authentication instanceof AnonymousAuthenticationToken || currentUser.getEnabled() == false) {
+                return "user/login";
         }
         return "redirect:../";
     }
+//
+//    @PostMapping("/login")
+//    public String postLogin( @AuthenticationPrincipal UserDetails userDetails){
+//        User currentUser = repository.findByUsername(userDetails.getUsername()).get();
+//        if(currentUser.getEnabled() == false){
+//            return "redirect:user/login";
+//        }else{
+//
+//        }
+//        return "redirect:../";
+//    }
 
     @GetMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response) {
@@ -129,6 +144,11 @@ public class UserController {
     @PostMapping("/signup")
     public String register(UserInput request) {
         return userService.register(request);
+    }
+
+    @GetMapping(path = "/signup/confirm")
+    public String confirm(@RequestParam("token")String token){
+        return userService.confirmToken(token);
     }
 
     @PostMapping("/upload-resume")

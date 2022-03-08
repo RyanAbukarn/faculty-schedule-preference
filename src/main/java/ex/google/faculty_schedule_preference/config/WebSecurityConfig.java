@@ -47,6 +47,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginProcessingUrl("/users/login")
                 .defaultSuccessUrl("/users/login")
                 .permitAll();
+
+        http.csrf(csrf -> csrf.disable());
     }
 
     @Override
