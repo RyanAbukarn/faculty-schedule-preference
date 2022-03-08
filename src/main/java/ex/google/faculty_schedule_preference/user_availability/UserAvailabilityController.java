@@ -36,8 +36,6 @@ public class UserAvailabilityController {
       public String userAvailabilities(@PathVariable("user_id") long user_id, Model model) {
             User user = userRepository.findById(user_id).get();
             model.addAttribute("userAvailabilities", user.getUserAvailabilities());
-            model.addAttribute("title", user.getName() + "'s");
-
             return "user_availability/user_availabilities";
       }
 
@@ -53,8 +51,6 @@ public class UserAvailabilityController {
       public String myAvailabilities(Model model, @AuthenticationPrincipal UserDetails userDetails) {
             User currentUser = userRepository.findByUsername(userDetails.getUsername()).get();
             model.addAttribute("userAvailabilities", currentUser.getUserAvailabilities());
-            model.addAttribute("title", "My");
-
             return "user_availability/user_availabilities";
       }
 

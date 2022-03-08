@@ -15,6 +15,7 @@ import java.util.*;
 public class FacultySchedulePreferenceApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(FacultySchedulePreferenceApplication.class, args);
+
 	}
 
 	@Bean

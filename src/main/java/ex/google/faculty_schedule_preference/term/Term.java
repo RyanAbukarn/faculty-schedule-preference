@@ -1,7 +1,5 @@
 package ex.google.faculty_schedule_preference.term;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -79,16 +77,6 @@ public class Term {
 
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
-    }
-
-    public String humanEndDate() {
-        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-        return dateFormat.format(endDate);
-    }
-
-    public String humanStartDate() {
-        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-        return dateFormat.format(startDate);
     }
 
 }

@@ -46,7 +46,7 @@ public class Request {
     private String times;
 
     @JsonProperty("approved_time")
-    @Column(name = "approved_time", nullable = true, columnDefinition = "TEXT")
+    @Column(name = "approved_time", nullable = false, columnDefinition = "TEXT")
     private String approvedTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
