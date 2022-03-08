@@ -27,7 +27,7 @@ public class Course {
     static Map<Integer, String> classType = Map.of(1, "Online", 2, "In-person", 3, "Hybrid");
 
     @Transient
-    static Map<Integer, String> statusEnum = Map.of(1, "open", 2, "under_review", 3, "closed");
+    static Map<Integer, String> statusEnum = Map.of(1, "open", 2, "under review", 3, "closed");
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -90,6 +90,19 @@ public class Course {
         this.type = type;
         this.startTime = startTime;
         this.endTime = endTime;
+    }
+
+    public Course(String name, String description, String prefix, double unit, int type, String daysOfWeek,
+            String startTime,
+            String endTime, Term term) {
+        this.name = name;
+        this.description = description;
+        this.prefix = prefix;
+        this.unit = unit;
+        this.type = type;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.term = term;
     }
 
     public long getId() {
@@ -186,6 +199,14 @@ public class Course {
 
     public void setWeekSchedule(String weekSchedule) {
         this.weekSchedule = weekSchedule;
+    }
+
+    public String getHumanClassType() {
+        return classType.get(this.type);
+    }
+
+    public String getHumanStatus() {
+        return statusEnum.get(this.type);
     }
 
 }
