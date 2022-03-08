@@ -40,16 +40,31 @@
               </div>
 
               <div class="form-group">
-                <label> Course Type</label>
-                <input type="number" name="type" th:field="*{type}" class="form-control" />
+                <label>Select Class Type </label>
+                <select class="form-control" id="classType" th:field="*{type}">
+
+                  <option th:each="type : ${classType}" th:value="${type.getKey()}" th:text="${type.getValue()}">
+
+                  </option>
+                </select>
               </div>
 
               <div class="form-group">
                 <label>Select Department </label>
-                <select class="form-control" id="departments" name="departments">
+                <select class="form-control" id="departments" name="department_id">
 
                   <option th:each="department : ${departments}" th:value="${department.id}"
                     th:text="${department.name}">
+
+                  </option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label>Select Term </label>
+                <select class="form-control" id="terms" name="term_id">
+
+                  <option th:each="term : ${terms}" th:value="${term.id}" th:text="${term.name}">
 
                   </option>
                 </select>
@@ -69,21 +84,13 @@
                 <label>
                   Select Days </label>
                 <div th:each="day : ${weekDays}">
-                  <input name="daysOfWeek" th:value="${day.getValue()}" type="checkbox" id="weekDays">
+                  <input th:field="*{weekSchedule}" th:value="${day.getValue()}" type="checkbox" id="weekDays">
                   <span th:text="${day.getValue()}"></span>
                 </div>
               </div>
 
 
-              <div class="form-group">
-                <label>Select Class Type </label>
-                <select class="form-control" id="classType" name="classTypes">
 
-                  <option th:each="type : ${classType}" th:value="${type.getKey()}" th:text="${type.getValue()}">
-
-                  </option>
-                </select>
-              </div>
               <div class="form-group">
                 <label>Description</label>
                 <input type="text" name="description" th:field="*{description}" />
