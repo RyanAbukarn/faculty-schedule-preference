@@ -1,5 +1,7 @@
 package ex.google.faculty_schedule_preference.user;
 
+import ex.google.faculty_schedule_preference.department.Department;
+import ex.google.faculty_schedule_preference.department.DepartmentRepository;
 import ex.google.faculty_schedule_preference.document.Document;
 import ex.google.faculty_schedule_preference.document.DocumentRepository;
 import ex.google.faculty_schedule_preference.permission.Permission;
@@ -25,6 +27,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -37,6 +40,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.HashMap;
+import java.util.HashSet;
 
 @Controller
 
@@ -51,6 +55,12 @@ public class UserController {
 
     @Autowired
     private DocumentRepository documentRepository;
+
+    @Autowired
+    private DepartmentRepository departmentRepository;
+
+    @Autowired
+    private UserService userService;
 
     @Value("${boxapi}")
     private String boxapi;
@@ -83,7 +93,8 @@ public class UserController {
         // re-add what is checked
         User user = repository.findById(user_id).get();
         user.getPermissions().clear();
-        user.setPermissions(permissionRepository.findAllById(permissions));
+        Set<Permission> permissionsSet = new HashSet<>(permissionRepository.findAllById(permissions));
+        user.setPermissions(permissionsSet);
         repository.save(user);
         redirectAttributes.addFlashAttribute("message", "Success");
         redirectAttributes.addFlashAttribute("alertClass", "alert-success");
@@ -96,7 +107,7 @@ public class UserController {
         if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
             return "user/login";
         }
-        return "redirect: /";
+        return "redirect:../";
     }
 
     @GetMapping("/logout")
@@ -108,7 +119,19 @@ public class UserController {
         return "redirect:/users/login";
     }
 
-    @PostMapping("/upload-resume")
+    @GetMapping("/signup")
+    public String signup(Model model) {
+        model.addAttribute("departments", departmentRepository.findAll());
+        model.addAttribute("user", new User());
+        return "user/signup";
+    }
+
+    @PostMapping("/signup")
+    public String register(UserInput request) {
+        return userService.register(request);
+    }
+
+    @PostMapping("/upload_resume")
     public String postUploadFile(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes,
             @AuthenticationPrincipal UserDetails userDetails) throws IOException, NoSuchAlgorithmException {
         BoxAPIConnection api = new BoxAPIConnection(boxapi);
@@ -135,33 +158,58 @@ public class UserController {
         BoxFolder rootFolder = childFolderInfo.getResource();
         rootFolder.uploadFile(file.getInputStream(), file.getOriginalFilename());
 
-        redirectAttributes.addFlashAttribute("message", "Successfully uploaded the resume");
+        redirectAttributes.addFlashAttribute("message");
         redirectAttributes.addFlashAttribute("alertClass", "alert-success");
-        return "redirect:/users/upload-resume";
+        return "redirect:/users/upload_resume";
     }
 
-    @GetMapping("/upload-resume")
+    @GetMapping("/upload_resume")
     public String uploadFile() {
         return "user/upload_resume";
     }
 
-    // Function sends User data to View where Controller, Admin or Superuser have
+    @GetMapping("/{user_id}/departments")
+    public String getDepartments(@PathVariable("user_id") long user_id, Model model) {
+        // get the requested user_id
+        User user = repository.findById(user_id).get();
+        model.addAttribute("user", user);
+
+        List<Department> departments = departmentRepository.findAll();
+        HashMap<String, Boolean> userDepartments = new HashMap<String, Boolean>();
+
+        for (Department userDepartment : user.getDepartments()) {
+            userDepartments.put(userDepartment.getName(), true);
+        }
+        model.addAttribute("userDepartments", userDepartments);
+        model.addAttribute("departments", departments);
+
+        return "user/edit_user_departments";
+    }
+
+    @PostMapping("/{user_id}/departments")
+    public String postDepartments(@PathVariable("user_id") long user_id,
+            @RequestParam("departments") List<Long> departments,
+            RedirectAttributes redirectAttributes) {
+        User user = repository.findById(user_id).get();
+        user.getDepartments().clear();
+        Set<Department> departmentSet = new HashSet<>(departmentRepository.findAllById(departments));
+        user.setDepartment(departmentSet);
+        repository.save(user);
+        redirectAttributes.addFlashAttribute("message", "Success");
+        redirectAttributes.addFlashAttribute("alertClass", "alert-success");
+        return "redirect:/users/" + user_id + "/departments";
+    }
+
+    // Function sends User data to View where Controller, Admin or SuperUser have
     // access to.
     @GetMapping("")
     public String manageUsers(Model model, HttpServletRequest request,
             @AuthenticationPrincipal UserDetails userDetails) {
-        List<User> users;
         User currentUser = repository.findByUsername(userDetails.getUsername()).get();
-        // if the current user is an admin or superuser send all users to View
-        if (request.isUserInRole("ROLE_ADMIN") || request.isUserInRole("ROLE_SUPERUSER")) {
-            users = repository.findAll();
-        } else {
-            // if the current user is a controller then only send users within the same
-            // department
-            users = repository.findAllByDepartment(currentUser.getDepartment());
-        }
-
-        model.addAttribute("users", users);
+        if (request.isUserInRole("ROLE_ADMIN") || request.isUserInRole("ROLE_SUPERUSER"))
+            model.addAttribute("users", repository.findAll());
+        else
+            model.addAttribute("users", repository.findAllByDepartmentsIn(currentUser.getDepartments()));
 
         return "user/index";
     }

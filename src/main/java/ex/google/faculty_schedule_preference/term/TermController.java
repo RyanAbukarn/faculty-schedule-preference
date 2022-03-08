@@ -1,5 +1,6 @@
 package ex.google.faculty_schedule_preference.term;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,11 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class TermController {
-    private final TermRepository repository;
-
-    TermController(TermRepository repository) {
-        this.repository = repository;
-    }
+    @Autowired
+    private TermRepository repository;
 
     @GetMapping("terms")
     public String index(Model model) {

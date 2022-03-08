@@ -1,7 +1,6 @@
 package ex.google.faculty_schedule_preference.course;
 
 import javax.persistence.Transient;
-import java.sql.Time;
 import java.util.Map;
 
 import javax.persistence.Column;
@@ -22,21 +21,24 @@ import ex.google.faculty_schedule_preference.term.Term;
         @UniqueConstraint(name = "course_prefix_unique", columnNames = "prefix") })
 public class Course {
     @Transient
-    private Map<Integer, String> weekDays = Map.of(1, "Sun", 2, "Mon", 3, "Tue", 4, "Wed", 5, "Thu", 6, "Fri", 7,
+    static Map<Integer, String> weekDays = Map.of(1, "Sun", 2, "Mon", 3, "Tue", 4, "Wed", 5, "Thu", 6, "Fri", 7,
             "Sat");
     @Transient
-    private Map<Integer, String> classType = Map.of(1, "Online", 2, "In-person", 3, "Hybrid");
+    static Map<Integer, String> classType = Map.of(1, "Online", 2, "In-person", 3, "Hybrid");
 
     @Transient
-    private Map<Integer, String> statusEnum = Map.of(1, "open", 2, "under_review", 3, "closed");
+    static Map<Integer, String> statusEnum = Map.of(1, "open", 2, "under review", 3, "closed");
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false)
     private long id;
 
-    @Column(name = "course_name", nullable = false, columnDefinition = "TEXT")
+    @Column(name = "name", nullable = false, columnDefinition = "TEXT")
     private String name;
+
+    @Column(name = "description", nullable = false, columnDefinition = "TEXT")
+    private String description;
 
     @Column(name = "prefix", nullable = false, columnDefinition = "TEXT")
     private String prefix;
@@ -48,13 +50,16 @@ public class Course {
     private int type;
 
     @Column(name = "start_time", nullable = false)
-    private Time startTime;
+    private String startTime;
 
     @Column(name = "end_time", nullable = false)
-    private Time endTime;
+    private String endTime;
 
     @Column(name = "status", nullable = false)
     private int status;
+
+    @Column(name = "weekSchedule", nullable = false)
+    private String weekSchedule;
 
     @OneToOne(fetch = FetchType.LAZY)
     private Department department;
@@ -65,8 +70,8 @@ public class Course {
     public Course() {
     }
 
-    public Course(String name, String prefix, double unit, int type, String daysOfWeek, Time startTime,
-            Time endTime) {
+    public Course(String name, String prefix, double unit, int type, String daysOfWeek, String startTime,
+            String endTime) {
         this.name = name;
         this.prefix = prefix;
         this.unit = unit;
@@ -75,8 +80,45 @@ public class Course {
         this.endTime = endTime;
     }
 
+    public Course(String name, String description, String prefix, double unit, int type, String daysOfWeek,
+            String startTime,
+            String endTime) {
+        this.name = name;
+        this.description = description;
+        this.prefix = prefix;
+        this.unit = unit;
+        this.type = type;
+        this.startTime = startTime;
+        this.endTime = endTime;
+    }
+
+    public Course(String name, String description, String prefix, double unit, int type, String daysOfWeek,
+            String startTime,
+            String endTime, Term term) {
+        this.name = name;
+        this.description = description;
+        this.prefix = prefix;
+        this.unit = unit;
+        this.type = type;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.term = term;
+    }
+
     public long getId() {
         return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     public String getName() {
@@ -85,6 +127,14 @@ public class Course {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getPrefix() {
@@ -111,19 +161,19 @@ public class Course {
         this.type = type;
     }
 
-    public Time getStartTime() {
+    public String getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Time startTime) {
+    public void setStartTime(String startTime) {
         this.startTime = startTime;
     }
 
-    public Time getEndTime() {
+    public String getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(Time endTime) {
+    public void setEndTime(String endTime) {
         this.endTime = endTime;
     }
 
@@ -141,6 +191,22 @@ public class Course {
 
     public void setTerm(Term term) {
         this.term = term;
+    }
+
+    public String getWeekSchedule() {
+        return weekSchedule;
+    }
+
+    public void setWeekSchedule(String weekSchedule) {
+        this.weekSchedule = weekSchedule;
+    }
+
+    public String getHumanClassType() {
+        return classType.get(this.type);
+    }
+
+    public String getHumanStatus() {
+        return statusEnum.get(this.type);
     }
 
 }

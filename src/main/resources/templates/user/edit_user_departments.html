@@ -1,0 +1,37 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{page_layout/layout}">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Update Departments Page</title>
+    <link th:href="@{/css/permission/general.css}" rel="stylesheet" />
+</head>
+
+<body>
+    <section layout:fragment="content">
+
+        <div th:if="${message}" th:text="${message}" th:class="${'alert ' + alertClass}" />
+
+        <form action="#" method="POST" th:action="@{/users/__${user.getId()}__/departments}" class="fsp-form">
+            <h1 id="roles-h2">Update User Departments</h1>
+            <div id="roles-user-details">
+                <span id="roles-csun-id">CSUN ID:</span>
+                <span id="roles-id-number" th:text="${user.csun_id}">Default</span>
+            </div>
+            <div id="roles-container">
+                <div th:each="department : ${departments}">
+                    <div>
+                        <input name="departments" th:value="${department.getId()}" type="checkbox" id="departments"
+                            th:checked="${userDepartments.get(department.getName())}">
+                        <span th:text="${department.getName()}"></span>
+                    </div>
+                </div>
+                <input type="submit" id="submit" value="Submit" class="fsp-button">
+            </div>
+        </form>
+    </section>
+</body>
+
+</html>
