@@ -24,8 +24,7 @@
                     <div class="fsp-card-body">
                         <h5 class="card-title" th:text="|Name: ${user.name}|"></h5>
                         <h5 class="card-title" th:text="|CSUN Id: ${user.csun_id}|"></h5>
-                        <form method="POST" th:action="@{/users/__${user.getId()}__/user_availability/create}"
-                            th:object="${user_availability}">
+                        <form method="POST" th:action="@{/my_availability/create}" th:object="${user_availability}">
                             <label for="minUnit">Select mimum units:</label>
                             <select name="minUnit" id="minUnit" th:field="*{minUnit}">
                                 <option value="3.0">3.0</option>

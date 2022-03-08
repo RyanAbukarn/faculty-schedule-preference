@@ -131,7 +131,7 @@ public class UserController {
         return userService.register(request);
     }
 
-    @PostMapping("/upload-resume")
+    @PostMapping("/upload_resume")
     public String postUploadFile(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes,
             @AuthenticationPrincipal UserDetails userDetails) throws IOException, NoSuchAlgorithmException {
         BoxAPIConnection api = new BoxAPIConnection(boxapi);
@@ -160,10 +160,10 @@ public class UserController {
 
         redirectAttributes.addFlashAttribute("message");
         redirectAttributes.addFlashAttribute("alertClass", "alert-success");
-        return "redirect:/users/upload-resume";
+        return "redirect:/users/upload_resume";
     }
 
-    @GetMapping("/upload-resume")
+    @GetMapping("/upload_resume")
     public String uploadFile() {
         return "user/upload_resume";
     }
