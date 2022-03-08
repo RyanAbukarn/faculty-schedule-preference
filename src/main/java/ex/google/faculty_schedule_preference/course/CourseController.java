@@ -1,11 +1,8 @@
 package ex.google.faculty_schedule_preference.course;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -46,31 +43,27 @@ public class CourseController {
     public String new_(Model model) {
 
         Course course = new Course();
-
         model.addAttribute("course", course);
         model.addAttribute("weekDays", Course.weekDays);
         model.addAttribute("classType", Course.classType);
         model.addAttribute("departments", depRepo.findAll());
+        model.addAttribute("terms", termRepo.findAll());
+
         return "course/new";
     }
 
     @PostMapping("/create")
     public String create(
             @ModelAttribute("course") Course course,
-            @RequestParam("departments") Long dept_id,
-            @RequestParam("daysOfWeek") String[] weekDays,
-            @RequestParam("classTypes") int classType) {
-        Map<String, Boolean> newWeekDays = new HashMap<String, Boolean>();
-        for (String day : weekDays)
-            newWeekDays.put(day, true);
-
-        JSONObject weekDaysJson = new JSONObject(newWeekDays);
-        Department department = depRepo.findById(dept_id).get();
+            @RequestParam("department_id") Long departmentID,
+            @RequestParam("term_id") Long termID) {
+        Department department = depRepo.findById(departmentID).get();
+        Term term = termRepo.findById(termID).get();
+        course.setTerm(term);
         course.setDepartment(department);
-        course.setWeekSchedule(weekDaysJson.toString());
-        course.setType(classType);
+        course.setWeekSchedule(course.getWeekSchedule());
+        course.setType(course.getType());
         course.setStatus(1);
-        course.setTerm(termRepo.getById(1l));
         courseRepo.save(course);
         return "redirect:/courses";
     }
@@ -80,18 +73,14 @@ public class CourseController {
         Course course = courseRepo.findById(course_id).get();
 
         HashMap<String, Boolean> courseWeekDays = new HashMap<String, Boolean>();
-        JSONObject jObject = new JSONObject(course.getWeekSchedule());
-        Iterator<?> keys = jObject.keys();
 
-        while (keys.hasNext()) {
-            String key = (String) keys.next();
-            Boolean value = jObject.getBoolean(key);
-            courseWeekDays.put(key, value);
-        }
+        for (String day : course.getWeekSchedule().split(","))
+            courseWeekDays.put(day, true);
 
-        model.addAttribute("course", courseRepo.findById(course_id).get());
+        model.addAttribute("course", course);
         model.addAttribute("weekDays", Course.weekDays);
         model.addAttribute("courseWeekDays", courseWeekDays);
+        model.addAttribute("types", Course.classType);
 
         model.addAttribute("departments", depRepo.findAll());
         return "course/edit";
@@ -99,20 +88,15 @@ public class CourseController {
 
     @PostMapping("{course_id}/update")
     public String update(@PathVariable long course_id, @ModelAttribute("course") Course requestCourse,
-            @RequestParam("daysOfWeek") String[] weekDays,
-            @RequestParam("departments") String dept) {
-        Map<String, Boolean> newWeekDays = new HashMap<String, Boolean>();
-        for (String day : weekDays)
-            newWeekDays.put(day, true);
+            @RequestParam("department_id") long dept_id) {
 
-        JSONObject weekDaysJson = new JSONObject(newWeekDays);
-        Department department = depRepo.findByPrefix(dept);
+        Department department = depRepo.findById(dept_id).get();
         Course course = courseRepo.getById(course_id);
         course.setName(requestCourse.getName());
         course.setPrefix(requestCourse.getPrefix());
         course.setType(requestCourse.getType());
         course.setUnit(requestCourse.getUnit());
-        course.setWeekSchedule(weekDaysJson.toString());
+        course.setWeekSchedule(requestCourse.getWeekSchedule());
         course.setDepartment(department);
         course.setStartTime(requestCourse.getStartTime());
         course.setEndTime(requestCourse.getEndTime());

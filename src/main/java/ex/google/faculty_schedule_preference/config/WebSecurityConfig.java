@@ -29,15 +29,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/*").authenticated()
                 .antMatchers("/requests/**").hasAnyRole("CONTROLLER", "SUPERUSER")
                 .antMatchers(
-                        "/my-requests/**",
-                        "/courses/{course_id}/request")
-                .hasAnyRole("TENURETRACK", "LECTURER", "SUPERUSER")
-                .antMatchers(
-                        "/users/",
-                        "/terms/**",
-                        "/users/{user_id}/permissions")
+                        "/courses/**",
+                        "/users/**",
+                        "/terms/**")
                 .hasAnyRole("ADMIN", "CONTROLLER", "SUPERUSER")
                 .antMatchers(
+                        "/upload_resume/**",
+                        "/my_availabilities/**",
+                        "/my_requests/**",
                         "/",
                         "/users/signup")
                 .permitAll()

@@ -2,7 +2,6 @@ package ex.google.faculty_schedule_preference.request;
 
 import ex.google.faculty_schedule_preference.course.Course;
 import ex.google.faculty_schedule_preference.request_feedback.Requestfeedback;
-import ex.google.faculty_schedule_preference.term.Term;
 import ex.google.faculty_schedule_preference.user.User;
 
 import javax.persistence.Transient;
@@ -30,10 +29,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Request {
 
     @Transient
-    public static Map<String, Integer> statusValues = Map.of("new", 1, "under_review", 2, "denied", 3, "accpeted",
+    static Map<String, Integer> statusValues = Map.of("new", 1, "under_review", 2, "denied", 3, "accpeted",
             4);
     @Transient
-
     private Map<Integer, String> humanStatusMap = Map.of(1, "New", 2, "Under review", 3, "Denied", 4, "Accpeted");
 
     @Id
@@ -58,9 +56,6 @@ public class Request {
 
     @OneToMany(mappedBy = "request", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Requestfeedback> requestFeedbacks = new ArrayList<Requestfeedback>();
-
-    @OneToOne(fetch = FetchType.LAZY)
-    private Term term;
 
     public Request() {
     }
@@ -126,14 +121,6 @@ public class Request {
 
     public void pushRequestFeedback(Requestfeedback requestFeedback) {
         this.requestFeedbacks.add(requestFeedback);
-    }
-
-    public Term getTerm() {
-        return term;
-    }
-
-    public void setTerm(Term term) {
-        this.term = term;
     }
 
     public String getApprovedTime() {

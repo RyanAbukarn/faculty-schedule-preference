@@ -48,7 +48,7 @@ public class RequestController {
         return "request/index";
     }
 
-    @GetMapping("my-requests")
+    @GetMapping("my_requests")
     public String myRquests(Model model, @AuthenticationPrincipal UserDetails userDetails) {
 
         User currentUser = userRepository.findByUsername(userDetails.getUsername()).get();
@@ -138,7 +138,7 @@ public class RequestController {
         request.setCourse(course);
         request.setUser(currentUser);
         repository.save(request);
-        return "redirect:/my-requests";
+        return "redirect:/my_requests";
     }
 
 }
