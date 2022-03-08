@@ -26,26 +26,29 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         http.authorizeRequests()
-                .antMatchers("/*").authenticated()
-                .antMatchers("/requests/**").hasAnyRole("CONTROLLER", "SUPERUSER")
-                .antMatchers(
-                        "/courses/**",
-                        "/users/**",
-                        "/terms/**")
-                .hasAnyRole("ADMIN", "CONTROLLER", "SUPERUSER")
-                .antMatchers(
-                        "/upload_resume/**",
+                .antMatchers("upload_resume/**",
                         "/my_availabilities/**",
                         "/my_requests/**",
-                        "/",
-                        "/users/signup")
-                .permitAll()
-                .anyRequest().authenticated()
+                        "/courses/{course_id}/request/**",
+                        "/courses",
+                        "/users/logout")
+                .authenticated()
+                .antMatchers("/requests/**").hasAnyRole("CONTROLLER", "SUPERUSER")
+                .antMatchers(
+                        "/courses/{course_id}/**",
+                        "/users",
+                        "/users/",
+                        "/users/{user_id}/permissions/**",
+                        "/users/{user_id}/user_availability/**",
+                        "/terms/**")
+                .hasAnyRole("ADMIN", "CONTROLLER", "SUPERUSER")
                 .and().formLogin()
                 .loginPage("/users/login")
                 .loginProcessingUrl("/users/login")
                 .defaultSuccessUrl("/users/login")
-                .permitAll();
+                .permitAll().and().logout().logoutUrl("/users/logout")
+                .logoutSuccessUrl("/users/login")
+                .invalidateHttpSession(true);
     }
 
     @Override
