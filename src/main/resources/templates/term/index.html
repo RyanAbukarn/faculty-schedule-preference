@@ -24,8 +24,8 @@
 				<tr th:each="term: ${terms}">
 					<td th:text="${term.getName()}" />
 					<td th:text="${term.getPrefix()}" />
-					<td th:text="${term.humanStartDate()}" />
-					<td th:text="${term.humanEndDate()}" />
+					<td th:text="${term.getStartDate()}" />
+					<td th:text="${term.getEndDate()}" />
 				</tr>
 			</tbody>
 		</table>

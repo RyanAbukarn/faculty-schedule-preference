@@ -90,8 +90,7 @@
 
       </table>
       <div class="col-lg-3">
-        <a sec:authorize="hasAnyRole('ADMIN', 'CONTROLLER','SUPERUSER')" th:href="@{/courses/new}"
-          class="btn fsp-button"> Add Course</a>
+        <a th:href="@{/courses/new}" class="btn fsp-button"> Add Course</a>
       </div>
   </section>
 </body>
