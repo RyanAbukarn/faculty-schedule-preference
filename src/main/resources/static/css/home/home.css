@@ -1,0 +1,32 @@
+
+.home-content-container {
+    height: fit-content;
+    width: 500px;
+    margin: 50px auto;
+    border-top-right-radius: 7px;
+    border-top-left-radius: 7px;
+    overflow: hidden;
+}
+
+.home-content-container h2 {
+    text-align: center;
+    font-size: 24px;
+    color: white;
+}
+
+.home-content-container p {
+    text-align: center;
+    font-size: 18px;
+    margin-bottom: 0;
+}
+
+.home-content-upper {
+    padding: 10px;
+    background-color: rgb(44, 44, 44);
+}
+
+.home-content-lower {
+    background-color: rgb(241, 241, 241);
+    padding: 10px;
+    border:rgb(149, 149, 149) 1px solid;
+}
