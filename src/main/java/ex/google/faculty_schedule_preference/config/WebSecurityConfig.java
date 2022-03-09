@@ -2,6 +2,7 @@ package ex.google.faculty_schedule_preference.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -36,6 +37,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/requests/**").hasAnyRole("CONTROLLER", "SUPERUSER")
                 .antMatchers(
                         "/courses/{course_id}/**",
+                        "/users",
                         "/users/",
                         "/users/{user_id}/permissions/**",
                         "/users/{user_id}/user_availability/**",
@@ -50,7 +52,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().formLogin()
                 .loginPage("/users/login")
                 .loginProcessingUrl("/users/login")
-                .defaultSuccessUrl("/users/login")
+                .defaultSuccessUrl("/")
                 .permitAll().and().logout().logoutUrl("/users/logout")
                 .logoutSuccessUrl("/users/login")
                 .invalidateHttpSession(true);

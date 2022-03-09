@@ -35,6 +35,10 @@
                     <div th:if="${param.error}" class="alert alert-error">
                         Invalid username and password.
                     </div>
+                    <div th:if="${message}" th:text="${message}" class="alert alert-error">
+                        Activate account from email link
+                    </div>
+                    <!-- th:class="${'alert ' + alertClass}"  -->
                     <div th:if="${param.logout}" class="alert alert-success">
                         You have been logged out.
                     </div>

@@ -18,6 +18,7 @@ import com.box.sdk.BoxFolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -101,7 +102,7 @@ public class UserController {
     }
 
     @GetMapping("/login")
-    public String login(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+    public String login(Model model, @AuthenticationPrincipal UserDetails userDetails, RedirectAttributes redirectAttributes) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
             return "user/login";
@@ -109,7 +110,7 @@ public class UserController {
         else{
             User currentUser = repository.findByUsername(userDetails.getUsername()).get();
             if (currentUser.getEnabled() == false){
-                return "user/login";
+                return "/user/login";
             }
             else{
                 return "redirect:../..";
@@ -224,13 +225,8 @@ public class UserController {
 
     @GetMapping("/{token}/confirm")
     public String confirm(@PathVariable("token") String token) {
-        
+    
         userService.confirmToken(token);
-        // login the session user with user account
-        // redirect to home page
-        
-        return "redirect:../..";
+        return "user/email-activated";
     } 
-
-
 }
