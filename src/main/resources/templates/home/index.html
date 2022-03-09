@@ -8,13 +8,21 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
-
+    <!-- <link rel="stylesheet" href="/src/main/resources/static/css/home/home.css"> -->
+    <link rel="stylesheet" th:href="@{/css/home/home.css}">
 </head>
 
 <body>
     <section layout:fragment="content">
+        <div class="home-content-container">
+            <div class="home-content-upper">
+                <h2>Faculty Schedule Preference</h2>
+            </div>
+            <div class="home-content-lower">
+                <p>This application will help you put your schedule preferences for the upcoming semester. To get started, click on any of the links in the navigation bar above.</p>
+            </div>
+        </div>
     </section>
-
 </body>
 
 </html>
