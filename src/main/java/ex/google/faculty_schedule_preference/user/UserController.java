@@ -107,15 +107,11 @@ public class UserController {
         if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
             return "user/login";
         }
-        else{
-            User currentUser = repository.findByUsername(userDetails.getUsername()).get();
-            if (currentUser.getEnabled() == false){
-                return "/user/login";
-            }
-            else{
-                return "redirect:../..";
-            }
+        User currentUser = repository.findByUsername(userDetails.getUsername()).get();
+        if (currentUser.getEnabled()){
+            return "redirect:../..";
         }
+        return "user/login";
     }
 
     @GetMapping("/logout")
