@@ -68,14 +68,15 @@ public class UserController {
     // function is called to load updateRoles page
     // http://localhost:3001/users/1/permissions
     @RequestMapping(value = "/{user_id}/permissions", method = RequestMethod.GET)
-    String getRoles(@PathVariable("user_id") long user_id, Model model,
+    String getRoles(@PathVariable("user_id") long user_id, Model model, HttpServletRequest request,
             @AuthenticationPrincipal UserDetails userDetails, RedirectAttributes redirectAttributes) {
         User user = repository.findById(user_id).get();
         User currentUser = repository.findByUsername(userDetails.getUsername()).get();
-
+        boolean isAdminOrControllerOrSuperuser = request.isUserInRole("ROLE_SUPERUSER")
+                || request.isUserInRole("ROLE_ADMIN");
         boolean anyMatchInDepartment = currentUser.getDepartments().stream()
                 .anyMatch(department -> user.getDepartments().contains(department));
-        if (anyMatchInDepartment) {
+        if (anyMatchInDepartment || isAdminOrControllerOrSuperuser) {
             model.addAttribute("user", user);
 
             HashMap<String, Boolean> permissions = new HashMap<String, Boolean>();
@@ -96,17 +97,19 @@ public class UserController {
 
     // after admin clicks submit, function is called
     @RequestMapping(value = "/{user_id}/permissions", method = RequestMethod.POST)
-    public String postRoles(@PathVariable("user_id") long user_id,
+    public String postRoles(@PathVariable("user_id") long user_id, HttpServletRequest request,
             @RequestParam("permissions") List<Long> permissions, @AuthenticationPrincipal UserDetails userDetails,
             RedirectAttributes redirectAttributes) {
         // remove everything
         // re-add what is checked
+
         User currentUser = repository.findByUsername(userDetails.getUsername()).get();
         User user = repository.findById(user_id).get();
-
+        boolean isAdminOrControllerOrSuperuser = request.isUserInRole("ROLE_SUPERUSER")
+                || request.isUserInRole("ROLE_ADMIN");
         boolean anyMatchInDepartment = currentUser.getDepartments().stream()
                 .anyMatch(department -> user.getDepartments().contains(department));
-        if (anyMatchInDepartment) {
+        if (anyMatchInDepartment || isAdminOrControllerOrSuperuser) {
             user.getPermissions().clear();
             Set<Permission> permissionsSet = new HashSet<>(permissionRepository.findAllById(permissions));
             user.setPermissions(permissionsSet);
