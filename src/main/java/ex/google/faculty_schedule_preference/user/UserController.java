@@ -1,11 +1,19 @@
 package ex.google.faculty_schedule_preference.user;
 
-import ex.google.faculty_schedule_preference.department.Department;
-import ex.google.faculty_schedule_preference.department.DepartmentRepository;
-import ex.google.faculty_schedule_preference.document.Document;
-import ex.google.faculty_schedule_preference.document.DocumentRepository;
-import ex.google.faculty_schedule_preference.permission.Permission;
-import ex.google.faculty_schedule_preference.permission.PermissionRepository;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.box.sdk.BoxAPIConnection;
+import com.box.sdk.BoxFolder;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,32 +23,23 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import com.box.sdk.BoxAPIConnection;
-
-import com.box.sdk.BoxFolder;
-
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.List;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.HashMap;
-import java.util.HashSet;
+import ex.google.faculty_schedule_preference.department.Department;
+import ex.google.faculty_schedule_preference.department.DepartmentRepository;
+import ex.google.faculty_schedule_preference.document.Document;
+import ex.google.faculty_schedule_preference.document.DocumentRepository;
+import ex.google.faculty_schedule_preference.permission.Permission;
+import ex.google.faculty_schedule_preference.permission.PermissionRepository;
 
 @Controller
 
@@ -102,12 +101,20 @@ public class UserController {
     }
 
     @GetMapping("/login")
-    public String login(Model model) {
+    public String login(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
             return "user/login";
         }
-        return "redirect:../";
+        else{
+            User currentUser = repository.findByUsername(userDetails.getUsername()).get();
+            if (currentUser.getEnabled() == false){
+                return "user/login";
+            }
+            else{
+                return "redirect:../..";
+            }
+        }
     }
 
     @GetMapping("/logout")
@@ -128,7 +135,8 @@ public class UserController {
 
     @PostMapping("/signup")
     public String register(UserInput request) {
-        return userService.register(request);
+        userService.register(request);
+        return "user/email-activation";
     }
 
     @PostMapping("/upload_resume")
@@ -213,5 +221,16 @@ public class UserController {
 
         return "user/index";
     }
+
+    @GetMapping("/{token}/confirm")
+    public String confirm(@PathVariable("token") String token) {
+        
+        userService.confirmToken(token);
+        // login the session user with user account
+        // redirect to home page
+        
+        return "redirect:../..";
+    } 
+
 
 }

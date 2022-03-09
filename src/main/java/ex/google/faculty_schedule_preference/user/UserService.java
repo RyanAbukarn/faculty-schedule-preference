@@ -53,14 +53,14 @@ public class UserService {
                         request.getPassword(),
                         department));
 
-        String link = "http://localhost:3001/users/signup/confirm?token=" + token;
+        String link = "http://localhost:3001/users/" + token + "/confirm";
         emailSender.send(request.getEmail(), buildEmail(request.getName(), link));
 
         return token;
     }
 
     @Transactional
-    public String confirmToken(String token){
+    public void confirmToken(String token){
         ConfirmationToken confirmationToken = confirmationTokenService.getToken(token)
                 .orElseThrow(()->
                         new IllegalStateException("Token not found"));
@@ -76,8 +76,6 @@ public class UserService {
 
         confirmationTokenService.setConfirmedAt(token);
         confirmationToken.getUser().setEnabled(true);
-
-        return "confirmed";
     }
 
     private String buildEmail(String name, String link) {
