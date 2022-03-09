@@ -81,8 +81,11 @@ public class RequestController {
             @PathVariable("request_id") long request_id,
             RedirectAttributes redirectAttributes) {
         Request request = repository.findById(request_id).get();
+        Course course = request.getCourse();
+
         request.setStatus(Request.statusValues.get("accpeted"));
         request.setApprovedTime(approvedTime);
+        course.setStatus(Course.statusValues.get("closed"));
         repository.save(request);
         redirectAttributes.addFlashAttribute("message", "Successfully Approved The Time");
         redirectAttributes.addFlashAttribute("alertClass", "alert-success");

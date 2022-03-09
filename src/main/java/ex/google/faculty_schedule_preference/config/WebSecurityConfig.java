@@ -36,12 +36,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/requests/**").hasAnyRole("CONTROLLER", "SUPERUSER")
                 .antMatchers(
                         "/courses/{course_id}/**",
-                        "/users",
                         "/users/",
+                        "/users",
                         "/users/{user_id}/permissions/**",
                         "/users/{user_id}/user_availability/**",
                         "/terms/**")
                 .hasAnyRole("ADMIN", "CONTROLLER", "SUPERUSER")
+                .antMatchers(
+                        "/users/signup")
+                .anonymous()
+                .anyRequest().authenticated()
                 .and().formLogin()
                 .loginPage("/users/login")
                 .loginProcessingUrl("/users/login")
