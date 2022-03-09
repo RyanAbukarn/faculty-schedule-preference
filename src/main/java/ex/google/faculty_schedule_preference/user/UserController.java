@@ -68,37 +68,57 @@ public class UserController {
     // function is called to load updateRoles page
     // http://localhost:3001/users/1/permissions
     @RequestMapping(value = "/{user_id}/permissions", method = RequestMethod.GET)
-    String getRoles(@PathVariable("user_id") long user_id, Model model) {
+    String getRoles(@PathVariable("user_id") long user_id, Model model,
+            @AuthenticationPrincipal UserDetails userDetails, RedirectAttributes redirectAttributes) {
         User user = repository.findById(user_id).get();
-        model.addAttribute("user", user);
+        User currentUser = repository.findByUsername(userDetails.getUsername()).get();
 
-        HashMap<String, Boolean> permissions = new HashMap<String, Boolean>();
-        permissions.put("ROLE_ADMIN", false);
-        permissions.put("ROLE_CONTROLLER", false);
-        permissions.put("ROLE_TENURETRACK", false);
-        permissions.put("ROLE_LECTURER", false);
-        for (Permission x : user.getPermissions()) {
-            permissions.put(x.getRole(), true);
+        boolean anyMatchInDepartment = currentUser.getDepartments().stream()
+                .anyMatch(department -> user.getDepartments().contains(department));
+        if (anyMatchInDepartment) {
+            model.addAttribute("user", user);
+
+            HashMap<String, Boolean> permissions = new HashMap<String, Boolean>();
+            permissions.put("ROLE_ADMIN", false);
+            permissions.put("ROLE_CONTROLLER", false);
+            permissions.put("ROLE_TENURETRACK", false);
+            permissions.put("ROLE_LECTURER", false);
+            for (Permission x : user.getPermissions()) {
+                permissions.put(x.getRole(), true);
+            }
+            model.addAttribute("permissions", permissions);
+            return "permission/updateRoles";
         }
-        model.addAttribute("permissions", permissions);
-        return "permission/updateRoles";
+        redirectAttributes.addFlashAttribute("message", "Can't access because you don't have permissions");
+        redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
+        return "redirect:/users";
     }
 
     // after admin clicks submit, function is called
     @RequestMapping(value = "/{user_id}/permissions", method = RequestMethod.POST)
     public String postRoles(@PathVariable("user_id") long user_id,
-            @RequestParam("permissions") List<Long> permissions,
+            @RequestParam("permissions") List<Long> permissions, @AuthenticationPrincipal UserDetails userDetails,
             RedirectAttributes redirectAttributes) {
         // remove everything
         // re-add what is checked
+        User currentUser = repository.findByUsername(userDetails.getUsername()).get();
         User user = repository.findById(user_id).get();
-        user.getPermissions().clear();
-        Set<Permission> permissionsSet = new HashSet<>(permissionRepository.findAllById(permissions));
-        user.setPermissions(permissionsSet);
-        repository.save(user);
-        redirectAttributes.addFlashAttribute("message", "Success");
-        redirectAttributes.addFlashAttribute("alertClass", "alert-success");
-        return "redirect:/users/" + user_id + "/permissions";
+
+        boolean anyMatchInDepartment = currentUser.getDepartments().stream()
+                .anyMatch(department -> user.getDepartments().contains(department));
+        if (anyMatchInDepartment) {
+            user.getPermissions().clear();
+            Set<Permission> permissionsSet = new HashSet<>(permissionRepository.findAllById(permissions));
+            user.setPermissions(permissionsSet);
+            repository.save(user);
+            redirectAttributes.addFlashAttribute("message", "Success");
+            redirectAttributes.addFlashAttribute("alertClass", "alert-success");
+            return "redirect:/users/" + user_id + "/permissions";
+        }
+        redirectAttributes.addFlashAttribute("message", "Can't access because you don't have permissions");
+        redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
+        return "redirect:/users";
+
     }
 
     @GetMapping("/login")
@@ -169,21 +189,20 @@ public class UserController {
     }
 
     @GetMapping("/{user_id}/departments")
-    public String getDepartments(@PathVariable("user_id") long user_id, Model model) {
-        // get the requested user_id
+    public String getDepartments(@PathVariable("user_id") long user_id, Model model,
+            @AuthenticationPrincipal UserDetails userDetails) {
         User user = repository.findById(user_id).get();
-        model.addAttribute("user", user);
 
+        model.addAttribute("user", user);
         List<Department> departments = departmentRepository.findAll();
         HashMap<String, Boolean> userDepartments = new HashMap<String, Boolean>();
-
         for (Department userDepartment : user.getDepartments()) {
             userDepartments.put(userDepartment.getName(), true);
         }
         model.addAttribute("userDepartments", userDepartments);
         model.addAttribute("departments", departments);
-
         return "user/edit_user_departments";
+
     }
 
     @PostMapping("/{user_id}/departments")
@@ -205,12 +224,33 @@ public class UserController {
     @GetMapping("")
     public String manageUsers(Model model, HttpServletRequest request,
             @AuthenticationPrincipal UserDetails userDetails) {
-        User currentUser = repository.findByUsername(userDetails.getUsername()).get();
-        if (request.isUserInRole("ROLE_ADMIN") || request.isUserInRole("ROLE_SUPERUSER"))
-            model.addAttribute("users", repository.findAll());
-        else
-            model.addAttribute("users", repository.findAllByDepartmentsIn(currentUser.getDepartments()));
 
+        User currentUser = repository.findByUsername(userDetails.getUsername()).get();
+
+        HashMap<Long, Boolean> users = new HashMap<Long, Boolean>();
+
+        List<User> usersList = repository.findAll();
+
+        if (request.isUserInRole("ROLE_ADMIN") || request.isUserInRole("ROLE_SUPERUSER")) {
+            for (User u : usersList) {
+                users.put(u.getId(), true);
+            }
+        }
+
+        else {
+            // if the current User is a controller then only allow them to edit users within
+            // same department(s)
+            for (User u : usersList) {
+                users.put(u.getId(), false);
+                for (Department d : currentUser.getDepartments()) {
+                    if (u.getDepartments().contains(d)) {
+                        users.put(u.getId(), true);
+                    }
+                }
+            }
+        }
+        model.addAttribute("users", usersList);
+        model.addAttribute("usersPermission", users);
         return "user/index";
     }
 
