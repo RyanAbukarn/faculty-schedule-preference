@@ -44,10 +44,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/terms/**")
                 .hasAnyRole("ADMIN", "CONTROLLER", "SUPERUSER")
                 .antMatchers(
-                        "/users/{token}/confirm", 
+                        "/users/{token}/confirm",
                         "/users/signup",
-                        "/users/forgot_password"
-                ).anonymous()
+                        "/users/forgotPassword",
+                        "/users/resetPassword/{token}")
+                .anonymous()
                 .anyRequest().authenticated()
                 .and().formLogin()
                 .loginPage("/users/login")

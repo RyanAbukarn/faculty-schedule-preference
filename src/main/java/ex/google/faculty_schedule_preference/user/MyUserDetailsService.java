@@ -6,6 +6,7 @@ import ex.google.faculty_schedule_preference.permission.PermissionRepository;
 import ex.google.faculty_schedule_preference.user.email.EmailSender;
 import ex.google.faculty_schedule_preference.user.token.ConfirmationToken;
 import ex.google.faculty_schedule_preference.user.token.ConfirmationTokenService;
+import ex.google.faculty_schedule_preference.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -74,14 +75,11 @@ public class MyUserDetailsService implements UserDetailsService {
                 token,
                 LocalDateTime.now(),
                 LocalDateTime.now().plusMinutes(15),
-                user
-        );
+                user);
 
         confirmationTokenService.saveConfirmationToken(confirmationToken);
 
-
         return token;
     }
-
 
 }

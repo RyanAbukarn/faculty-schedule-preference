@@ -1,14 +1,19 @@
 package ex.google.faculty_schedule_preference.user;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
+import javax.mail.MessagingException;
+import javax.resource.spi.IllegalStateException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -17,6 +22,7 @@ import com.box.sdk.BoxFolder;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.repository.query.Param;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
@@ -41,6 +47,9 @@ import ex.google.faculty_schedule_preference.document.Document;
 import ex.google.faculty_schedule_preference.document.DocumentRepository;
 import ex.google.faculty_schedule_preference.permission.Permission;
 import ex.google.faculty_schedule_preference.permission.PermissionRepository;
+import ex.google.faculty_schedule_preference.user.email.EmailSender;
+import ex.google.faculty_schedule_preference.user.token.ConfirmationToken;
+import ex.google.faculty_schedule_preference.user.token.ConfirmationTokenService;
 
 @Controller
 
@@ -61,6 +70,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private EmailSender emailSender;
 
     @Value("${boxapi}")
     private String boxapi;
@@ -102,13 +114,14 @@ public class UserController {
     }
 
     @GetMapping("/login")
-    public String login(Model model, @AuthenticationPrincipal UserDetails userDetails, RedirectAttributes redirectAttributes) {
+    public String login(Model model, @AuthenticationPrincipal UserDetails userDetails,
+            RedirectAttributes redirectAttributes) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
             return "user/login";
         }
         User currentUser = repository.findByUsername(userDetails.getUsername()).get();
-        if (currentUser.getEnabled()){
+        if (currentUser.getEnabled()) {
             return "redirect:../..";
         }
         return "user/login";
@@ -131,9 +144,69 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public String register(UserInput request) {
+    public String register(UserInput request)
+            throws IllegalStateException, UnsupportedEncodingException, MessagingException {
         userService.register(request);
         return "user/email-activation";
+    }
+
+    @GetMapping("/forgotPassword")
+    public String showForgotPasswordForm() {
+        return "user/forgotPassword";
+    }
+
+    @PostMapping("/forgotPassword")
+    public String processForgotPassword(HttpServletRequest request, Model model) {
+        String email = request.getParameter("email");
+        String token = UUID.randomUUID().toString();
+
+        try {
+            userService.updateResetPasswordToken(token, email);
+            String resetPasswordLink = userService.getSiteURL(request) + "/users/resetPassword/" + token;
+            emailSender.sendReset(email, userService.buildResetEmail(email, resetPasswordLink));
+            model.addAttribute("message", "We have sent a reset password link, please check your email.");
+        } catch (IllegalStateException e) {
+            model.addAttribute("error", e.getMessage());
+        } catch (UnsupportedEncodingException | MessagingException e) {
+            model.addAttribute("error", "Error while sending email");
+        }
+
+        return "user/forgotPassword";
+    }
+
+    @GetMapping("/resetPassword/{token}")
+    public String showResetPasswordForm(@PathVariable(value = "token") String tokenURL,
+            Model model) {
+        User user = userService.getByResetPasswordToken(tokenURL);
+        model.addAttribute("token", tokenURL);
+
+        if (user == null) {
+            model.addAttribute("message", "InvalidToken");
+            return "message";
+        }
+
+        return "user/resetPassword";
+    }
+
+    @PostMapping("/resetPassword/{token}")
+    public String processResetPassword(@PathVariable(value = "token") String tokenURL, HttpServletRequest request,
+            Model model) {
+        String token = request.getParameter("token");
+        String password = request.getParameter("password");
+
+        User user = userService.getByResetPasswordToken(token);
+        model.addAttribute("message", "Reset your password");
+
+        if (user == null) {
+            model.addAttribute("message", "Invalid Token");
+            return "message";
+        } else {
+            userService.updatePassword(user, password);
+
+            model.addAttribute("message", "Your password has successfully been reset");
+        }
+
+        return "message";
     }
 
     @PostMapping("/upload_resume")
@@ -220,9 +293,9 @@ public class UserController {
     }
 
     @GetMapping("/{token}/confirm")
-    public String confirm(@PathVariable("token") String token) {
-    
+    public String confirm(@PathVariable("token") String token) throws IllegalStateException {
+
         userService.confirmToken(token);
         return "user/email-activated";
-    } 
+    }
 }

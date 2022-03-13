@@ -53,6 +53,9 @@ public class User {
     @Column(name = "locked", nullable = false)
     private Boolean locked = false;
 
+    @Column(name = "reset_password_token")
+    private String resetPasswordToken = null;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Request> requests = new ArrayList<Request>();
 
@@ -101,7 +104,8 @@ public class User {
         this.departments.add(department);
     }
 
-    public User(String csun_id, String name, String username, String email, String password, Boolean enabled, Boolean locked) {
+    public User(String csun_id, String name, String username, String email, String password, Boolean enabled,
+            Boolean locked) {
         this.csun_id = csun_id;
         this.name = name;
         this.username = username;
@@ -202,6 +206,14 @@ public class User {
 
     public void setLocked(Boolean locked) {
         this.locked = locked;
+    }
+
+    public String getResetPasswordToken() {
+        return resetPasswordToken;
+    }
+
+    public void setResetPasswordToken(String resetPasswordToken) {
+        this.resetPasswordToken = resetPasswordToken;
     }
 
     public List<UserAvailability> getUserAvailabilities() {

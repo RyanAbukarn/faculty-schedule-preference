@@ -1,5 +1,7 @@
 package ex.google.faculty_schedule_preference.user.email;
 
+import java.io.UnsupportedEncodingException;
+
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
@@ -15,7 +17,7 @@ import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
-public class EmailService implements EmailSender{
+public class EmailService implements EmailSender {
 
     @Autowired
     private JavaMailSender mailSender;
@@ -24,8 +26,8 @@ public class EmailService implements EmailSender{
 
     @Override
     @Async
-    public void send(String to, String email){
-        try{
+    public void send(String to, String email) throws MessagingException, UnsupportedEncodingException {
+        try {
             MimeMessage mimeMessage = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
             helper.setText(email, true);
@@ -33,7 +35,22 @@ public class EmailService implements EmailSender{
             helper.setSubject("Confirm Your Email");
             helper.setFrom("facultyschedulepreference@gmail.com");
             mailSender.send(mimeMessage);
-        }catch(MessagingException e){
+        } catch (MessagingException e) {
+            LOGGER.error("Failed to send email", e);
+            throw new IllegalStateException("Failed to send email");
+        }
+    }
+
+    public void sendReset(String to, String email) throws MessagingException, UnsupportedEncodingException {
+        try {
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+            helper.setText(email, true);
+            helper.setTo(to);
+            helper.setSubject("Reset Your Password");
+            helper.setFrom("facultyschedulepreference@gmail.com");
+            mailSender.send(mimeMessage);
+        } catch (MessagingException e) {
             LOGGER.error("Failed to send email", e);
             throw new IllegalStateException("Failed to send email");
         }

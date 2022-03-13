@@ -1,6 +1,7 @@
 package ex.google.faculty_schedule_preference.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import ex.google.faculty_schedule_preference.department.Department;
 
@@ -15,4 +16,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByEmail(String string);
 
     boolean existsByUsername(String username);
+
+    @Query("SELECT c FROM User c WHERE c.email = ?1")
+    public User findByEmail(String email);
+
+    public User findByResetPasswordToken(String token);
 }
