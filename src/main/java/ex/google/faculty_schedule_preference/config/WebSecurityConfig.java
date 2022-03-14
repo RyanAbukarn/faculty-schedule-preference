@@ -37,8 +37,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/requests/**").hasAnyRole("CONTROLLER", "SUPERUSER")
                 .antMatchers(
                         "/courses/{course_id}/**",
-                        "/users",
                         "/users/",
+                        "/users",
                         "/users/{user_id}/permissions/**",
                         "/users/{user_id}/user_availability/**",
                         "/terms/**")
