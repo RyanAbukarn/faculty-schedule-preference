@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>Landing Page</title>
+    <title>Sign Up</title>
     <link th:href="@{/css/user/signup.css}" rel="stylesheet" />
 
 
@@ -67,9 +67,9 @@
                         placeholder="Enter Your Password Again" />
                     <input type="submit" name="submit" placeholder="Login">
                     <br>
-                    <a href=""> Already have an account? Login</a>
+                    <a th:href="@{/users/login}" > Already have an account? Login</a>
                     <br>
-                    <a href="">Forgot Password? Click here dummy</a>
+                    <a th:href="@{/users/forgotPassword}">Forgot Password? Click here dummy</a>
                 </form>
             </div>
         </div>

@@ -48,7 +48,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/users/{token}/confirm", 
                         "/users/signup",
                         "/users/forgotPassword",
-                        "/users/resetPassword",
+                        "/users/resetPassword/{token}",
                         "/users/login_validation"
                 ).permitAll()
                 .anyRequest().authenticated()
