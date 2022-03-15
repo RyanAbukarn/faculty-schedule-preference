@@ -91,7 +91,7 @@ public class UserService {
             throw new IllegalStateException("Token expired");
         }
 
-        confirmationTokenService.setConfirmedAt(token);
+        confirmationToken.setConfirmedAt(LocalDateTime.now());
         confirmationToken.getUser().setEnabled(true);
     }
 
