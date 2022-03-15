@@ -24,7 +24,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr th:each="user: ${users}">
+				<tr th:each="user : ${users}">
 					<td th:text="${user.getId()}" />
 					<td th:text="${user.getCsun_id()}" />
 					<td th:text="${user.getName()}" />
@@ -45,11 +45,14 @@
 								<a th:href="@{/users/__${user.getId()}__/user_availability}">Availability</a>
 								<br>
 								<br>
-								<a th:href="@{/users/__${user.getId()}__/permissions}">Permissions</a>
-								<br>
-								<br>
 								<a th:href="@{/users/__${user.getId()}__/departments}">Departments</a>
 								<br>
+								<br>
+								<a th:href="@{/users/__${user.getId()}__/entitlements}">Entitlements</a>
+								<br>
+								<br>
+								<a th:if="${usersPermission.get(user.getId())}"
+									th:href="@{/users/__${user.getId()}__/permissions}">Permissions</a>
 							</th:block>
 						</details>
 					</td>

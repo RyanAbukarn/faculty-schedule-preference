@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<html xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sf="http://www.w3.org/1999/xhtml" lang="en">
+
 
 <head>
     <meta charset="UTF-8">
@@ -30,15 +31,14 @@
                 <h1>
                     Login
                 </h1>
-                <form id="loginForm" name="f" th:action="@{/users/login}" method="post">
+                <form id="loginForm" name="f" th:action="@{/users/login_validation}" method="post">
                     <div id="errs" class="errorcontainer"></div>
                     <div th:if="${param.error}" class="alert alert-error">
                         Invalid username and password.
                     </div>
-                    <div th:if="${message}" th:text="${message}" class="alert alert-error">
-                        Activate account from email link
+                    <div th:if="${error_enabled}" class="alert alert-error">
+                        Account needs to be activated through email verification link.
                     </div>
-                    <!-- th:class="${'alert ' + alertClass}"  -->
                     <div th:if="${param.logout}" class="alert alert-success">
                         You have been logged out.
                     </div>

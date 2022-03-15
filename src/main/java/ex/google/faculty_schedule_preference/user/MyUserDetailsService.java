@@ -13,12 +13,15 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.WebAttributes;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Service
 public class MyUserDetailsService implements UserDetailsService {
@@ -41,8 +44,11 @@ public class MyUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> user = userRepository.findByUsername(username);
-
+        
         user.orElseThrow(() -> new UsernameNotFoundException("Not found: " + username));
+        if (!user.get().getEnabled()){
+            throw new UsernameNotFoundException("User is disabled");
+        }
 
         return user.map(MyUserDetails::new).get();
     }

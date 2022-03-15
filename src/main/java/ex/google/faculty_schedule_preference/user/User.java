@@ -70,6 +70,9 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserAvailability> userAvailabilities;
 
+    @Column(name = "entitlement", nullable = true)
+    private double entitlement = 0.0;
+
     public User() {
     }
 
@@ -228,6 +231,14 @@ public class User {
         if (!this.documents.isEmpty())
             return this.documents.stream().filter(doc -> doc.getType() == 1).findAny().get();
         return null;
+    }
+
+    public void setEntitlement(double entitlement){
+        this.entitlement = entitlement;
+    }
+
+    public double getEntitlement(){
+        return this.entitlement;
     }
 
 }

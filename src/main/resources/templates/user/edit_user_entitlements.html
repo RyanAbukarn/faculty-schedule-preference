@@ -1,0 +1,47 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{page_layout/layout}">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Update Entitlements Page</title>
+    <link th:href="@{/css/permission/general.css}" rel="stylesheet" />
+</head>
+
+<body>
+    <section layout:fragment="content">
+
+
+        <form action="#" method="POST" th:action="@{/users/__${user.getId()}__/entitlements}" class="fsp-form">
+            <h1 id="roles-h2">Update User Entitlements</h1>
+            <div id="roles-user-details">
+                <span id="roles-csun-id">CSUN ID:</span>
+                <span id="roles-id-number" th:text="${user.getCsun_id()}">Default</span>
+            </div>
+            <div id="roles-container">
+                <select name="entitlement" id="entitlement">
+                    <option th:text = "|${user.getEntitlement()} (original value)|" selected></option>
+                    <option value=1.0>1.0</option>
+                    <option value=2.0>2.0</option>
+                    <option value=3.0>3.0</option>
+                    <option value=4.0>4.0</option>
+                    <option value=5.0>5.0</option>
+                    <option value=6.0>6.0</option>
+                    <option value=7.0>7.0</option>
+                    <option value=8.0>8.0</option>
+                    <option value=9.0>9.0</option>
+                    <option value=10.0>10.0</option>
+                    <option value=11.0>11.0</option>
+                    <option value=12.0>12.0</option>
+                    <option value=13.0>13.0</option>
+                    <option value=14.0>14.0</option>
+                    <option value=15.0>15.0</option>
+                </select>
+                <input type="submit" id="submit" value="Submit" class="fsp-button">
+            </div>
+        </form>
+    </section>
+</body>
+
+</html>

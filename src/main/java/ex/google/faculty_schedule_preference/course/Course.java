@@ -27,7 +27,10 @@ public class Course {
     static Map<Integer, String> classType = Map.of(1, "Online", 2, "In-person", 3, "Hybrid");
 
     @Transient
-    static Map<Integer, String> statusEnum = Map.of(1, "open", 2, "under review", 3, "closed");
+    static Map<Integer, String> statusHuman = Map.of(1, "open", 2, "under review", 3, "closed");
+
+    @Transient
+    public static Map<String, Integer> statusValues = Map.of("open", 1, "under review", 2, "closed", 3);
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -206,7 +209,7 @@ public class Course {
     }
 
     public String getHumanStatus() {
-        return statusEnum.get(this.type);
+        return statusHuman.get(this.type);
     }
 
 }
