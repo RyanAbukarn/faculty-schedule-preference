@@ -222,7 +222,6 @@ public class UserController {
 
         if (user == null) {
             model.addAttribute("message", "Invalid Token");
-            return "message";
         } else {
             userService.updatePassword(user, password);
 
