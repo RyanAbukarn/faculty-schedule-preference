@@ -72,4 +72,8 @@ public class ConfirmationToken {
     public User getUser() {
         return this.user;
     }
+    
+    public void setConfirmedAt(LocalDateTime confirmedAt){
+        this.confirmedAt = confirmedAt;
+    }
 }
