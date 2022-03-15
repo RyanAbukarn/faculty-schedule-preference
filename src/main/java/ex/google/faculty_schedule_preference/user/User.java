@@ -47,6 +47,15 @@ public class User {
     @Column(name = "password", nullable = false, columnDefinition = "TEXT")
     private String password;
 
+    @Column(name = "enabled", nullable = false)
+    private Boolean enabled = false;
+
+    @Column(name = "locked", nullable = false)
+    private Boolean locked = false;
+
+    @Column(name = "reset_password_token")
+    private String resetPasswordToken = null;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Request> requests = new ArrayList<Request>();
 
@@ -63,6 +72,9 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserAvailability> userAvailabilities;
+
+    @Column(name = "entitlement", nullable = true)
+    private double entitlement = 0.0;
 
     public User() {
     }
@@ -93,6 +105,17 @@ public class User {
         this.email = email;
         this.password = password;
         this.departments.add(department);
+    }
+
+    public User(String csun_id, String name, String username, String email, String password, Boolean enabled,
+            Boolean locked) {
+        this.csun_id = csun_id;
+        this.name = name;
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.enabled = enabled;
+        this.locked = locked;
     }
 
     public User(String csun_id, String name, String username, String email, String password, List<Request> requests) {
@@ -172,6 +195,30 @@ public class User {
         this.password = password;
     }
 
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public Boolean getLocked() {
+        return locked;
+    }
+
+    public void setLocked(Boolean locked) {
+        this.locked = locked;
+    }
+
+    public String getResetPasswordToken() {
+        return resetPasswordToken;
+    }
+
+    public void setResetPasswordToken(String resetPasswordToken) {
+        this.resetPasswordToken = resetPasswordToken;
+    }
+
     public List<UserAvailability> getUserAvailabilities() {
         return userAvailabilities;
     }
@@ -196,6 +243,14 @@ public class User {
         if (!this.documents.isEmpty())
             return this.documents.stream().filter(doc -> doc.getType() == 1).findAny().get();
         return null;
+    }
+
+    public void setEntitlement(double entitlement){
+        this.entitlement = entitlement;
+    }
+
+    public double getEntitlement(){
+        return this.entitlement;
     }
 
 }

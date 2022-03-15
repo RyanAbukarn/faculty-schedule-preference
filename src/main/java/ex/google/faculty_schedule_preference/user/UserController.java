@@ -1,46 +1,54 @@
 package ex.google.faculty_schedule_preference.user;
 
-import ex.google.faculty_schedule_preference.department.Department;
-import ex.google.faculty_schedule_preference.department.DepartmentRepository;
-import ex.google.faculty_schedule_preference.document.Document;
-import ex.google.faculty_schedule_preference.document.DocumentRepository;
-import ex.google.faculty_schedule_preference.permission.Permission;
-import ex.google.faculty_schedule_preference.permission.PermissionRepository;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+
+import javax.mail.MessagingException;
+import javax.resource.spi.IllegalStateException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.box.sdk.BoxAPIConnection;
+import com.box.sdk.BoxFolder;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.repository.query.Param;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import com.box.sdk.BoxAPIConnection;
-
-import com.box.sdk.BoxFolder;
-
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.List;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.HashMap;
-import java.util.HashSet;
+import ex.google.faculty_schedule_preference.department.Department;
+import ex.google.faculty_schedule_preference.department.DepartmentRepository;
+import ex.google.faculty_schedule_preference.document.Document;
+import ex.google.faculty_schedule_preference.document.DocumentRepository;
+import ex.google.faculty_schedule_preference.permission.Permission;
+import ex.google.faculty_schedule_preference.permission.PermissionRepository;
+import ex.google.faculty_schedule_preference.user.email.EmailSender;
+import ex.google.faculty_schedule_preference.user.token.ConfirmationToken;
+import ex.google.faculty_schedule_preference.user.token.ConfirmationTokenService;
 
 @Controller
 
@@ -61,6 +69,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private EmailSender emailSender;
 
     @Value("${boxapi}")
     private String boxapi;
@@ -125,12 +136,23 @@ public class UserController {
     }
 
     @GetMapping("/login")
-    public String login(Model model) {
+    public String login(RedirectAttributes redirectAttributes, Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
+            model.addAttribute("error_enabled", false);
             return "user/login";
         }
-        return "redirect:../";
+        return "redirect:/login_validation";
+    }
+
+    @PostMapping("/login_validation")
+    public String loginValidation(RedirectAttributes redirectAttributes, @RequestParam("username") String username, Model model){
+        User user = repository.getByUsername(username);
+        if (!user.getEnabled()){
+            model.addAttribute("error_enabled", true);
+            return "user/login";
+        }
+        return "redirect:../..";
     }
 
     @GetMapping("/logout")
@@ -150,8 +172,68 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public String register(UserInput request) {
-        return userService.register(request);
+    public String register(UserInput request)
+            throws IllegalStateException, UnsupportedEncodingException, MessagingException {
+        userService.register(request);
+        return "user/email-activation";
+    }
+
+    @GetMapping("/forgotPassword")
+    public String showForgotPasswordForm() {
+        return "user/forgotPassword";
+    }
+
+    @PostMapping("/forgotPassword")
+    public String processForgotPassword(HttpServletRequest request, Model model) {
+        String email = request.getParameter("email");
+        String token = UUID.randomUUID().toString();
+
+        try {
+            userService.updateResetPasswordToken(token, email);
+            String resetPasswordLink = userService.getSiteURL(request) + "/users/resetPassword/" + token;
+            emailSender.sendReset(email, userService.buildResetEmail(email, resetPasswordLink));
+            model.addAttribute("message", "We have sent a reset password link, please check your email.");
+        } catch (IllegalStateException e) {
+            model.addAttribute("error", e.getMessage());
+        } catch (UnsupportedEncodingException | MessagingException e) {
+            model.addAttribute("error", "Error while sending email");
+        }
+
+        return "user/forgotPassword";
+    }
+
+    @GetMapping("/resetPassword/{token}")
+    public String showResetPasswordForm(@PathVariable(value = "token") String tokenURL,
+            Model model) {
+        User user = userService.getByResetPasswordToken(tokenURL);
+        model.addAttribute("token", tokenURL);
+
+        if (user == null) {
+            model.addAttribute("message", "InvalidToken");
+            return "message";
+        }
+
+        return "user/resetPassword";
+    }
+
+    @PostMapping("/resetPassword/{token}")
+    public String processResetPassword(@PathVariable(value = "token") String tokenURL, HttpServletRequest request,
+            Model model) {
+        String token = request.getParameter("token");
+        String password = request.getParameter("password");
+
+        User user = userService.getByResetPasswordToken(token);
+        model.addAttribute("message", "Reset your password");
+
+        if (user == null) {
+            model.addAttribute("message", "Invalid Token");
+        } else {
+            userService.updatePassword(user, password);
+
+            model.addAttribute("message", "Your password has successfully been reset");
+        }
+
+        return "message";
     }
 
     @PostMapping("/upload_resume")
@@ -222,6 +304,23 @@ public class UserController {
         return "redirect:/users/" + user_id + "/departments";
     }
 
+    @GetMapping("/{user_id}/entitlements")
+    public String getEntitlements(@PathVariable("user_id") long user_id, Model model){
+        User user = repository.findById(user_id).get();
+        model.addAttribute("user", user);
+        return "user/edit_user_entitlements";
+    }
+
+    @PostMapping("/{user_id}/entitlements")
+    public String postEntitlements(@PathVariable("user_id") long user_id,
+            RedirectAttributes redirectAttributes, @RequestParam("entitlement") String entitlement) {
+                double tempEntitlement = Double.parseDouble(entitlement);
+                User user = repository.findById(user_id).get();
+                user.setEntitlement(tempEntitlement);
+                repository.save(user);
+        return "redirect:/users/" + user_id + "/entitlements";
+    }
+
     // Function sends User data to View where Controller, Admin or SuperUser have
     // access to.
     @GetMapping("")
@@ -257,4 +356,10 @@ public class UserController {
         return "user/index";
     }
 
+    @GetMapping("/{token}/confirm")
+    public String confirm(@PathVariable("token") String token) throws IllegalStateException {
+
+        userService.confirmToken(token);
+        return "user/email-activated";
+    }
 }
