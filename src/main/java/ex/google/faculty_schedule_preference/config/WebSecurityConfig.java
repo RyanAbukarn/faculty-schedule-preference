@@ -2,7 +2,6 @@ package ex.google.faculty_schedule_preference.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -45,12 +44,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/terms/**")
                 .hasAnyRole("ADMIN", "CONTROLLER", "SUPERUSER")
                 .antMatchers(
-                        "/users/{token}/confirm", 
+                        "/users/{token}/confirm",
                         "/users/signup",
                         "/users/forgotPassword",
                         "/users/resetPassword/{token}",
-                        "/users/login_validation"
-                ).permitAll()
+                        "/users/login_validation")
+                .permitAll()
                 .anyRequest().authenticated()
                 .and().formLogin()
                 .loginPage("/users/login")
