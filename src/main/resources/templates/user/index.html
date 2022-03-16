@@ -48,6 +48,9 @@
 								<a th:href="@{/users/__${user.getId()}__/departments}">Departments</a>
 								<br>
 								<br>
+								<a th:href="@{/users/__${user.getId()}__/entitlements}">Entitlements</a>
+								<br>
+								<br>
 								<a th:if="${usersPermission.get(user.getId())}"
 									th:href="@{/users/__${user.getId()}__/permissions}">Permissions</a>
 							</th:block>
