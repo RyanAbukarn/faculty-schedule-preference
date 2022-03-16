@@ -24,7 +24,6 @@
 		<java.version>11</java.version>
 		<bootstrap.version>4.0.0-2</bootstrap.version>
 		<webjars-locator.version>0.30</webjars-locator.version>
-		<lombok.version>1.18.2</lombok.version>
 		<font-awesome.version>5.11.2</font-awesome.version>
 	</properties>
 	<dependencies>
@@ -121,13 +120,6 @@
 			<artifactId>jquery</artifactId>
 			<version>3.6.0</version>
 		</dependency>
-
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<optional>true</optional>
-		</dependency>
-
 
 		<dependency>
 			<groupId>javax</groupId>
