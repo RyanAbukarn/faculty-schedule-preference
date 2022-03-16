@@ -2,10 +2,10 @@ package ex.google.faculty_schedule_preference.user;
 
 import ex.google.faculty_schedule_preference.department.Department;
 import ex.google.faculty_schedule_preference.department.DepartmentRepository;
+import ex.google.faculty_schedule_preference.email.EmailSender;
+import ex.google.faculty_schedule_preference.token.ConfirmationToken;
+import ex.google.faculty_schedule_preference.token.ConfirmationTokenService;
 
-import ex.google.faculty_schedule_preference.user.email.EmailSender;
-import ex.google.faculty_schedule_preference.user.token.ConfirmationToken;
-import ex.google.faculty_schedule_preference.user.token.ConfirmationTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
