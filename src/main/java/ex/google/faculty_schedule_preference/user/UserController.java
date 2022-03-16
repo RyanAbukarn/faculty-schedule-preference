@@ -5,7 +5,6 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -22,7 +21,6 @@ import com.box.sdk.BoxFolder;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.repository.query.Param;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -47,8 +45,6 @@ import ex.google.faculty_schedule_preference.document.DocumentRepository;
 import ex.google.faculty_schedule_preference.permission.Permission;
 import ex.google.faculty_schedule_preference.permission.PermissionRepository;
 import ex.google.faculty_schedule_preference.user.email.EmailSender;
-import ex.google.faculty_schedule_preference.user.token.ConfirmationToken;
-import ex.google.faculty_schedule_preference.user.token.ConfirmationTokenService;
 
 @Controller
 
@@ -142,7 +138,7 @@ public class UserController {
             model.addAttribute("error_enabled", false);
             return "user/login";
         }
-        return "redirect:/login_validation";
+        return "redirect:../..";
     }
 
     @PostMapping("/login_validation")
