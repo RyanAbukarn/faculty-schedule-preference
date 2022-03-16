@@ -1,10 +1,9 @@
-package ex.google.faculty_schedule_preference.user.token;
+package ex.google.faculty_schedule_preference.token;
 
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -17,11 +16,11 @@ public class ConfirmationTokenService {
 
     }
 
-    public void saveConfirmationToken(ConfirmationToken token){
+    public void saveConfirmationToken(ConfirmationToken token) {
         confirmationTokenRepository.save(token);
     }
 
-    public Optional<ConfirmationToken> getToken(String token){
+    public Optional<ConfirmationToken> getToken(String token) {
         return confirmationTokenRepository.findByToken(token);
     }
 

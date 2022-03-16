@@ -42,9 +42,9 @@ import ex.google.faculty_schedule_preference.department.Department;
 import ex.google.faculty_schedule_preference.department.DepartmentRepository;
 import ex.google.faculty_schedule_preference.document.Document;
 import ex.google.faculty_schedule_preference.document.DocumentRepository;
+import ex.google.faculty_schedule_preference.email.EmailSender;
 import ex.google.faculty_schedule_preference.permission.Permission;
 import ex.google.faculty_schedule_preference.permission.PermissionRepository;
-import ex.google.faculty_schedule_preference.user.email.EmailSender;
 
 @Controller
 
@@ -142,9 +142,10 @@ public class UserController {
     }
 
     @PostMapping("/login_validation")
-    public String loginValidation(RedirectAttributes redirectAttributes, @RequestParam("username") String username, Model model){
+    public String loginValidation(RedirectAttributes redirectAttributes, @RequestParam("username") String username,
+            Model model) {
         User user = repository.getByUsername(username);
-        if (!user.getEnabled()){
+        if (!user.getEnabled()) {
             model.addAttribute("error_enabled", true);
             return "user/login";
         }
@@ -301,7 +302,7 @@ public class UserController {
     }
 
     @GetMapping("/{user_id}/entitlements")
-    public String getEntitlements(@PathVariable("user_id") long user_id, Model model){
+    public String getEntitlements(@PathVariable("user_id") long user_id, Model model) {
         User user = repository.findById(user_id).get();
         model.addAttribute("user", user);
         return "user/edit_user_entitlements";
@@ -310,10 +311,10 @@ public class UserController {
     @PostMapping("/{user_id}/entitlements")
     public String postEntitlements(@PathVariable("user_id") long user_id,
             RedirectAttributes redirectAttributes, @RequestParam("entitlement") String entitlement) {
-                double tempEntitlement = Double.parseDouble(entitlement);
-                User user = repository.findById(user_id).get();
-                user.setEntitlement(tempEntitlement);
-                repository.save(user);
+        double tempEntitlement = Double.parseDouble(entitlement);
+        User user = repository.findById(user_id).get();
+        user.setEntitlement(tempEntitlement);
+        repository.save(user);
         return "redirect:/users/" + user_id + "/entitlements";
     }
 

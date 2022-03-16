@@ -1,4 +1,4 @@
-package ex.google.faculty_schedule_preference.user.email;
+package ex.google.faculty_schedule_preference.email;
 
 import java.io.UnsupportedEncodingException;
 
