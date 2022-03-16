@@ -1,17 +1,10 @@
 package ex.google.faculty_schedule_preference.token;
 
 import ex.google.faculty_schedule_preference.user.User;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@Entity
 public class ConfirmationToken {
     @SequenceGenerator(name = "confirmation_token_sequence", sequenceName = "confirmation_token_sequence", allocationSize = 1)
     @Id
