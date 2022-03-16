@@ -33,9 +33,6 @@ public class ConfirmationToken {
     @JoinColumn(nullable = false, name = "user_id")
     private User user;
 
-    public ConfirmationToken() {
-    }
-
     public ConfirmationToken(String token,
             LocalDateTime createdAt,
             LocalDateTime expiresAt,
