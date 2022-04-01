@@ -167,7 +167,9 @@
 						title: coursePrefix,
 						start: value.start.toISOString(),
 						end: value.end.toISOString(),
-						day: value.start.format("dddd")
+						day: value.start.format("dddd"),
+						startTime: value.start.format("hh:mm"),
+						endTime: value.end.format("hh:mm")
 					})
 					userAvailability.push({
 						title: coursePrefix,
