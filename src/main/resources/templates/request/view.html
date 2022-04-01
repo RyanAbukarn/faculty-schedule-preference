@@ -15,8 +15,7 @@
 
 		<div th:if="${message}" th:text="${message}" th:class="${'alert ' + alertClass}" />
 		<input th:value="*{request.times}" type="hidden" id="times">
-		<input th:value="*{request.approvedTime}" type="hidden" id="approvedTime">
-
+		<input name="approvedTime" th:value="*{request.approvedTime}" type="hidden" id="approvedTime">
 		<input name="status" th:value="*{request.status}" type="hidden" id="status">
 
 		<div class="wrap">
@@ -26,7 +25,8 @@
 				<div class="fsp-card">
 					<div class="fsp-card-body">
 						<h5 class="card-title" th:text="|Name: ${course.getName()}|"></h5>
-						<h6 class="card-subtitle mb-2 text-muted" th:text="|prefix: ${course.getPrefix()}|"></h6>
+						<h6 id="coursePrefix" class="card-subtitle mb-2 text-muted"
+							th:text="|prefix: ${course.getPrefix()}|"></h6>
 						<p class="card-text"></p>
 					</div>
 				</div>
@@ -82,6 +82,8 @@
 			<br>
 			<form th:if="${request.getStatus()!=4 && request.getStatus()!=3}" th:action="@{/requests/__${request.getId()}__/approved-time}" method="post">
 				<input name= "potentialApprovedTime" type="hidden" id="potentialApprovedTime">
+				<input name= "userAvailability" type="hidden" id="userAvailability">
+
 				<button class="btn btn-primary">Approve</button>
 			</form>
 		</div>
@@ -110,12 +112,14 @@
 		$(document).ready(function () {
 			let selectDate;
 			let approvedTime = [];
+			let userAvailability = [];
 			const color = {
-                    'Highest': "#11B211",
-                    'Medium': "#CFE722",
-                    'Lowest': "#A42727",
-                }
+                'Most Willing': "#11B211",
+                'Willing': "#CFE722",
+                'Not Available': "#A42727",
+            }
 			let calendarEL = $('#calendar');
+			let coursePrefix = $('#coursePrefix').text().split(" ")[1];
 			let removeTime = $("#removeTimeButton");
 			let addTime = $("#approvedTimeButton");
 			let potentialApprovedTime = $('#potentialApprovedTime');
@@ -160,28 +164,51 @@
 			function convertToJson(value, _, _) {
 				if (value.color == "blue"){
 					approvedTime.push({
+						title: coursePrefix,
+						start: value.start.toISOString(),
+						end: value.end.toISOString(),
+						day: value.start.format("dddd")
+					})
+					userAvailability.push({
+						title: coursePrefix,
+						color: value.color,
+						start: value.start.toISOString(),
+						end: value.end.toISOString(),
+						day: value.start.format("dddd")
+					})
+				}else{
+					userAvailability.push({
+						title: value.title,
+						color: value.color,
 						start: value.start.toISOString(),
 						end: value.end.toISOString(),
 						day: value.start.format("dddd")
 					})
 				}
+				
+				
 
             };
 			function addTimeFunc() {
 				approvedTime = [];
+				userAvailability  = [];
 				selectDate.color = "blue"
 				calendarEL.fullCalendar("rerenderEvents");
 				calendarEL.fullCalendar("clientEvents").forEach(convertToJson);
 				$('#potentialApprovedTime').val(JSON.stringify(approvedTime));
+				$('#userAvailability').val(JSON.stringify(userAvailability));
+
 
             }
 
 			function removeTimeFunc() {
 				approvedTime = [];
+				userAvailability  = [];
 				selectDate.color = color[selectDate.title];
 				calendarEL.fullCalendar("rerenderEvents");
 				calendarEL.fullCalendar("clientEvents").forEach(convertToJson);
 				$('#potentialApprovedTime').val(JSON.stringify(approvedTime));
+				$('#userAvailability').val(JSON.stringify(userAvailability));
 
             }
 

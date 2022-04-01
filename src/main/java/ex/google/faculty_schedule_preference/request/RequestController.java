@@ -28,6 +28,8 @@ import ex.google.faculty_schedule_preference.document.Document;
 import ex.google.faculty_schedule_preference.request_feedback.Requestfeedback;
 import ex.google.faculty_schedule_preference.user.User;
 import ex.google.faculty_schedule_preference.user.UserRepository;
+import ex.google.faculty_schedule_preference.user_availability.UserAvailability;
+import ex.google.faculty_schedule_preference.user_availability.UserAvailabilityRepository;
 
 import org.springframework.stereotype.Controller;
 
@@ -41,6 +43,9 @@ public class RequestController {
     private CourseRepository courseRepository;
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserAvailabilityRepository userAvailabilityRepository;
 
     @GetMapping("requests")
     public String index(Model model) {
@@ -78,11 +83,16 @@ public class RequestController {
 
     @PostMapping("requests/{request_id}/approved-time")
     public String submitApproveTime(@RequestParam("potentialApprovedTime") String potentialApprovedTime,
+            @RequestParam("userAvailability") String userAvailability,
             @PathVariable("request_id") long request_id,
             RedirectAttributes redirectAttributes) {
         Request request = repository.findById(request_id).get();
         request.setStatus(Request.statusValues.get("accepted"));
         request.setApprovedTime(potentialApprovedTime);
+        List<UserAvailability> user_availability = request.getUser().getUserAvailabilities();
+        UserAvailability currentUserAvailability = user_availability.get(user_availability.size() - 1);
+        currentUserAvailability.setTimes(userAvailability);
+        userAvailabilityRepository.save(currentUserAvailability);
         repository.save(request);
         redirectAttributes.addFlashAttribute("message", "Successfully Approved The Times");
         redirectAttributes.addFlashAttribute("alertClass", "alert-success");
@@ -93,7 +103,6 @@ public class RequestController {
     public String view(@PathVariable("request_id") long request_id, Model model) {
         BoxAPIConnection api = new BoxAPIConnection(boxapi);
         BoxSharedLinkRequest sharedLinkRequest = new BoxSharedLinkRequest().access(Access.OPEN).permissions(true, true);
-
         Request theRequest = repository.findById(request_id).get();
         Document doc = theRequest.getUser().getResume();
         String url = "";
@@ -123,19 +132,16 @@ public class RequestController {
         return "redirect:/requests/" + request_id;
     }
 
-    @GetMapping("courses/{course_id}/request")
-    public String new_(@PathVariable("course_id") long course_id, Model model) {
-        model.addAttribute("request", new Request());
-        model.addAttribute("course", courseRepository.findById(course_id).get());
-        return "request/new";
-    }
-
     @PostMapping("courses/{course_id}/request/create")
     public String create(@ModelAttribute Request request, @PathVariable("course_id") long course_id,
             @AuthenticationPrincipal UserDetails userDetails) {
         Course course = courseRepository.findById(course_id).get();
         User currentUser = userRepository.findByUsername(userDetails.getUsername()).get();
+        List<UserAvailability> user_availability = currentUser.getUserAvailabilities();
+
         request.setCourse(course);
+        request.setStatus(Request.statusValues.get("new"));
+        request.setTimes(user_availability.get(user_availability.size() - 1).getTimes());
         request.setUser(currentUser);
         repository.save(request);
         return "redirect:/my_requests";

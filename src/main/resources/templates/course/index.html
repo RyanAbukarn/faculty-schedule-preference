@@ -46,8 +46,6 @@
             <th scope="col">Type</th>
             <th scope="col">Unit</th>
             <th scope="col">Department Name</th>
-
-            <!-- <th scope="col">Duration</th> -->
             <th scope="col" colspan="2">Action</th>
           </tr>
         </thead>
@@ -65,7 +63,9 @@
               </a>
             </td>
             <td>
-              <a th:href="@{courses/{course_id}/request(course_id=${course.id})}" target="_blank">Request</a>
+              <form method="POST" th:action="@{courses/{course_id}/request/create(course_id=${course.id})}">
+                <button type="submit" class="fsp-button">Request</button>
+              </form>
             </td>
           </tr>
           <tr th:if="${courses} == null">
