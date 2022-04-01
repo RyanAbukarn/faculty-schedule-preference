@@ -29,10 +29,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Request {
 
     @Transient
-    static Map<String, Integer> statusValues = Map.of("new", 1, "under_review", 2, "denied", 3, "accpeted",
+    static Map<String, Integer> statusValues = Map.of("new", 1, "under_review", 2, "denied", 3, "accepted",
             4);
     @Transient
-    private Map<Integer, String> humanStatusMap = Map.of(1, "New", 2, "Under review", 3, "Denied", 4, "Accpeted");
+    private Map<Integer, String> humanStatusMap = Map.of(1, "New", 2, "Under review", 3, "Denied", 4, "Accepted");
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

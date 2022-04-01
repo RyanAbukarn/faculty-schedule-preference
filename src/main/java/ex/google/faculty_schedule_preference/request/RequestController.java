@@ -77,17 +77,14 @@ public class RequestController {
     }
 
     @PostMapping("requests/{request_id}/approved-time")
-    public String submitAprroveTime(@RequestParam("approvedTime") String approvedTime,
+    public String submitApproveTime(@RequestParam("potentialApprovedTime") String potentialApprovedTime,
             @PathVariable("request_id") long request_id,
             RedirectAttributes redirectAttributes) {
         Request request = repository.findById(request_id).get();
-        Course course = request.getCourse();
-
-        request.setStatus(Request.statusValues.get("accpeted"));
-        request.setApprovedTime(approvedTime);
-        course.setStatus(Course.statusValues.get("closed"));
+        request.setStatus(Request.statusValues.get("accepted"));
+        request.setApprovedTime(potentialApprovedTime);
         repository.save(request);
-        redirectAttributes.addFlashAttribute("message", "Successfully Approved The Time");
+        redirectAttributes.addFlashAttribute("message", "Successfully Approved The Times");
         redirectAttributes.addFlashAttribute("alertClass", "alert-success");
         return "redirect:/requests";
     }
@@ -121,7 +118,7 @@ public class RequestController {
         Request theRequest = repository.findById(request_id).get();
         theRequest.setStatus(Request.statusValues.get("denied"));
         repository.save(theRequest);
-        redirectAttributes.addFlashAttribute("message", "Successfully Denied The Reqeust");
+        redirectAttributes.addFlashAttribute("message", "Successfully Denied The Request");
         redirectAttributes.addFlashAttribute("alertClass", "alert-success");
         return "redirect:/requests/" + request_id;
     }

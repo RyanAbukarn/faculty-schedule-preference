@@ -11,90 +11,72 @@
 
 <body>
 	<section layout:fragment="content">
-		<!-- <div class = "container mt-5"> -->
-
-		<div class="row">
-
-			<div class=" container justify-content-center">
-				<a th:href="@{/courses}" class="btn fsp-button">
-					<- Home </a> <h1 class="text-center" style="color:#aa2d2d;"> Edit Course Details </h1>
-						<div class="card-body">
-							<form th:action="@{/courses/{id}/update (id=${course.id})}" class="fsp-form"
-								th:object="${course}" method="POST">
-								<div class="form-group">
-									<label> Course Name </label>
-									<input type="text" name="name" th:field="*{name}" class="form-control"
-										placeholder="Enter Course Name" />
-								</div>
-
-								<div class="form-group">
-									<label> Course Prefix </label>
-									<input type="text" name="prefix" th:field="*{prefix}" class="form-control"
-										placeholder="Enter Course Prefix" />
-								</div>
-
-								<div class="form-group">
-									<label> Course Units </label>
-									<input type="text" name="unit" th:field="*{unit}" class="form-control"
-										placeholder="Enter Course Units " />
-								</div>
-
-								<div class="form-group">
-									<label>Select Class Type </label>
-									<select class="form-control" id="classType" th:field="*{type}">
-
-										<option th:each="classType : ${types}" th:value="${classType.getKey()}"
-											th:text="${classType.getValue()}"
-											th:selected="${classType.getValue()} == ${type}">
 
 
-										</option>
-									</select>
-								</div>
+		<div class="container justify-content-center">
+			<h1 class="text-center" style="color:#aa2d2d;"> Edit Course Details </h1>
+			<div class="card-body">
+				<form th:action="@{/courses/create}" th:object="${course}" method="POST" class="fsp-form">
 
-								<div class="form-group">
-									<label>Select Department</label>
+					<div class="form-group">
+						<label>Select Department: </label>
+						<select class="form-control" id="departments" name="department_id">
+							<option th:each="department : ${departments}"
+								th:value="|${department.id}:${department.prefix}|" th:text="${department.name}"
+								th:selected="${department.prefix}==${course.department.prefix}">
+							</option>
+						</select>
+					</div>
 
-									<select class="form-control" id="departments" name="department_id">
+					<div class="form-group">
+						<label> Course Name: </label>
+						<input type="text" name="name" th:field="*{name}" class="form-control"
+							placeholder="Enter Course Name" />
+					</div>
 
-										<option th:each="department : ${departments}" th:value="${department.id}"
-											th:text="${department.name}"
-											th:selected="${department.prefix} == ${course.department.prefix}">
+					<div class="form-group">
+						<label> Course Prefix: </label>
+						<input type="text" name="prefix" th:field="*{prefix}" class="form-control"
+							placeholder="Enter Course Prefix" />
+					</div>
 
-										</option>
-									</select>
-								</div>
+					<div class="form-group">
+						<label> Course Units: </label>
+						<input type="text" name="unit" th:field="*{unit}" class="form-control"
+							placeholder="Enter Course Units " />
+					</div>
 
-								<div class="form-group">
-									<label> Start Time </label>
-									<input type="time" name="startTime" th:field="*{startTime}" />
-								</div>
 
-								<div class="form-group">
-									<label> End Time </label>
-									<input type="time" name="endTime" th:field="*{endTime}" />
-								</div>
+					<div class="form-group">
+						<label>Select Term: </label>
+						<select class="form-control" id="terms" name="term_id">
+							<option th:each="term : ${terms}" th:value="${term.id}" th:text="${term.name}">
+							</option>
+						</select>
+					</div>
 
-								<div class="form-group">
-									<label>
-										Select Days </label>
-									<div th:each="day : ${weekDays}">
-										<input name="weekSchedule" th:value="${day.getValue()}" type="checkbox"
-											id="weekDays" th:checked="${courseWeekDays.get(day.getValue())}">
-										<span th:text="${day.getValue()}"></span>
-									</div>
-								</div>
 
-								<div class="box-footer">
-									<button type="submit" class="btn">
-										Update Course
-									</button>
-								</div>
-							</form>
+					<div class="form-group">
+						<label>Description</label>
+						<textarea type="text" name="description" th:field="*{description}"></textarea>
+					</div>
 
-						</div>
+					<div class="box-footer">
+						<button type="submit" class="fsp-button">
+							Update Course
+						</button>
+					</div>
+				</form>
 			</div>
 		</div>
+		<script>
+			$(document).ready(function () {
+				const prefix = $("#prefix");
+				$("#departments").on('change', function () {
+					prefix.val(this.value.split(":")[1]);
+				})
+			});
+		</script>
 	</section>
 
 </body>

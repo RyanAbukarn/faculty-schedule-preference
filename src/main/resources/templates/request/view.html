@@ -14,8 +14,11 @@
 	<section layout:fragment="content">
 
 		<div th:if="${message}" th:text="${message}" th:class="${'alert ' + alertClass}" />
-		<input name="times" th:value="*{request.times}" type="hidden" id="times">
-		<input th:value="*{request.approvedTime}" type="hidden" id="theApprovedTime">
+		<input th:value="*{request.times}" type="hidden" id="times">
+		<input th:value="*{request.approvedTime}" type="hidden" id="approvedTime">
+
+		<input name="status" th:value="*{request.status}" type="hidden" id="status">
+
 		<div class="wrap">
 			<div class="info">
 
@@ -73,9 +76,13 @@
 		<div>
 			<div id='calendar'></div>
 			<br>
-			<form th:if="${request.getStatus()!=4 && request.getStatus()!=3}"th:action="@{/requests/__${request.getId()}__/denied}" method="post">
-				<input type="hidden" name="denie" />
-				<button class="btn btn-danger">Denie</button>
+			<form th:if="${request.getStatus()!=4 && request.getStatus()!=3}" th:action="@{/requests/__${request.getId()}__/denied}" method="post">
+				<button class="btn btn-danger">Denied</button>
+			</form>
+			<br>
+			<form th:if="${request.getStatus()!=4 && request.getStatus()!=3}" th:action="@{/requests/__${request.getId()}__/approved-time}" method="post">
+				<input name= "potentialApprovedTime" type="hidden" id="potentialApprovedTime">
+				<button class="btn btn-primary">Approve</button>
 			</form>
 		</div>
 
@@ -92,37 +99,30 @@
 					<p>Are you sure you want to approve this time?</p>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-					<form th:action="@{/requests/__${request.getId()}__/approved-time}" method="post">
-						<input name="approvedTime" type="hidden" id="approvedTime">
-						<button type="submit" class="btn btn-primary"  data-bs-dismiss="modal">Yes</button>
-					</form>
+					<button id= "removeTimeButton" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+					<button id= "approvedTimeButton" type="button" class="btn btn-primary"  data-bs-dismiss="modal">Add</button>
 				</div>
 			</div>
 		</div>
 	</div>
 	<script>
-		let f;
+		let v;
 		$(document).ready(function () {
-	
-			const Direction = {
-				1: 'Highest',
-				2: 'Alternative',
-				3: 'Lowest',
-			}	
-			const Status = {
-				'new':1,
-				'under_review':2,
-				'denied':3,
-				'accpeted':4,
-			}
-			let theApprovedTime="";
+			let selectDate;
+			let approvedTime = [];
+			const color = {
+                    'Highest': "#11B211",
+                    'Medium': "#CFE722",
+                    'Lowest': "#A42727",
+                }
 			let calendarEL = $('#calendar');
+			let removeTime = $("#removeTimeButton");
+			let addTime = $("#approvedTimeButton");
+			let potentialApprovedTime = $('#potentialApprovedTime');
 			let currentDate = "2012-05-25";
-			let approved_date;
 			calendarEL.fullCalendar({
+				hiddenDays: [0],
 				defaultView: 'agendaWeek',
-				eventColor: '#f16621',
 				slotDuration: '00:15',
 				allDaySlot: false,
 				slotLabelInterval: "00:15",
@@ -140,29 +140,54 @@
 					center: '',
 					right: ''
 				},
-				events: function (_, _,_, callback) {
-					theApprovedTime = $("#theApprovedTime").val();
-					if (theApprovedTime != "")
-						callback(JSON.parse("["+theApprovedTime+"]"));
+				events: function (_, _, _, callback) {
+					if($("#status").val() == 4 || $("#status").val() == 3 )
+						callback(JSON.parse($("#approvedTime").val()));
 					else
 						callback(JSON.parse($("#times").val()));
 				},
-				eventClick: function (info) {
-					
-					$("#createEventModal").modal("show");
-					approved_date = {
-						color: "#AFE1AF",
-						title: info.title,
-						start: info.start.toISOString(),
-						end: info.end.toISOString(),
-					};
-					$('#approvedTime').val(JSON.stringify(approved_date));
-					
-				}
+				eventClick: function (event) {
+					if(!($("#status").val() == 4 || $("#status").val() == 3)){
+						selectDate = event;
+						if (event.color == "blue")
+							addTime.prop("disabled",true);
+						else
+							addTime.prop("disabled",false);
+						$("#createEventModal").modal("show");
+					}
+				},
 			});
+			function convertToJson(value, _, _) {
+				if (value.color == "blue"){
+					approvedTime.push({
+						start: value.start.toISOString(),
+						end: value.end.toISOString(),
+						day: value.start.format("dddd")
+					})
+				}
 
-			$('#calendar').fullCalendar('gotoDate', currentDate);
-	
+            };
+			function addTimeFunc() {
+				approvedTime = [];
+				selectDate.color = "blue"
+				calendarEL.fullCalendar("rerenderEvents");
+				calendarEL.fullCalendar("clientEvents").forEach(convertToJson);
+				$('#potentialApprovedTime').val(JSON.stringify(approvedTime));
+
+            }
+
+			function removeTimeFunc() {
+				approvedTime = [];
+				selectDate.color = color[selectDate.title];
+				calendarEL.fullCalendar("rerenderEvents");
+				calendarEL.fullCalendar("clientEvents").forEach(convertToJson);
+				$('#potentialApprovedTime').val(JSON.stringify(approvedTime));
+
+            }
+
+			addTime.click(addTimeFunc);
+			removeTime.click(removeTimeFunc);
+			calendarEL.fullCalendar('gotoDate', currentDate);
 			$('#my-draggable').draggable({
 				zIndex: 999,
 				revert: true, // will cause the event to go back to its

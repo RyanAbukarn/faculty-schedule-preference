@@ -41,17 +41,11 @@
       <table class="fsp-table">
         <thead>
           <tr>
-            <th scope="col">id</th>
-            <th scope="col">name</th>
-            <th scope="col">prefix</th>
-            <th scope="col">type</th>
-            <th scope="col">unit</th>
+            <th scope="col">Name</th>
+            <th scope="col">Prefix</th>
+            <th scope="col">Type</th>
+            <th scope="col">Unit</th>
             <th scope="col">Department Name</th>
-            <th scope="col">start time</th>
-            <th scope="col">end time</th>
-            <th scope="col">Days</th>
-            <th scope="col">Status</th>
-            <th scope="col">Class-Type</th>
 
             <!-- <th scope="col">Duration</th> -->
             <th scope="col" colspan="2">Action</th>
@@ -60,20 +54,11 @@
 
         <tbody>
           <tr th:each="course: ${courses}">
-            <td th:text="${course.id}" />
             <td th:text="${course.name}" />
             <td th:text="${course.prefix}" />
-            <td th:text="${course.type}" />
             <td th:text="${course.unit}" />
             <td th:text="${course.department.name}" />
-            <td th:text="${course.startTime}" />
-            <td th:text="${course.endTime}" />
-            <td th:text="${course.weekSchedule}" />
-            <td th:text="${course.getHumanStatus()}" />
-            <td th:text="${course.getHumanClassType()}" />
 
-
-            <!-- <td th:text="${course.getTimeDuration(course.startTime,course.endTime)}" /> -->
             <td>
               <a sec:authorize="hasAnyRole('ADMIN', 'CONTROLLER','SUPERUSER')"
                 th:href="@{courses/{course_id}/edit(course_id=${course.id})}">Edit
