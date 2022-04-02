@@ -38,6 +38,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/courses/{course_id}/**",
                         "/users/",
                         "/users",
+                        "/user_availabilities",
                         "/users/{user_id}/permissions/**",
                         "/users/{user_id}/user_availability/**",
                         "/users/{user_id}/entitlements/",

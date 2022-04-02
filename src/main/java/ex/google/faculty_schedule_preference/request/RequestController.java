@@ -133,16 +133,21 @@ public class RequestController {
     }
 
     @PostMapping("courses/{course_id}/request/create")
-    public String create(@ModelAttribute Request request, @PathVariable("course_id") long course_id,
-            @AuthenticationPrincipal UserDetails userDetails) {
+    public String create(@ModelAttribute Request request, @RequestParam int preference, @PathVariable("course_id") long course_id,
+            @AuthenticationPrincipal UserDetails userDetails, RedirectAttributes redirectAttributes) {
         Course course = courseRepository.findById(course_id).get();
         User currentUser = userRepository.findByUsername(userDetails.getUsername()).get();
         List<UserAvailability> user_availability = currentUser.getUserAvailabilities();
 
         request.setCourse(course);
         request.setStatus(Request.statusValues.get("new"));
+        if (user_availability.size() == 0){
+            redirectAttributes.addFlashAttribute("message", " In order to request to teach a course, your availability needs to be created first.");
+            return "redirect:/my_availabilities";
+        }
         request.setTimes(user_availability.get(user_availability.size() - 1).getTimes());
         request.setUser(currentUser);
+        request.setPreference(preference);
         repository.save(request);
         return "redirect:/my_requests";
     }

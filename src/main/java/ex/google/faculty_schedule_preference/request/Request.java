@@ -49,6 +49,9 @@ public class Request {
     @Column(name = "approved_time", nullable = true, columnDefinition = "TEXT")
     private String approvedTime;
 
+    @Column(name = "preference", nullable = false)
+    private int preference;
+
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
     @OneToOne(fetch = FetchType.LAZY)
@@ -60,9 +63,10 @@ public class Request {
     public Request() {
     }
 
-    public Request(int status, String times, User user, Course course) {
+    public Request(int status, String times, int preference, User user, Course course) {
         this.status = status;
         this.times = times;
+        this.preference = preference;
         this.user = user;
         this.course = course;
     }
@@ -129,6 +133,24 @@ public class Request {
 
     public void setApprovedTime(String approvedTime) {
         this.approvedTime = approvedTime;
+    }
+
+    public int getPreference(){
+        return preference;
+    }
+
+    public String getPreferenceAsWord(){
+        if (preference == 1){
+            return "High";
+        } 
+        else if (preference == 2){
+            return "Medium";
+        }
+        else return "Low";
+    }
+
+    public void setPreference(int preference){
+        this.preference = preference;
     }
 
 }

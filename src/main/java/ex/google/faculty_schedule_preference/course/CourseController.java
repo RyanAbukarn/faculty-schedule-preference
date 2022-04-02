@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import ex.google.faculty_schedule_preference.department.Department;
 import ex.google.faculty_schedule_preference.department.DepartmentRepository;
@@ -63,25 +64,33 @@ public class CourseController {
         return "redirect:/courses";
     }
 
-    @GetMapping("{courseID}/edit")
-    public String edit(@PathVariable long courseID, Model model) {
-        Course course = courseRepo.findById(courseID).get();
+    @GetMapping("/{course_id}/edit")
+    public String edit(@PathVariable long course_id, Model model) {
+        Course course = courseRepo.findById(course_id).get();
         model.addAttribute("course", course);
         model.addAttribute("departments", depRepo.findAll());
+        model.addAttribute("terms", termRepo.findAll());
         return "course/edit";
     }
 
-    @PostMapping("{courseID}/update")
-    public String update(@PathVariable long courseID, @ModelAttribute("course") Course requestCourse,
-            @RequestParam("department_id") String departmentID) {
+    @PostMapping("/{course_id}/edit")
+    public String update(@PathVariable("course_id") long course_id, @ModelAttribute("course") Course updatedCourse,
+            @RequestParam("department_id") String departmentID, @RequestParam("term_id") Long termID, RedirectAttributes redirectAttributes) {
         Long deptID = Long.parseLong(departmentID.split(":")[0]);
         Department department = depRepo.findById(deptID).get();
-        Course course = courseRepo.getById(courseID);
-        course.setName(requestCourse.getName());
-        course.setPrefix(requestCourse.getPrefix());
-        course.setUnit(requestCourse.getUnit());
+        Course course = courseRepo.getById(course_id);
+        Term term = termRepo.getById(termID);
+        course.setName(updatedCourse.getName());
+        course.setNumber(updatedCourse.getNumber());
+        course.setUnit(updatedCourse.getUnit());
         course.setDepartment(department);
+        course.setDescription(updatedCourse.getDescription());
+        course.setK_factor(updatedCourse.getK_factor());
+        course.setEnrollmentBased(updatedCourse.getEnrollmentBased());
+        course.setTerm(term);
         courseRepo.save(course);
+        redirectAttributes.addFlashAttribute("message", "Success");
+        redirectAttributes.addFlashAttribute("alertClass", "alert-success");
         return "redirect:/courses";
     }
 

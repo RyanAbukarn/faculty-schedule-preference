@@ -1,8 +1,5 @@
 package ex.google.faculty_schedule_preference.course;
 
-import javax.persistence.Transient;
-import java.util.Map;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -18,9 +15,8 @@ import ex.google.faculty_schedule_preference.term.Term;
 
 @Entity(name = "Course")
 @Table(name = "courses", uniqueConstraints = {
-        @UniqueConstraint(name = "course_prefix_unique", columnNames = "prefix") })
+        @UniqueConstraint(name = "course_number_unique", columnNames = "number") })
 public class Course {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false)
@@ -32,14 +28,18 @@ public class Course {
     @Column(name = "description", nullable = false, columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "prefix", nullable = false, columnDefinition = "TEXT")
-    private String prefix;
+    // Example: 490, 491L
+    @Column(name = "number", nullable = false, columnDefinition = "TEXT")
+    private String number;
 
     @Column(name = "unit", nullable = false)
     private double unit;
 
-    @Column(name = "status", nullable = false)
-    private int status;
+    @Column(name = "k_factor", nullable = true)
+    private String k_factor;
+
+    @Column(name = "enrollmentBased", nullable = false)
+    private Boolean enrollmentBased;
 
     @OneToOne(fetch = FetchType.LAZY)
     private Department department;
@@ -50,25 +50,29 @@ public class Course {
     public Course() {
     }
 
-    public Course(String name, String prefix, double unit) {
+    public Course(String name, String number, double unit) {
         this.name = name;
-        this.prefix = prefix;
+        this.number = number;
         this.unit = unit;
     }
 
-    public Course(String name, String description, String prefix, double unit) {
+    public Course(String name, String description, String number, double unit) {
         this.name = name;
         this.description = description;
-        this.prefix = prefix;
+        this.number = number;
         this.unit = unit;
     }
 
-    public Course(String name, String description, String prefix, double unit, Term term) {
+    public Course(String name, String description, String number, double unit,
+                    String k_factor, Boolean enrollmentBased,  Department department, Term term) {
         this.name = name;
         this.description = description;
-        this.prefix = prefix;
+        this.number = number;
         this.unit = unit;
-        this.term = term;
+        this.k_factor = k_factor;
+        this.enrollmentBased = enrollmentBased;
+        this.department = department;
+        this.term = term;        
     }
 
     public long getId() {
@@ -77,14 +81,6 @@ public class Course {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
     }
 
     public String getName() {
@@ -103,12 +99,12 @@ public class Course {
         this.description = description;
     }
 
-    public String getPrefix() {
-        return prefix;
+    public String getNumber() {
+        return number;
     }
 
-    public void setPrefix(String prefix) {
-        this.prefix = prefix;
+    public void setNumber(String number) {
+        this.number = number;
     }
 
     public double getUnit() {
@@ -117,6 +113,22 @@ public class Course {
 
     public void setUnit(double unit) {
         this.unit = unit;
+    }
+    
+    public String getK_factor(){
+        return k_factor;
+    }
+
+    public void setK_factor(String k_factor){
+        this.k_factor = k_factor;
+    }
+
+    public Boolean getEnrollmentBased(){
+        return enrollmentBased;
+    }
+
+    public void setEnrollmentBased(Boolean enrollmentBased){
+        this.enrollmentBased = enrollmentBased;
     }
 
     public Department getDepartment() {

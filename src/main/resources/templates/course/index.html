@@ -43,7 +43,7 @@
           <tr>
             <th scope="col">Name</th>
             <th scope="col">Prefix</th>
-            <th scope="col">Type</th>
+            <th scope="col">Number</th>
             <th scope="col">Unit</th>
             <th scope="col">Department Name</th>
             <th scope="col" colspan="2">Action</th>
@@ -53,7 +53,8 @@
         <tbody>
           <tr th:each="course: ${courses}">
             <td th:text="${course.name}" />
-            <td th:text="${course.prefix}" />
+            <td th:text="${course.department.prefix}" />
+            <td th:text="${course.number}" />
             <td th:text="${course.unit}" />
             <td th:text="${course.department.name}" />
 
@@ -64,6 +65,11 @@
             </td>
             <td>
               <form method="POST" th:action="@{courses/{course_id}/request/create(course_id=${course.id})}">
+                <select name="preference" id="preference">
+                  <option value="1">High</option>
+                  <option value="2">Medium</option>
+                  <option value="3">Low</option>
+                </select>
                 <button type="submit" class="fsp-button">Request</button>
               </form>
             </td>

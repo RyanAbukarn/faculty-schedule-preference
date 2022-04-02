@@ -25,8 +25,12 @@
 				<div class="fsp-card">
 					<div class="fsp-card-body">
 						<h5 class="card-title" th:text="|Name: ${course.getName()}|"></h5>
-						<h6 id="coursePrefix" class="card-subtitle mb-2 text-muted"
-							th:text="|prefix: ${course.getPrefix()}|"></h6>
+						<h6 class="card-subtitle mb-2 text-muted"
+							th:text="|Department Prefix: ${course.getDepartment().getPrefix()}|">
+						</h6>
+						<h6 id="courseNumber" class="card-subtitle mb-2 text-muted"
+							th:text="|Number: ${course.getNumber()}|">
+						</h6>
 						<p class="card-text"></p>
 					</div>
 				</div>
@@ -36,6 +40,7 @@
 					<div class="fsp-card-body">
 						<h5 class="card-title" th:text="|Full Name: ${user.getName()}|"></h5>
 						<h6 class="card-subtitle mb-2 text-muted" th:text="|CSUN ID: ${user.getCsun_id()}|"></h6>
+						<h5 class="card-title" th:text="|Preference to teach course: ${request.getPreferenceAsWord()}|"></h5>
 						<a th:href="${resume}" class="card-link" target="_blank">resume</a>
 					</div>
 				</div>
@@ -119,7 +124,7 @@
                 'Not Available': "#A42727",
             }
 			let calendarEL = $('#calendar');
-			let coursePrefix = $('#coursePrefix').text().split(" ")[1];
+			let courseNumber = $('#courseNumber').text().split(" ")[1];
 			let removeTime = $("#removeTimeButton");
 			let addTime = $("#approvedTimeButton");
 			let potentialApprovedTime = $('#potentialApprovedTime');
@@ -164,7 +169,7 @@
 			function convertToJson(value, _, _) {
 				if (value.color == "blue"){
 					approvedTime.push({
-						title: coursePrefix,
+						title: courseNumber,
 						start: value.start.toISOString(),
 						end: value.end.toISOString(),
 						day: value.start.format("dddd"),
@@ -172,7 +177,7 @@
 						endTime: value.end.format("hh:mm")
 					})
 					userAvailability.push({
-						title: coursePrefix,
+						title: courseNumber,
 						color: value.color,
 						start: value.start.toISOString(),
 						end: value.end.toISOString(),
