@@ -86,6 +86,6 @@ public class UserAvailabilityController {
             repository.save(userAvailability);
             redirectAttributes.addFlashAttribute("message", "Successfully updated availability and units");
             redirectAttributes.addFlashAttribute("alertClass", "alert-success");
-            return "redirect: /my_availabilities";
+            return "redirect:../my_availabilities";
       }
 }

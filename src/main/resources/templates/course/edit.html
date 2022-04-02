@@ -16,7 +16,7 @@
 		<div class="container justify-content-center">
 			<h1 class="text-center" style="color:#aa2d2d;"> Edit Course Details </h1>
 			<div class="card-body">
-				<form th:action="@{/courses/create}" th:object="${course}" method="POST" class="fsp-form">
+				<form th:action="@{/courses/__${course.getId()}__/edit}" th:object="${course}" method="POST" class="fsp-form">
 
 					<div class="form-group">
 						<label>Select Department: </label>
@@ -35,9 +35,9 @@
 					</div>
 
 					<div class="form-group">
-						<label> Course Prefix: </label>
-						<input type="text" name="prefix" th:field="*{prefix}" class="form-control"
-							placeholder="Enter Course Prefix" />
+						<label> Course Number: </label>
+						<input type="text" name="number" th:field="*{number}" class="form-control"
+							placeholder="Enter Course Number" />
 					</div>
 
 					<div class="form-group">
@@ -46,15 +46,29 @@
 							placeholder="Enter Course Units " />
 					</div>
 
+					<div class="form-group">
+						<label> Course k-factor: </label>
+						<input type="text" name="k_factor" th:field="*{k_factor}" class="form-control" placeholder="Enter Course k-factor " />
+					  </div>
+			  
+					  <div class="form-group">
+						<label>Select Enrollment based option: </label>
+						<select name="enrollmentBased" id="enrollmentBased" th:field="*{enrollmentBased}">
+							<option value="1">True</option>
+							<option value="0" th:selected="${course.getEnrollmentBased()}==false">False</option>
+						  </select>
+					  </div>
+
 
 					<div class="form-group">
 						<label>Select Term: </label>
 						<select class="form-control" id="terms" name="term_id">
-							<option th:each="term : ${terms}" th:value="${term.id}" th:text="${term.name}">
+							<option th:each="term : ${terms}" 
+							th:value="${term.id}" th:text="${term.name}"
+							th:selected="${term}==${course.getTerm()}">
 							</option>
 						</select>
 					</div>
-
 
 					<div class="form-group">
 						<label>Description</label>
@@ -70,12 +84,12 @@
 			</div>
 		</div>
 		<script>
-			$(document).ready(function () {
-				const prefix = $("#prefix");
-				$("#departments").on('change', function () {
-					prefix.val(this.value.split(":")[1]);
-				})
-			});
+			// $(document).ready(function () {
+			// 	const number = $("#number");
+			// 	$("#departments").on('change', function () {
+			// 		number.val(this.value.split(":")[1]);
+			// 	})
+			// });
 		</script>
 	</section>
 

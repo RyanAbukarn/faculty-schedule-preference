@@ -25,7 +25,7 @@
 				<tr th:each="request: ${requests}">
 					<td th:text="${request.getId()}" />
 					<td th:text="${request.getUser().getCsun_id()}" />
-					<td th:text="${request.getCourse().getPrefix()}" />
+					<td th:text="${request.getCourse().getNumber()}" />
 					<td th:text="${request.humanStatus()}" />
 					<td>
 						<a th:else th:href="|/requests/${request.getId()}|" th:text="View" />
