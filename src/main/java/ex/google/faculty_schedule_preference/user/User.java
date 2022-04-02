@@ -33,7 +33,7 @@ public class User {
     @Column(name = "id", updatable = false)
     private long id;
     @Column(name = "csun_id", nullable = false, columnDefinition = "TEXT")
-    private String csun_id;
+    private String csunID;
 
     @Column(name = "name", nullable = false, columnDefinition = "TEXT")
     private String name;
@@ -79,17 +79,17 @@ public class User {
     public User() {
     }
 
-    public User(String csun_id, String name, String username, String email, String password) {
-        this.csun_id = csun_id;
+    public User(String csunID, String name, String username, String email, String password) {
+        this.csunID = csunID;
         this.name = name;
         this.username = username;
         this.email = email;
         this.password = password;
     }
 
-    public User(String csun_id, String name, String username, String email, String password,
+    public User(String csunID, String name, String username, String email, String password,
             Set<Department> departments) {
-        this.csun_id = csun_id;
+        this.csunID = csunID;
         this.name = name;
         this.username = username;
         this.email = email;
@@ -97,9 +97,9 @@ public class User {
         this.departments = departments;
     }
 
-    public User(String csun_id, String name, String username, String email, String password,
+    public User(String csunID, String name, String username, String email, String password,
             Department department) {
-        this.csun_id = csun_id;
+        this.csunID = csunID;
         this.name = name;
         this.username = username;
         this.email = email;
@@ -107,9 +107,9 @@ public class User {
         this.departments.add(department);
     }
 
-    public User(String csun_id, String name, String username, String email, String password, Boolean enabled,
+    public User(String csunID, String name, String username, String email, String password, Boolean enabled,
             Boolean locked) {
-        this.csun_id = csun_id;
+        this.csunID = csunID;
         this.name = name;
         this.username = username;
         this.email = email;
@@ -118,8 +118,8 @@ public class User {
         this.locked = locked;
     }
 
-    public User(String csun_id, String name, String username, String email, String password, List<Request> requests) {
-        this.csun_id = csun_id;
+    public User(String csunID, String name, String username, String email, String password, List<Request> requests) {
+        this.csunID = csunID;
         this.name = name;
         this.username = username;
         this.email = email;
@@ -155,12 +155,12 @@ public class User {
         this.requests = requests;
     }
 
-    public String getCsun_id() {
-        return csun_id;
+    public String getCsunID() {
+        return csunID;
     }
 
-    public void setCsun_id(String csun_id) {
-        this.csun_id = csun_id;
+    public void setCsunID(String csunID) {
+        this.csunID = csunID;
     }
 
     public String getName() {
@@ -245,11 +245,11 @@ public class User {
         return null;
     }
 
-    public void setEntitlement(double entitlement){
+    public void setEntitlement(double entitlement) {
         this.entitlement = entitlement;
     }
 
-    public double getEntitlement(){
+    public double getEntitlement() {
         return this.entitlement;
     }
 

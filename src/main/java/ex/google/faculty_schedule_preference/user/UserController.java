@@ -142,9 +142,10 @@ public class UserController {
     }
 
     @PostMapping("/login_validation")
-    public String loginValidation(RedirectAttributes redirectAttributes, @RequestParam("username") String username, Model model){
+    public String loginValidation(RedirectAttributes redirectAttributes, @RequestParam("username") String username,
+            Model model) {
         User user = repository.getByUsername(username);
-        if (!user.getEnabled()){
+        if (!user.getEnabled()) {
             model.addAttribute("error_enabled", true);
             return "user/login";
         }
@@ -242,14 +243,14 @@ public class UserController {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
 
         String sha3Hex = md.digest(file.getOriginalFilename().getBytes(StandardCharsets.UTF_8)).toString();
-        String fileName = currentUser.getCsun_id() + " - " + sha3Hex;
+        String fileName = currentUser.getCsunID() + " - " + sha3Hex;
 
         BoxFolder.Info childFolderInfo = parentFolder.createFolder(fileName);
         Document resume = currentUser.getResume();
         if (currentUser.getResume() != null) {
-            BoxFolder folder = new BoxFolder(api, currentUser.getResume().getname());
+            BoxFolder folder = new BoxFolder(api, currentUser.getResume().getName());
             folder.delete(true);
-            resume.setname(childFolderInfo.getID());
+            resume.setName(childFolderInfo.getID());
         } else {
             resume = new Document(Document.typeValues.get("RESUME"), childFolderInfo.getID(),
                     currentUser);
@@ -301,7 +302,7 @@ public class UserController {
     }
 
     @GetMapping("/{user_id}/entitlements")
-    public String getEntitlements(@PathVariable("user_id") long user_id, Model model){
+    public String getEntitlements(@PathVariable("user_id") long user_id, Model model) {
         User user = repository.findById(user_id).get();
         model.addAttribute("user", user);
         return "user/edit_user_entitlements";
@@ -310,10 +311,10 @@ public class UserController {
     @PostMapping("/{user_id}/entitlements")
     public String postEntitlements(@PathVariable("user_id") long user_id,
             RedirectAttributes redirectAttributes, @RequestParam("entitlement") String entitlement) {
-                double tempEntitlement = Double.parseDouble(entitlement);
-                User user = repository.findById(user_id).get();
-                user.setEntitlement(tempEntitlement);
-                repository.save(user);
+        double tempEntitlement = Double.parseDouble(entitlement);
+        User user = repository.findById(user_id).get();
+        user.setEntitlement(tempEntitlement);
+        repository.save(user);
         return "redirect:/users/" + user_id + "/entitlements";
     }
 

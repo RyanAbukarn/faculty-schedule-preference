@@ -1,7 +1,7 @@
 package ex.google.faculty_schedule_preference.request;
 
 import ex.google.faculty_schedule_preference.course.Course;
-import ex.google.faculty_schedule_preference.request_feedback.Requestfeedback;
+import ex.google.faculty_schedule_preference.request_feedback.RequestFeedback;
 import ex.google.faculty_schedule_preference.user.User;
 
 import javax.persistence.Transient;
@@ -58,7 +58,7 @@ public class Request {
     private Course course;
 
     @OneToMany(mappedBy = "request", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Requestfeedback> requestFeedbacks = new ArrayList<Requestfeedback>();
+    private List<RequestFeedback> requestFeedbacks = new ArrayList<RequestFeedback>();
 
     public Request() {
     }
@@ -115,15 +115,15 @@ public class Request {
         return humanStatusMap.get(this.status);
     }
 
-    public List<Requestfeedback> getRequestFeedbacks() {
+    public List<RequestFeedback> getRequestFeedbacks() {
         return requestFeedbacks;
     }
 
-    public void setRequestFeedbacks(List<Requestfeedback> requestFeedbacks) {
+    public void setRequestFeedbacks(List<RequestFeedback> requestFeedbacks) {
         this.requestFeedbacks = requestFeedbacks;
     }
 
-    public void pushRequestFeedback(Requestfeedback requestFeedback) {
+    public void pushRequestFeedback(RequestFeedback requestFeedback) {
         this.requestFeedbacks.add(requestFeedback);
     }
 
@@ -135,21 +135,20 @@ public class Request {
         this.approvedTime = approvedTime;
     }
 
-    public int getPreference(){
+    public int getPreference() {
         return preference;
     }
 
-    public String getPreferenceAsWord(){
-        if (preference == 1){
+    public String getPreferenceAsWord() {
+        if (preference == 1) {
             return "High";
-        } 
-        else if (preference == 2){
+        } else if (preference == 2) {
             return "Medium";
-        }
-        else return "Low";
+        } else
+            return "Low";
     }
 
-    public void setPreference(int preference){
+    public void setPreference(int preference) {
         this.preference = preference;
     }
 

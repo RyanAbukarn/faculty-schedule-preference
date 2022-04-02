@@ -12,7 +12,6 @@
 <body>
     <section layout:fragment="content">
 
-        <div th:if="${message}" th:text="${message}" th:class="${'alert ' + alertClass}" />
 
         <form action="#" method="POST" th:action="@{/users/__${user.getId()}__/departments}" class="fsp-form">
             <h1 id="roles-h2">Update User Departments</h1>

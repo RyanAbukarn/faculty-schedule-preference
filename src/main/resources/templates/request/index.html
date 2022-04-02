@@ -24,7 +24,7 @@
 			<tbody>
 				<tr th:each="request: ${requests}">
 					<td th:text="${request.getId()}" />
-					<td th:text="${request.getUser().getCsun_id()}" />
+					<td th:text="${request.getUser().getCsunID()}" />
 					<td th:text="${request.getCourse().getNumber()}" />
 					<td th:text="${request.humanStatus()}" />
 					<td>

@@ -40,8 +40,8 @@
             <li sec:authorize="hasAnyRole('ADMIN', 'CONTROLLER','SUPERUSER')"><a class="fsp-navbar-link"
                     href="/users">Users</a></li>
             <li sec:authorize="hasAnyRole('ADMIN', 'CONTROLLER','SUPERUSER')"><a class="fsp-navbar-link"
-                    href="/terms">Terms</a></li> 
-            <li><a class="fsp-navbar-link" href="/courses">Courses</a></li> 
+                    href="/terms">Terms</a></li>
+            <li><a class="fsp-navbar-link" href="/courses">Courses</a></li>
             <li sec:authorize="hasAnyRole('CONTROLLER','SUPERUSER')"><a class="fsp-navbar-link"
                     href="/requests">Requests</a></li>
             <li sec:authorize="hasAnyRole('CONTROLLER','SUPERUSER')"><a class="fsp-navbar-link"
@@ -62,6 +62,7 @@
         </ul>
     </nav>
 
+    <div th:if="${message}" th:text="${message}" th:class="${'alert ' + alertClass}" />
     <section layout:fragment="content">
 
     </section>

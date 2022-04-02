@@ -14,18 +14,18 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.util.Map;
 
-@Entity(name = "Requestfeedback")
+@Entity(name = "RequestFeedback")
 @Table(name = "request_feedbacks")
-public class Requestfeedback {
+public class RequestFeedback {
     @Transient
-    private static Map<Integer, String> recivers = Map.of(1, "Requester", 2, "Staff");
+    private static Map<Integer, String> receivers = Map.of(1, "Requester", 2, "Staff");
 
     public static String getViewByKey(Integer key) {
-        return recivers.get(key);
+        return receivers.get(key);
     }
 
-    public static Map<Integer, String> getReciverTyps() {
-        return recivers;
+    public static Map<Integer, String> getReceiverTypes() {
+        return receivers;
     }
 
     @Id
@@ -35,8 +35,8 @@ public class Requestfeedback {
     @Column(name = "comment", nullable = true)
     private String comment;
 
-    @Column(name = "reciver", nullable = true)
-    private Integer reciver;
+    @Column(name = "receiver", nullable = true)
+    private Integer receiver;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Request request;
@@ -44,25 +44,25 @@ public class Requestfeedback {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    public Requestfeedback() {
+    public RequestFeedback() {
     }
 
-    public Requestfeedback(String comment) {
+    public RequestFeedback(String comment) {
         this.comment = comment;
     }
 
-    public Requestfeedback(String comment, Request request, Integer reciver) {
+    public RequestFeedback(String comment, Request request, Integer receiver) {
         this.comment = comment;
         this.request = request;
-        this.reciver = reciver;
+        this.receiver = receiver;
     }
 
-    public Integer getReciver() {
-        return reciver;
+    public Integer getReceiver() {
+        return receiver;
     }
 
-    public void setReciver(Integer reciver) {
-        this.reciver = reciver;
+    public void setReceiver(Integer receiver) {
+        this.receiver = receiver;
     }
 
     public User getUser() {
@@ -93,7 +93,7 @@ public class Requestfeedback {
         this.request = request;
     }
 
-    public String getHumanReciver() {
-        return recivers.get(this.reciver);
+    public String getHumanReceiver() {
+        return receivers.get(this.receiver);
     }
 }

@@ -1,7 +1,7 @@
 package ex.google.faculty_schedule_preference.user;
 
 public class UserInput {
-    private String csun_id;
+    private String csunID;
     private String name;
     private String username;
     private String email;
@@ -25,12 +25,12 @@ public class UserInput {
         this.confirmPassword = confirmPassword;
     }
 
-    public String getCsun_id() {
-        return csun_id;
+    public String getCsunID() {
+        return csunID;
     }
 
-    public void setCsun_id(String csun_id) {
-        this.csun_id = csun_id;
+    public void setCsunID(String csunID) {
+        this.csunID = csunID;
     }
 
     public String getName() {

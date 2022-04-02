@@ -16,16 +16,15 @@
 <body>
     <section layout:fragment="content">
 
-        <div th:if="${message}" th:text="${message}" th:class="${'alert ' + alertClass}" />
         <div class="wrap">
             <div class="info">
                 <h1>User Info</h1>
                 <div class="fsp-card">
                     <div class="fsp-card-body">
                         <h5 class="card-title" th:text="|Name: ${user.name}|"></h5>
-                        <h5 class="card-title" th:text="|CSUN Id: ${user.csun_id}|"></h5>
+                        <h5 class="card-title" th:text="|CSUN Id: ${user.getCsunID}|"></h5>
                         <form method="POST" th:action="@{/my_availability/create}" th:object="${user_availability}">
-                            <label for="minUnit">Select mimum units:</label>
+                            <label for="minUnit">Select minimum units:</label>
                             <select name="minUnit" id="minUnit" th:field="*{minUnit}">
                                 <option value="3.0">3.0</option>
                                 <option value="6.0">6.0</option>
@@ -108,8 +107,8 @@
                 3: 'Not Available',
             }
             const color = {
-                'Most Willing': "#11B211",
-                'Willing': "#CFE722",
+                'Most Willing': "#505F4E",
+                'Willing': "#EE7762",
                 'Not Available': "#A42727",
             }
             const Direction2 = {
@@ -117,7 +116,6 @@
                 'Willing': 2,
                 'Not Available': 3,
             }
-            let showModel;
             let dates = [];
             let calendarEL = $('#calendar');
             let currentDate = "2012-05-25";
@@ -131,7 +129,7 @@
                 selectable: true,
                 unselectAuto: true,
                 eventOverlap: false,
-                eventColor: '#6B868C',
+                eventColor: '#043458',
                 slotDuration: '00:15',
                 allDaySlot: false,
                 slotLabelInterval: "00:15",
@@ -144,10 +142,6 @@
                 nowIndicator: "true",
                 minTime: '08:30',
                 maxTime: '21:45',
-                visibleRange: {
-                    start: '2017-03-22',
-                    end: '2017-03-25'
-                },
                 header: {
                     left: '',
                     center: '',
@@ -165,9 +159,9 @@
                         .prepend(`<i class="closeBtn far fa-times-circle"></i>`);
                     element.find(".closeBtn").on("click", function () {
                         $("#calendar").fullCalendar("removeEvents", event._id);
-                        updateHidenInoput();
+                        updateHiddenInput();
                     });
-                    updateHidenInoput();
+                    updateHiddenInput();
                 }
             });
             $('#calendar').fullCalendar('gotoDate', currentDate);
@@ -177,7 +171,7 @@
                 revert: true, // will cause the event to go back to its
             });
             $("#submit_event").click(_ => {
-                addevent(Direction[$("#priorities").val()], start_, end_);
+                addEvent(Direction[$("#priorities").val()], start_, end_);
                 $("#createEventModal").modal("hide");
             });
 
@@ -186,11 +180,12 @@
                     color: color[value.title],
                     title: value.title,
                     start: value.start.toISOString(),
-                    end: value.end.toISOString()
+                    end: value.end.toISOString(),
+                    editable: false
                 })
             };
 
-            function addevent(title, start, end) {
+            function addEvent(title, start, end) {
                 calendarEL.fullCalendar('renderEvent', {
                     color: color[title],
                     title: title,
@@ -199,7 +194,7 @@
                 }, true);
             };
 
-            function updateHidenInoput() {
+            function updateHiddenInput() {
                 dates = [];
                 calendarEL.fullCalendar("clientEvents").forEach(convertToJson);
                 $('#times').val(JSON.stringify(dates));

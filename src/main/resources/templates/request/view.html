@@ -13,7 +13,6 @@
 <body>
 	<section layout:fragment="content">
 
-		<div th:if="${message}" th:text="${message}" th:class="${'alert ' + alertClass}" />
 		<input th:value="*{request.times}" type="hidden" id="times">
 		<input name="approvedTime" th:value="*{request.approvedTime}" type="hidden" id="approvedTime">
 		<input name="status" th:value="*{request.status}" type="hidden" id="status">
@@ -25,7 +24,7 @@
 				<div class="fsp-card">
 					<div class="fsp-card-body">
 						<h5 class="card-title" th:text="|Name: ${course.getName()}|"></h5>
-						<h6 class="card-subtitle mb-2 text-muted"
+						<h6 id="departmentPrefix" class="card-subtitle mb-2 text-muted"
 							th:text="|Department Prefix: ${course.getDepartment().getPrefix()}|">
 						</h6>
 						<h6 id="courseNumber" class="card-subtitle mb-2 text-muted"
@@ -39,8 +38,9 @@
 				<div class="fsp-card">
 					<div class="fsp-card-body">
 						<h5 class="card-title" th:text="|Full Name: ${user.getName()}|"></h5>
-						<h6 class="card-subtitle mb-2 text-muted" th:text="|CSUN ID: ${user.getCsun_id()}|"></h6>
-						<h5 class="card-title" th:text="|Preference to teach course: ${request.getPreferenceAsWord()}|"></h5>
+						<h6 class="card-subtitle mb-2 text-muted" th:text="|CSUN ID: ${user.getCsunID()}|"></h6>
+						<h5 class="card-title" th:text="|Preference to teach course: ${request.getPreferenceAsWord()}|">
+						</h5>
 						<a th:href="${resume}" class="card-link" target="_blank">resume</a>
 					</div>
 				</div>
@@ -51,7 +51,7 @@
 						<div class="card-body">
 							<h5 class="card-title" th:text="${request_feedback.getUser().getName()}"></h5>
 							<h6 class="card-subtitle mb-2 text-muted"
-								th:text="|Sent to : ${request_feedback.getHumanReciver()}|">
+								th:text="|Sent to : ${request_feedback.getHumanReceiver()}|">
 							</h6>
 							<p class="card-text" th:text="${request_feedback.getComment()}"></p>
 						</div>
@@ -67,9 +67,9 @@
 							<textarea class="form-control" id="comment" name="comment" th:field="*{comment}" />
 							</div>
 				<div class="form-group">
-					<label for="reciver">Send to</label>
-					<select th:field="*{reciver}" name="reciver" class="form-control" id="reciver">
-						<option th:each="i : ${reciverTypes}" th:value="${i.key}" th:text="${i.value}">
+					<label for="receiver">Send to</label>
+					<select th:field="*{receiver}" name="receiver" class="form-control" id="receiver">
+						<option th:each="i : ${receiver_types}" th:value="${i.key}" th:text="${i.value}">
 						</option>
 					</select>
 				</div>
@@ -94,94 +94,90 @@
 		</div>
 
 	</div>
-	<div class="modal fade" id="createEventModal" tabindex="-1" aria-labelledby="createEventModalLabel"
-		aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="createEventModalLabel">Approve final time</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-				</div>
-				<div class="modal-body">
-					<p>Are you sure you want to approve this time?</p>
-				</div>
-				<div class="modal-footer">
-					<button id= "removeTimeButton" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-					<button id= "approvedTimeButton" type="button" class="btn btn-primary"  data-bs-dismiss="modal">Add</button>
-				</div>
-			</div>
-		</div>
-	</div>
+	
 	<script>
-		let v;
+		var e;
 		$(document).ready(function () {
-			let selectDate;
+			const DENIED = 3
+			const APPROVED = 4;
 			let approvedTime = [];
 			let userAvailability = [];
-			const color = {
-                'Most Willing': "#11B211",
-                'Willing': "#CFE722",
-                'Not Available': "#A42727",
-            }
 			let calendarEL = $('#calendar');
-			let courseNumber = $('#courseNumber').text().split(" ")[1];
-			let removeTime = $("#removeTimeButton");
-			let addTime = $("#approvedTimeButton");
+			let courseNumber = $('#departmentPrefix').text().split(":")[1] + " " + $('#courseNumber').text().split(" ")[1];
 			let potentialApprovedTime = $('#potentialApprovedTime');
+			let userAvailabilityTag = $('#userAvailability');
 			let currentDate = "2012-05-25";
 			calendarEL.fullCalendar({
+				eventColor: '#2E4755',
 				hiddenDays: [0],
 				defaultView: 'agendaWeek',
 				slotDuration: '00:15',
 				allDaySlot: false,
+				editable: true,
+				eventResourceEditable: false,
+				selectHelper: true,
+                selectable: true,
+                unselectAuto: true,
+                eventOverlap: true,
 				slotLabelInterval: "00:15",
 				longPressDelay: 0,
+				header: {
+                    left: '',
+                    center: '',
+                    right: ''
+                },
 				views: {
 					agendaWeek: {
 						columnFormat: "dddd"
 					}
 				},
 				nowIndicator: "true",
-				minTime: '06:00',
-				maxTime: '22:45',
-				header: {
-					left: '',
-					center: '',
-					right: ''
-				},
+                minTime: '08:30',
+                maxTime: '21:45',
 				events: function (_, _, _, callback) {
-					if($("#status").val() == 4 || $("#status").val() == 3 )
+					if($("#status").val() == APPROVED || $("#status").val() == DENIED)
 						callback(JSON.parse($("#approvedTime").val()));
 					else
 						callback(JSON.parse($("#times").val()));
+				}, 
+				select: function (start, end) {
+					start_ = start.toISOString();
+                    end_ = end.toISOString();
+					addEvent(start_,end_);
 				},
-				eventClick: function (event) {
-					if(!($("#status").val() == 4 || $("#status").val() == 3)){
-						selectDate = event;
-						if (event.color == "blue")
-							addTime.prop("disabled",true);
-						else
-							addTime.prop("disabled",false);
-						$("#createEventModal").modal("show");
+				eventRender: function (event, element) {
+					if(event.editable == undefined){
+						element
+							.find(".fc-content")
+							.prepend(`<i class="closeBtn far fa-times-circle"></i>`);
+						element.find(".closeBtn").on("click", function () {
+							calendarEL.fullCalendar("removeEvents", event._id);
+							updateHiddenInput()
+						});
 					}
-				},
+                }
+					 
 			});
 			function convertToJson(value, _, _) {
-				if (value.color == "blue"){
+				if (value.title == courseNumber){
 					approvedTime.push({
 						title: courseNumber,
+						color: value.color,
 						start: value.start.toISOString(),
 						end: value.end.toISOString(),
 						day: value.start.format("dddd"),
 						startTime: value.start.format("hh:mm"),
-						endTime: value.end.format("hh:mm")
+						endTime: value.end.format("hh:mm"),
+						editable: false
+
 					})
 					userAvailability.push({
 						title: courseNumber,
 						color: value.color,
 						start: value.start.toISOString(),
 						end: value.end.toISOString(),
-						day: value.start.format("dddd")
+						day: value.start.format("dddd"),
+						editable: false
 					})
 				}else{
 					userAvailability.push({
@@ -189,38 +185,31 @@
 						color: value.color,
 						start: value.start.toISOString(),
 						end: value.end.toISOString(),
-						day: value.start.format("dddd")
+						day: value.start.format("dddd"),
+						editable: false
 					})
 				}
 				
 				
 
             };
-			function addTimeFunc() {
-				approvedTime = [];
-				userAvailability  = [];
-				selectDate.color = "blue"
-				calendarEL.fullCalendar("rerenderEvents");
-				calendarEL.fullCalendar("clientEvents").forEach(convertToJson);
-				$('#potentialApprovedTime').val(JSON.stringify(approvedTime));
-				$('#userAvailability').val(JSON.stringify(userAvailability));
-
-
+			function updateHiddenInput() {
+                approvedTime = [];
+				userAvailability = [];
+                calendarEL.fullCalendar("clientEvents").forEach(convertToJson);
+				potentialApprovedTime.val(JSON.stringify(approvedTime));
+				userAvailabilityTag.val(JSON.stringify(userAvailability));
             }
 
-			function removeTimeFunc() {
-				approvedTime = [];
-				userAvailability  = [];
-				selectDate.color = color[selectDate.title];
-				calendarEL.fullCalendar("rerenderEvents");
-				calendarEL.fullCalendar("clientEvents").forEach(convertToJson);
-				$('#potentialApprovedTime').val(JSON.stringify(approvedTime));
-				$('#userAvailability').val(JSON.stringify(userAvailability));
+			function addEvent(start, end) {
+                calendarEL.fullCalendar('renderEvent', {
+                    title: courseNumber,
+                    start: start,
+                    end: end,
+                }, true);
+				updateHiddenInput()
+            };
 
-            }
-
-			addTime.click(addTimeFunc);
-			removeTime.click(removeTimeFunc);
 			calendarEL.fullCalendar('gotoDate', currentDate);
 			$('#my-draggable').draggable({
 				zIndex: 999,

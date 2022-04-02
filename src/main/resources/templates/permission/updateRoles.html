@@ -15,7 +15,6 @@
 <body>
     <section layout:fragment="content">
 
-        <div th:if="${message}" th:text="${message}" th:class="${'alert ' + alertClass}" />
 
 
         <form action="#" method="POST" th:action="@{/users/__${user.getId()}__/permissions}" class="fsp-form">
@@ -25,7 +24,8 @@
                 <span id="roles-id-number" th:text="${user.csun_id}">Default</span>
             </div>
             <div id="roles-container">
-                <div sec:authorize  = "hasAnyRole('ADMIN','SUPERUSER')"></td>
+                <div sec:authorize="hasAnyRole('ADMIN','SUPERUSER')">
+                    </td>
                     <input name="permissions" value=1 type="checkbox" id="roles-myCheckAdmin"
                         th:checked="${permissions.get('ROLE_ADMIN')}"> <span>Admin</span>
                 </div>

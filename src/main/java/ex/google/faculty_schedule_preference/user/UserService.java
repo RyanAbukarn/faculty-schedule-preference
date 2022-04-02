@@ -59,7 +59,7 @@ public class UserService {
 
         String token = myUserDetailsService.signUpUser(
                 new User(
-                        request.getCsun_id(),
+                        request.getCsunID(),
                         request.getName(),
                         request.getUsername(),
                         request.getEmail(),

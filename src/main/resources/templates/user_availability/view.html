@@ -17,14 +17,13 @@
     <section layout:fragment="content">
         <input name="times" th:value="*{user_availability.times}" type="hidden" id="times">
 
-        <div th:if="${message}" th:text="${message}" th:class="${'alert ' + alertClass}" />
         <div class="wrap">
             <div class="info">
                 <h1>User Availability Info</h1>
                 <div class="fsp-card">
                     <div class="fsp-card-body">
                         <h5 class="card-title" th:text="|User Name: ${user.name}|"></h5>
-                        <h5 class="card-title" th:text="|CSUN ID: ${user.csun_id}|"></h5>
+                        <h5 class="card-title" th:text="|CSUN ID: ${user.getCsunID()}|"></h5>
                     </div>
                 </div>
                 <div class="fsp-card">
@@ -65,8 +64,8 @@
         calendarEL.fullCalendar({
             hiddenDays: [0],
             defaultView: 'agendaWeek',
-            eventColor: '#f16621',
             slotDuration: '00:15',
+            eventColor: '#043458',
             allDaySlot: false,
             slotLabelInterval: "00:15",
             longPressDelay: 0,
@@ -76,8 +75,8 @@
                 }
             },
             nowIndicator: "true",
-            minTime: '06:00',
-            maxTime: '22:45',
+            minTime: '08:30',
+            maxTime: '21:45',
             header: {
                 left: '',
                 center: '',
