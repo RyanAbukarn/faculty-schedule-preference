@@ -5,6 +5,9 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -37,7 +40,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.supercsv.io.CsvBeanWriter;
+import org.supercsv.io.ICsvBeanWriter;
+import org.supercsv.prefs.CsvPreference;
 
+import ex.google.faculty_schedule_preference.course.Course;
+import ex.google.faculty_schedule_preference.course.CourseRepository;
 import ex.google.faculty_schedule_preference.department.Department;
 import ex.google.faculty_schedule_preference.department.DepartmentRepository;
 import ex.google.faculty_schedule_preference.document.Document;
@@ -68,6 +76,9 @@ public class UserController {
 
     @Autowired
     private EmailSender emailSender;
+
+    @Autowired
+    private CourseRepository courseRepository;
 
     @Value("${boxapi}")
     private String boxapi;
@@ -142,9 +153,10 @@ public class UserController {
     }
 
     @PostMapping("/login_validation")
-    public String loginValidation(RedirectAttributes redirectAttributes, @RequestParam("username") String username, Model model){
+    public String loginValidation(RedirectAttributes redirectAttributes, @RequestParam("username") String username,
+            Model model) {
         User user = repository.getByUsername(username);
-        if (!user.getEnabled()){
+        if (!user.getEnabled()) {
             model.addAttribute("error_enabled", true);
             return "user/login";
         }
@@ -269,6 +281,35 @@ public class UserController {
         return "user/upload_resume";
     }
 
+    @GetMapping("/export_csv")
+    public void downloadCSV(HttpServletResponse response) throws IOException {
+
+        response.setContentType("text/csv");
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+        String currentDateTime = dateFormatter.format(new Date());
+
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=courses_" + currentDateTime + ".csv";
+        response.setHeader(headerKey, headerValue);
+
+        List<Course> listCourses = courseRepository.findAll();
+
+        ICsvBeanWriter csvWriter = new CsvBeanWriter(response.getWriter(), CsvPreference.STANDARD_PREFERENCE);
+        String[] csvHeader = { "Course Name", "Course Units", "Department Prefix", "Course Number",
+                "Course Description", "Start Time", "End Time", "Days Of The Week" };
+        String[] nameMapping = { "name", "unit", "prefix", "department", "description", "startTime", "end_time",
+                "weekSchedule" };
+
+        csvWriter.writeHeader(csvHeader);
+
+        for (Course course : listCourses) {
+            csvWriter.write(course, nameMapping);
+        }
+
+        csvWriter.close();
+
+    }
+
     @GetMapping("/{user_id}/departments")
     public String getDepartments(@PathVariable("user_id") long user_id, Model model,
             @AuthenticationPrincipal UserDetails userDetails) {
@@ -301,7 +342,7 @@ public class UserController {
     }
 
     @GetMapping("/{user_id}/entitlements")
-    public String getEntitlements(@PathVariable("user_id") long user_id, Model model){
+    public String getEntitlements(@PathVariable("user_id") long user_id, Model model) {
         User user = repository.findById(user_id).get();
         model.addAttribute("user", user);
         return "user/edit_user_entitlements";
@@ -310,10 +351,10 @@ public class UserController {
     @PostMapping("/{user_id}/entitlements")
     public String postEntitlements(@PathVariable("user_id") long user_id,
             RedirectAttributes redirectAttributes, @RequestParam("entitlement") String entitlement) {
-                double tempEntitlement = Double.parseDouble(entitlement);
-                User user = repository.findById(user_id).get();
-                user.setEntitlement(tempEntitlement);
-                repository.save(user);
+        double tempEntitlement = Double.parseDouble(entitlement);
+        User user = repository.findById(user_id).get();
+        user.setEntitlement(tempEntitlement);
+        repository.save(user);
         return "redirect:/users/" + user_id + "/entitlements";
     }
 
