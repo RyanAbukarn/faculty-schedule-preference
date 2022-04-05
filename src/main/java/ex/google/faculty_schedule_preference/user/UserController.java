@@ -5,6 +5,9 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -37,7 +40,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.supercsv.io.CsvBeanWriter;
+import org.supercsv.io.ICsvBeanWriter;
+import org.supercsv.prefs.CsvPreference;
 
+import ex.google.faculty_schedule_preference.course.Course;
+import ex.google.faculty_schedule_preference.course.CourseRepository;
 import ex.google.faculty_schedule_preference.department.Department;
 import ex.google.faculty_schedule_preference.department.DepartmentRepository;
 import ex.google.faculty_schedule_preference.document.Document;
@@ -68,6 +76,9 @@ public class UserController {
 
     @Autowired
     private EmailSender emailSender;
+
+    @Autowired
+    private CourseRepository courseRepository;
 
     @Value("${boxapi}")
     private String boxapi;
@@ -268,6 +279,35 @@ public class UserController {
     @GetMapping("/upload_resume")
     public String uploadFile() {
         return "user/upload_resume";
+    }
+
+    @GetMapping("/export_csv")
+    public void downloadCSV(HttpServletResponse response) throws IOException {
+
+        response.setContentType("text/csv");
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+        String currentDateTime = dateFormatter.format(new Date());
+
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=courses_" + currentDateTime + ".csv";
+        response.setHeader(headerKey, headerValue);
+
+        List<Course> listCourses = courseRepository.findAll();
+
+        ICsvBeanWriter csvWriter = new CsvBeanWriter(response.getWriter(), CsvPreference.STANDARD_PREFERENCE);
+        String[] csvHeader = { "Course Name", "Course Units", "Department Prefix", "Course Number",
+                "Course Description", "Start Time", "End Time", "Days Of The Week" };
+        String[] nameMapping = { "name", "unit", "prefix", "department", "description", "startTime", "end_time",
+                "weekSchedule" };
+
+        csvWriter.writeHeader(csvHeader);
+
+        for (Course course : listCourses) {
+            csvWriter.write(course, nameMapping);
+        }
+
+        csvWriter.close();
+
     }
 
     @GetMapping("/{user_id}/departments")
