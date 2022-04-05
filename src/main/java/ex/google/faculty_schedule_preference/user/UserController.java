@@ -295,10 +295,9 @@ public class UserController {
         List<Course> listCourses = courseRepository.findAll();
 
         ICsvBeanWriter csvWriter = new CsvBeanWriter(response.getWriter(), CsvPreference.STANDARD_PREFERENCE);
-        String[] csvHeader = { "Course Name", "Course Units", "Department Prefix", "Course Number",
-                "Course Description", "Start Time", "End Time", "Days Of The Week" };
-        String[] nameMapping = { "name", "unit", "prefix", "department", "description", "startTime", "end_time",
-                "weekSchedule" };
+        String[] csvHeader = { "Course Name", "Course Units", "Course Number",
+                "Course Description" };
+        String[] nameMapping = { "name", "unit", "number", "description" };
 
         csvWriter.writeHeader(csvHeader);
 
