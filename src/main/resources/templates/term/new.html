@@ -15,22 +15,29 @@
     <section layout:fragment="content">
 
 
-        <div class="create_form">
-
+        <div class="fsp-form">
+            <h1>Create New Term</h1>
             <form method="POST" th:action="@{/terms/create}" th:object="${term}">
-                <label>Name:</label>
-                <input type="text" th:field="*{name}" /><br />
-
-                <label>Prefix:</label>
-                <input type="text" th:field="*{prefix}" /><br />
-
-                <label>Start Date:</label>
-                <input type="date" th:field="*{startDate}" /><br />
-
-                <label>End Date:</label>
-                <input type="date" th:field="*{endDate}" /><br />
-
-                <button type="submit">Register</button>
+                <div class="form-group">
+                    <label>Name:</label>
+                    <input type="text" th:field="*{name}" class="form-control" />
+                </div>
+                
+                <div class="form-group">
+                    <label>Prefix:</label>
+                    <input type="text" th:field="*{prefix}" class="form-control"/> 
+                </div>
+                <div class="form-group">
+                    <label>Start Date:</label>
+                    <input type="date" th:field="*{startDate}" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label>End Date:</label>
+                    <input type="date" th:field="*{endDate}" class="form-control"/>
+                </div>
+                <div class="box-footer">
+                    <button type="submit">Register</button>
+                </div>
             </form>
     </section>
 

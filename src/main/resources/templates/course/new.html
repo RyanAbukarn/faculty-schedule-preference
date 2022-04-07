@@ -8,15 +8,16 @@
   <title>Add Courses</title>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link th:href="@{/css/course/new.css}" rel="stylesheet" />
 </head>
 
 <body>
   <section layout:fragment="content">
 
     <div class="container justify-content-center">
-      <h1 class="text-center" style="color:#aa2d2d;"> Create New Course </h1>
+     
       <form th:action="@{/courses/create}" th:object="${course}" method="POST" class="fsp-form">
-
+        <h1 class="fsp-form-header"> Create New Course </h1>
         <div class="form-group">
           <label>Select Department: </label>
           <select class="form-control" id="departments" name="department_id">

@@ -1,0 +1,25 @@
+section {
+    display: flex;
+    flex-direction: row;
+}
+
+.title {
+    text-align: left;
+}
+
+.container {
+    width: 60%;
+    margin: 0;
+}
+
+.container-2 {
+    width: 40%;
+}
+
+.fsp-table {
+    margin: 15px 0;
+}
+
+.info {
+    width: 40%;
+}

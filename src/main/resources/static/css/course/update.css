@@ -9,7 +9,3 @@ label {
 #description {
     width: 100%;
 }
-
-option:active {
-    border-color: red;
-}
