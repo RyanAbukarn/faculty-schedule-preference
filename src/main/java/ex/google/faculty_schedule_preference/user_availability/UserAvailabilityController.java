@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import ex.google.faculty_schedule_preference.term.TermRepository;
@@ -50,10 +51,16 @@ public class UserAvailabilityController {
       }
 
       @GetMapping("my_availabilities")
-      public String myAvailabilities(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+      public String myAvailabilities(Model model, @AuthenticationPrincipal UserDetails userDetails,
+                  @RequestParam(required = false, value = "error") Boolean error) {
             User currentUser = userRepository.findByUsername(userDetails.getUsername()).get();
             model.addAttribute("userAvailabilities", currentUser.getUserAvailabilities());
             model.addAttribute("title", "My");
+            if (error != null && error) {
+                  model.addAttribute("message",
+                              " In order to request to teach a course, your availability needs to be created first.");
+                  model.addAttribute("alertClass", "alert-warning");
+            }
 
             return "user_availability/user_availabilities";
       }

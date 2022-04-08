@@ -1,8 +1,12 @@
 package ex.google.faculty_schedule_preference.course;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,8 +19,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import ex.google.faculty_schedule_preference.department.Department;
 import ex.google.faculty_schedule_preference.department.DepartmentRepository;
+import ex.google.faculty_schedule_preference.request.Request;
 import ex.google.faculty_schedule_preference.term.Term;
 import ex.google.faculty_schedule_preference.term.TermRepository;
+import ex.google.faculty_schedule_preference.user.User;
+import ex.google.faculty_schedule_preference.user.UserRepository;
 
 @Controller
 @RequestMapping("courses")
@@ -31,7 +38,34 @@ public class CourseController {
     @Autowired
     private TermRepository termRepo;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @GetMapping("")
+    public String requestCourses(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        User currentUser = userRepository.findByUsername(userDetails.getUsername()).get();
+        Set<Department> departments = currentUser.getDepartments();
+        List<Course> courses = new ArrayList<Course>();
+        List<Request> requests = currentUser.getRequests();
+        List<Course> requestedCourses = new ArrayList<Course>();
+
+        for (Department i : departments){
+            for (Course j : courseRepo.getCoursesByDepartment(i)){
+                courses.add(j);
+            }
+        }
+        for (Request i : requests){
+            requestedCourses.add(i.getCourse());
+            courses.remove(i.getCourse());
+        }
+        model.addAttribute("courses", courses);
+        model.addAttribute("departments", departments);
+        model.addAttribute("requestedCourses", requestedCourses);
+        model.addAttribute("search", "true");
+        return "course/request";
+    }
+
+    @GetMapping("/manage")
     public String index(Model model) {
         model.addAttribute("courses", courseRepo.findAll());
         model.addAttribute("departments", depRepo.findAll());

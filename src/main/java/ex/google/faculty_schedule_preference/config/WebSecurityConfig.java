@@ -33,7 +33,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/courses",
                         "/users/logout")
                 .authenticated()
-                .antMatchers("/requests/**").hasAnyRole("CONTROLLER", "SUPERUSER")
+                .antMatchers("/requests/**", "/courses/manage").hasAnyRole("CONTROLLER", "SUPERUSER")
                 .antMatchers(
                         "/courses/{course_id}/**",
                         "/users/",
@@ -49,7 +49,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/users/signup",
                         "/users/forgotPassword",
                         "/users/resetPassword/{token}",
-                        "/users/login_validation")
+                        "/users/login_validation",
+                        "course_requests")
                 .permitAll()
                 .anyRequest().authenticated()
                 .and().formLogin()

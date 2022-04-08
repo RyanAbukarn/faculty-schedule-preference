@@ -18,6 +18,7 @@
 					<th scope="col">CSUN ID</th>
 					<th scope="col">Course</th>
 					<th scope="col">Status</th>
+					<th scope="col">Preference</th>
 					<th scope="col">Actions</th>
 				</tr>
 			</thead>
@@ -27,6 +28,7 @@
 					<td th:text="${request.getUser().getCsunID()}" />
 					<td th:text="${request.getCourse().getNumber()}" />
 					<td th:text="${request.humanStatus()}" />
+					<td th:text="${request.getPreference}" />
 					<td>
 						<a th:else th:href="|/requests/${request.getId()}|" th:text="View" />
 					</td>

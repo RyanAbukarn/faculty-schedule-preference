@@ -139,15 +139,6 @@ public class Request {
         return preference;
     }
 
-    public String getPreferenceAsWord() {
-        if (preference == 1) {
-            return "High";
-        } else if (preference == 2) {
-            return "Medium";
-        } else
-            return "Low";
-    }
-
     public void setPreference(int preference) {
         this.preference = preference;
     }
