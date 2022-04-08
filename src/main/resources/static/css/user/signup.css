@@ -14,7 +14,7 @@ body {
 
 .createBox {
   width: 250px;
-  height: 575px;
+  height: fit-content;
   background-image: linear-gradient(rgb(210, 32, 48), rgb(230, 75, 54));
   top: 55%;
   left: 50%;
@@ -22,9 +22,10 @@ body {
   transform: translate(-50%, -50%);
   box-sizing: border-box;
   align-content: center;
-  border-radius: 5%;
-  padding: 70px 30px;
+  border-radius: 15px;
+  padding: 50px 30px 20px 30px;
   opacity: 90%;
+  box-shadow: 0px 5px 15px -3px rgba(0,0,0,0.50);
 }
 
 .createBox h2 {
@@ -46,10 +47,12 @@ body {
   line-height: 20px;
   font-size: 12px;
   text-decoration: none;
+  transition: color 60ms linear;
 }
 .createBox a:hover {
   cursor: pointer;
-  color: grey;
+  color: black;
+  transition: color 60ms linear;
 }
 
 .createBox label {
@@ -83,11 +86,13 @@ input[type="password"] {
   font-size: 16px;
   color: black;
   border-radius: 20px;
+  transition: background 60ms linear, color 60ms linear;
 }
 .createBox input[type="submit"]:hover {
   cursor: pointer;
-  background: gray;
+  background: rgb(46, 46, 46);
   color: white;
+  transition: background 60ms linear, color 60ms linear;
 }
 
 ::placeholder {

@@ -5,13 +5,16 @@
 <head>
     <title>My Availabilities</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<link th:href="@{/css/user_availabilities/user_availabilities.css}" rel="stylesheet" />
+    
 </head>
 
 <body>
     <section layout:fragment="content">
-        <h1 class="title" th:text="|${title} Availabilities|"></h1>
-        <table class="fsp-table fsp-table-striped">
 
+        <h1 class="title" th:text="|${title} Availabilities|"></h1>
+        <div class="av-alignment">
+        <table class="fsp-table fsp-table-striped">
             <thead>
                 <tr>
                     <th scope="col">Term</th>
@@ -36,6 +39,7 @@
         </table>
         <div class="col-lg-3">
             <a th:href="@{/my_availability/new}" class="btn fsp-button"> Add Availability</a>
+        </div>
         </div>
     </section>
 

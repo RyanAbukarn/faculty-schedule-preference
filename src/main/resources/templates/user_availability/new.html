@@ -2,203 +2,210 @@
 
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
     layout:decorate="~{page_layout/layout}">
-
 </html>
-<html>
 
 <head>
     <title>User availability</title>
     <link th:href="@{/css/request/create.css}" rel="stylesheet" />
     <meta charset='utf-8' content="Cory Sanoy" name="Author" />
+	<link th:href="@{/css/user_availabilities/new.css}" rel="stylesheet" />
 
 </head>
 
 <body>
     <section layout:fragment="content">
-
-        <div class="wrap">
-            <div class="info">
+        <div class="info">
+            <form method="POST" th:action="@{/my_availability/create}" th:object="${user_availability}" class="fsp-form">
                 <h1>User Info</h1>
-                <div class="fsp-card">
-                    <div class="fsp-card-body">
-                        <h5 class="card-title" th:text="|Name: ${user.name}|"></h5>
-                        <h5 class="card-title" th:text="|CSUN Id: ${user.getCsunID}|"></h5>
-                        <form method="POST" th:action="@{/my_availability/create}" th:object="${user_availability}">
-                            <label for="minUnit">Select minimum units:</label>
-                            <select name="minUnit" id="minUnit" th:field="*{minUnit}">
-                                <option value="3.0">3.0</option>
-                                <option value="6.0">6.0</option>
-                                <option value="9.0">9.0</option>
-                                <option value="12.0">12.0</option>
-                            </select>
-                            <br>
-                            <label for="maxUnit">Select maximum units:</label>
-                            <select name="maxUnit" id="maxUnit" th:field="*{maxUnit}">
-                                <option value="3.0">3.0</option>
-                                <option value="6.0">6.0</option>
-                                <option value="9.0">9.0</option>
-                                <option value="12.0">12.0</option>
-                                <option value="15.0">15.0</option>
-                            </select>
-                            <br>
-                            <label for="releaseTime">Select release units:</label>
-                            <select name="releaseTime" id="releaseTime" th:field="*{releaseTime}">
-                                <option value="0.0">0.0</option>
-                                <option value="3.0">3.0</option>
-                                <option value="6.0">6.0</option>
-                            </select>
-                            <br>
-                            <div class="form-group">
-                                <label for="term">Select the term
-                                    <select th:field="*{term}">
-                                        <option th:each="i : ${terms}" th:value="${i.getId()}"
-                                            th:text="${i.getPrefix()}"></option>
-                                    </select>
-                            </div>
-                            <br>
+                <div class="userinfo">
+                    <h2 class="card-title" th:text="|Name: |"></h2>
+                    <h2 class="csunname" th:text="|${user.name}|"></h2>
+                </div>
+                
+                <div class="userinfo ui2">
+                    <h2 class="card-title" th:text="|CSUN ID: |"></h2>
+                    <h2 class="csunid" th:text="|${user.getCsunID}|"></h2>
+                </div>
+                
+                <div class="form-group">
+                    <label for="minUnit">Select minimum units:</label>
+                    <select name="minUnit" id="minUnit" th:field="*{minUnit}">
+                        <option value="3.0">3.0</option>
+                        <option value="6.0">6.0</option>
+                        <option value="9.0">9.0</option>
+                        <option value="12.0">12.0</option>
+                    </select>
+                </div>
 
-                            <!-- Source description text box -->
-                            <div class="form-group">
-                                <label for="sourceDescription">Enter description for request of release time
-                                    units.</label>
-                                <textarea class="form-control" id="sourceDescription" name="sourceDescription"
-                                    th:field="*{sourceDescription}" th:placeholder="*{sourceDescription}" />
-                                </div>
-                            </div>
-                            <input name = "times" th:value="*{times}" type="hidden" id="times">
-                            <button type="submit">Register</button>
-                        </form>
-                    </div>
+                <div class="form-group">
+                    <label for="maxUnit">Select maximum units:</label>
+                    <select name="maxUnit" id="maxUnit" th:field="*{maxUnit}">
+                        <option value="3.0">3.0</option>
+                        <option value="6.0">6.0</option>
+                        <option value="9.0">9.0</option>
+                        <option value="12.0">12.0</option>
+                        <option value="15.0">15.0</option>
+                    </select>
                 </div>
-                <div>
-                    <div id='calendar'></div>
+                
+                <div class="form-group">
+                    <label for="releaseTime">Select release units:</label>
+                    <select name="releaseTime" id="releaseTime" th:field="*{releaseTime}">
+                        <option value="0.0">0.0</option>
+                        <option value="3.0">3.0</option>
+                        <option value="6.0">6.0</option>
+                    </select>
                 </div>
-            </div>
-            <div class="modal fade" id="createEventModal" tabindex="-1" aria-labelledby="createEventModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="createEventModalLabel">Modal title</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <label for="priorities">Priority:</label>
-                        <select name="cars" id="priorities">
-                            <option value="1">Most Willing</option>
-                            <option value="2">Willing</option>
-                            <option value="3">Not Available</option>
+                
+                <div class="form-group">
+                    <label for="term">Select the term</label>
+                        <select th:field="*{term}">
+                            <option th:each="i : ${terms}" th:value="${i.getId()}"
+                                th:text="${i.getPrefix()}"></option>
                         </select>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" id="submit_event" class="btn btn-primary">Save changes</button>
-                    </div>
+                </div>
+                <!-- Source description text box -->
+                <div class="form-group">
+                    <label for="sourceDescription">Enter description for request of release time
+                        units.</label>
+                    <textarea class="form-control" id="sourceDescription" name="sourceDescription"
+                        th:field="*{sourceDescription}" th:placeholder="*{sourceDescription}" />
+                </div>
+                <input name = "times" th:value="*{times}" type="hidden" id="times">
+                <div class="box-footer">
+                    <button type="submit">Register</button>
+                </div>
+            </form>
+        </div>
+
+        <div>
+            <div id='calendar'></div>
+        </div>
+
+        <div class="modal fade" id="createEventModal" tabindex="-1" aria-labelledby="createEventModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createEventModalLabel">Modal title</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <label for="priorities">Priority:</label>
+                    <select name="cars" id="priorities">
+                        <option value="1">Most Willing</option>
+                        <option value="2">Willing</option>
+                        <option value="3">Not Available</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" id="submit_event" class="btn btn-primary">Save changes</button>
                 </div>
             </div>
         </div>
-        </section>
-    </body>
-    <script>
-        $(document).ready(function () {
-            const Direction = {
-                1: 'Most Willing',
-                2: 'Willing',
-                3: 'Not Available',
-            }
-            const color = {
-                'Most Willing': "#505F4E",
-                'Willing': "#EE7762",
-                'Not Available': "#A42727",
-            }
-            const Direction2 = {
-                'Most Willing': 1,
-                'Willing': 2,
-                'Not Available': 3,
-            }
-            let dates = [];
-            let calendarEL = $('#calendar');
-            let currentDate = "2012-05-25";
-            let start_ = "";
-            let end_ = "";
-            calendarEL.fullCalendar({
-                hiddenDays: [0],
-                defaultView: 'agendaWeek',
-                selectHelper: true,
-                editable: true,
-                selectable: true,
-                unselectAuto: true,
-                eventOverlap: false,
-                eventColor: '#043458',
-                slotDuration: '00:15',
-                allDaySlot: false,
-                slotLabelInterval: "00:15",
-                longPressDelay: 0,
-                views: {
-                    agendaWeek: {
-                        columnFormat: "dddd"
-                    }
-                },
-                nowIndicator: "true",
-                minTime: '08:30',
-                maxTime: '21:45',
-                header: {
-                    left: '',
-                    center: '',
-                    right: ''
-                },
-                select: function (start, end) {
-                    start_ = start.toISOString();
-                    end_ = end.toISOString();
-                    $("#createEventModal").modal("show");
-                    return true;
-                },
-                eventRender: function (event, element) {
-                    element
-                        .find(".fc-content")
-                        .prepend(`<i class="closeBtn far fa-times-circle"></i>`);
-                    element.find(".closeBtn").on("click", function () {
-                        $("#calendar").fullCalendar("removeEvents", event._id);
-                        updateHiddenInput();
-                    });
-                    updateHiddenInput();
+    </section>
+</body>
+
+<script>
+    $(document).ready(function () {
+        const Direction = {
+            1: 'Most Willing',
+            2: 'Willing',
+            3: 'Not Available',
+        }
+        const color = {
+            'Most Willing': "#505F4E",
+            'Willing': "#EE7762",
+            'Not Available': "#A42727",
+        }
+        const Direction2 = {
+            'Most Willing': 1,
+            'Willing': 2,
+            'Not Available': 3,
+        }
+        let dates = [];
+        let calendarEL = $('#calendar');
+        let currentDate = "2012-05-25";
+        let start_ = "";
+        let end_ = "";
+        calendarEL.fullCalendar({
+            hiddenDays: [0],
+            defaultView: 'agendaWeek',
+            selectHelper: true,
+            editable: true,
+            selectable: true,
+            unselectAuto: true,
+            eventOverlap: false,
+            eventColor: '#043458',
+            slotDuration: '00:15',
+            allDaySlot: false,
+            slotLabelInterval: "00:15",
+            longPressDelay: 0,
+            views: {
+                agendaWeek: {
+                    columnFormat: "dddd"
                 }
-            });
-            $('#calendar').fullCalendar('gotoDate', currentDate);
-
-            $('#my-draggable').draggable({
-                zIndex: 999,
-                revert: true, // will cause the event to go back to its
-            });
-            $("#submit_event").click(_ => {
-                addEvent(Direction[$("#priorities").val()], start_, end_);
-                $("#createEventModal").modal("hide");
-            });
-
-            function convertToJson(value, _, _) {
-                dates.push({
-                    color: color[value.title],
-                    title: value.title,
-                    start: value.start.toISOString(),
-                    end: value.end.toISOString(),
-                    editable: false
-                })
-            };
-
-            function addEvent(title, start, end) {
-                calendarEL.fullCalendar('renderEvent', {
-                    color: color[title],
-                    title: title,
-                    start: start,
-                    end: end,
-                }, true);
-            };
-
-            function updateHiddenInput() {
-                dates = [];
-                calendarEL.fullCalendar("clientEvents").forEach(convertToJson);
-                $('#times').val(JSON.stringify(dates));
+            },
+            nowIndicator: "true",
+            minTime: '08:30',
+            maxTime: '21:45',
+            header: {
+                left: '',
+                center: '',
+                right: ''
+            },
+            select: function (start, end) {
+                start_ = start.toISOString();
+                end_ = end.toISOString();
+                $("#createEventModal").modal("show");
+                return true;
+            },
+            eventRender: function (event, element) {
+                element
+                    .find(".fc-content")
+                    .prepend(`<i class="closeBtn far fa-times-circle"></i>`);
+                element.find(".closeBtn").on("click", function () {
+                    $("#calendar").fullCalendar("removeEvents", event._id);
+                    updateHiddenInput();
+                });
+                updateHiddenInput();
             }
         });
-    </script>
-</html>
+        $('#calendar').fullCalendar('gotoDate', currentDate);
+
+        $('#my-draggable').draggable({
+            zIndex: 999,
+            revert: true, // will cause the event to go back to its
+        });
+        $("#submit_event").click(_ => {
+            addEvent(Direction[$("#priorities").val()], start_, end_);
+            $("#createEventModal").modal("hide");
+        });
+
+        function convertToJson(value, _, _) {
+            dates.push({
+                color: color[value.title],
+                title: value.title,
+                start: value.start.toISOString(),
+                end: value.end.toISOString(),
+                editable: false
+            })
+        };
+
+        function addEvent(title, start, end) {
+            calendarEL.fullCalendar('renderEvent', {
+                color: color[title],
+                title: title,
+                start: start,
+                end: end,
+            }, true);
+        };
+
+        function updateHiddenInput() {
+            dates = [];
+            calendarEL.fullCalendar("clientEvents").forEach(convertToJson);
+            $('#times').val(JSON.stringify(dates));
+        }
+    });
+</script>

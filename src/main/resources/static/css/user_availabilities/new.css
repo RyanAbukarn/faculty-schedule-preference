@@ -1,0 +1,52 @@
+.form-group{
+    margin-bottom: 10px;
+}
+
+label {
+    display: block;
+}
+
+#description {
+    width: 100%;
+}
+
+option:active {
+    border-color: red;
+}
+
+section {
+    display: flex;
+    flex-direction: row;
+}
+
+.fsp-form > h1 {
+    margin-bottom: 10px;
+}
+
+.ui2{
+    margin-bottom: 10px;
+}
+
+.userinfo > .csunname, .userinfo > .card-title{
+    display: inline-block;
+}
+.userinfo > .csunid, .userinfo > .card-title{
+    display: inline-block;
+}
+
+.userinfo h2 {
+    font-size: 18px;
+    text-align: left;
+    font-weight: lighter;
+    margin-bottom: 0px;
+    padding-bottom: 5px;
+}
+
+.userinfo .card-title {
+    color: #961616;
+}
+
+
+.info {
+    width: 35%;
+}

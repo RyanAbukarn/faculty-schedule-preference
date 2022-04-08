@@ -7,6 +7,7 @@
 	<title>Edit Courses</title>
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link th:href="@{/css/course/update.css}" rel="stylesheet" />
 </head>
 
 <body>
@@ -14,11 +15,11 @@
 
 
 		<div class="container justify-content-center">
-			<h1 class="text-center" style="color:#aa2d2d;"> Edit Course Details </h1>
+			
 			<div class="card-body">
 				<form th:action="@{/courses/__${course.getId()}__/edit}" th:object="${course}" method="POST"
 					class="fsp-form">
-
+					<h1> Edit Course Details </h1>
 					<div class="form-group">
 						<label>Select Department: </label>
 						<select class="form-control" id="departments" name="department_id">
