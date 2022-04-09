@@ -139,17 +139,13 @@ public class RequestController {
         User currentUser = userRepository.findByUsername(userDetails.getUsername()).get();
         List<UserAvailability> userAvailabilities = currentUser.getUserAvailabilities();
         int count = 1;
-        List<Request> requests = new ArrayList<Request>();
+        
         Course course = null;
         Request request = null;
         if (userAvailabilities.size() == 0) {
             return ResponseEntity.ok("my_availabilities");
         }
         if (array.length > 0) {
-            requests = repository.getAllByUser(currentUser);
-            for (Request i : requests) {
-                repository.deleteById(i.getId());
-            }
             for (Long i : array) {
                 course = courseRepository.findById(i).get();
                 request = new Request();

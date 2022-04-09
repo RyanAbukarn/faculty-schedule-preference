@@ -19,7 +19,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import ex.google.faculty_schedule_preference.department.Department;
 import ex.google.faculty_schedule_preference.department.DepartmentRepository;
-import ex.google.faculty_schedule_preference.request.Request;
 import ex.google.faculty_schedule_preference.term.Term;
 import ex.google.faculty_schedule_preference.term.TermRepository;
 import ex.google.faculty_schedule_preference.user.User;
@@ -46,21 +45,15 @@ public class CourseController {
         User currentUser = userRepository.findByUsername(userDetails.getUsername()).get();
         Set<Department> departments = currentUser.getDepartments();
         List<Course> courses = new ArrayList<Course>();
-        List<Request> requests = currentUser.getRequests();
-        List<Course> requestedCourses = new ArrayList<Course>();
 
+        // Not sure how to make it a one-liner? 
+        // courses.addAll(courseRepo.getCoursesByDepartmentS(departments));
         for (Department i : departments){
-            for (Course j : courseRepo.getCoursesByDepartment(i)){
-                courses.add(j);
-            }
+            courses.addAll(courseRepo.getCoursesByDepartment(i));
         }
-        for (Request i : requests){
-            requestedCourses.add(i.getCourse());
-            courses.remove(i.getCourse());
-        }
+
         model.addAttribute("courses", courses);
         model.addAttribute("departments", departments);
-        model.addAttribute("requestedCourses", requestedCourses);
         model.addAttribute("search", "true");
         return "course/request";
     }
