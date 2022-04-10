@@ -28,7 +28,7 @@ public class ReleaseTime {
     @ManyToOne(fetch = FetchType.LAZY)
     private UserAvailability userAvailability;
 
-    ReleaseTime(){}
+    public ReleaseTime(){}
 
     public ReleaseTime(double units, String source, String note, UserAvailability userAvailability){
         this.units = units;

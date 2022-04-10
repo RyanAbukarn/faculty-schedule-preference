@@ -1,5 +1,9 @@
 package ex.google.faculty_schedule_preference.release_time;
 
-public class ReleaseTimeRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ReleaseTimeRepository extends JpaRepository<ReleaseTime, Long>{
+
     
 }
+

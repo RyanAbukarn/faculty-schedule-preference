@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import ex.google.faculty_schedule_preference.release_time.ReleaseTime;
+import ex.google.faculty_schedule_preference.release_time.ReleaseTimeRepository;
 import ex.google.faculty_schedule_preference.term.TermRepository;
 import ex.google.faculty_schedule_preference.user.User;
 import ex.google.faculty_schedule_preference.user.UserRepository;
@@ -26,6 +28,9 @@ public class UserAvailabilityController {
       private UserRepository userRepository;
       @Autowired
       private TermRepository termRepository;
+
+      @Autowired
+      private ReleaseTimeRepository releaseTimeRepository;
 
       @GetMapping("user_availabilities")
       public String index(Model model) {
@@ -86,11 +91,22 @@ public class UserAvailabilityController {
       // Post: api/UserAvailability/Create
       @PostMapping("my_availability/create")
       public String myAvailabilityCreate(@ModelAttribute UserAvailability userAvailability,
-                  @AuthenticationPrincipal UserDetails userDetails,
+                  @AuthenticationPrincipal UserDetails userDetails, @RequestParam("releaseTimeArray") String [] releaseTimeArray,
                   RedirectAttributes redirectAttributes) {
             User currentUser = userRepository.findByUsername(userDetails.getUsername()).get();
+            
             userAvailability.setUser(currentUser);
             repository.save(userAvailability);
+
+            for (int i = 0; i < releaseTimeArray.length; i +=3){
+                  ReleaseTime releaseTime = new ReleaseTime();
+                  releaseTime.setUnits(Double.parseDouble(releaseTimeArray[i]));
+                  releaseTime.setSource(releaseTimeArray[i+1]);
+                  releaseTime.setNote(releaseTimeArray[i+2]);
+                  releaseTime.setUserAvailability(userAvailability);
+                  releaseTimeRepository.save(releaseTime);
+            }
+
             redirectAttributes.addFlashAttribute("message", "Successfully updated availability and units");
             redirectAttributes.addFlashAttribute("alertClass", "alert-success");
             return "redirect:../my_availabilities";

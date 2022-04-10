@@ -42,22 +42,24 @@
                 </div>
             </div>
 
-            <table class="fsp-table fsp-table-striped" id = "table-changes">
-                <tbody class="connectedSortable" id="table1">
-                    <!-- <thead> -->
-                    <tr>
-                        <th scope="col">Course Name</th>
-                    </tr>
-                    <!-- </thead> -->
-
-                    <tr th:if="${courses} == null">
-                        No Records Found
-                    </tr>
-                    <tr th:each="course: ${courses}" th:id="${course.id}" onmouseover="changeTextarea(this.id)">
-                        <td th:text="${course.name}" />
-                    </tr>
-                </tbody>
-            </table>
+            <div class = "container">
+                <table class="fsp-table fsp-table-striped" id = "table-changes">
+                    <tbody class="connectedSortable" id="table1">
+                        <!-- <thead> -->
+                        <tr>
+                            <th scope="col">Course Name</th>
+                        </tr>
+                        <!-- </thead> -->
+    
+                        <tr th:if="${courses} == null">
+                            No Records Found
+                        </tr>
+                        <tr th:each="course: ${courses}" th:id="${course.id}" onmouseover="changeTextarea(this.id)">
+                            <td th:text="${course.name}" />
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
             <div class="container-2">
                 <!-- extra div for dragging and dropping stuff -->
