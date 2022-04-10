@@ -47,16 +47,7 @@
                         <option value="15.0">15.0</option>
                     </select>
                 </div>
-                
-                <div class="form-group">
-                    <label for="releaseTime">Select release units:</label>
-                    <select name="releaseTime" id="releaseTime" th:field="*{releaseTime}">
-                        <option value="0.0">0.0</option>
-                        <option value="3.0">3.0</option>
-                        <option value="6.0">6.0</option>
-                    </select>
-                </div>
-                
+                                
                 <div class="form-group">
                     <label for="term">Select the term</label>
                         <select th:field="*{term}">
@@ -64,13 +55,22 @@
                                 th:text="${i.getPrefix()}"></option>
                         </select>
                 </div>
-                <!-- Source description text box -->
                 <div class="form-group">
-                    <label for="sourceDescription">Enter description for request of release time
-                        units.</label>
-                    <textarea class="form-control" id="sourceDescription" name="sourceDescription"
-                        th:field="*{sourceDescription}" th:placeholder="*{sourceDescription}" />
+                    <label for="releaseTimeUnits">Release time units:</label>
+                    <input type="text" id="releaseTimeUnits" name="releaseTimeUnits">
                 </div>
+                
+                <!-- Release Time Source description text box -->
+                <div class="form-group">
+                    <label for="source">Enter source for release time units.</label>
+                    <textarea class="form-control" id="source" name="source"></textarea>
+                </div>
+                <!-- Releast Time Note text box -->
+                <div class="form-group">
+                    <label for="note">Enter note for release time units.</label>
+                    <textarea class="form-control" id="note" name="note"></textarea>
+                </div>
+
                 <input name = "times" th:value="*{times}" type="hidden" id="times">
                 <div class="box-footer">
                     <button type="submit">Register</button>
