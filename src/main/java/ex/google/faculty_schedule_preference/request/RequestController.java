@@ -1,6 +1,5 @@
 package ex.google.faculty_schedule_preference.request;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -139,25 +138,23 @@ public class RequestController {
         User currentUser = userRepository.findByUsername(userDetails.getUsername()).get();
         List<UserAvailability> userAvailabilities = currentUser.getUserAvailabilities();
         int count = 1;
-        
+
         Course course = null;
         Request request = null;
-        if (userAvailabilities.size() == 0) {
+        if (userAvailabilities.isEmpty()) {
             return ResponseEntity.ok("my_availabilities");
         }
-        if (array.length > 0) {
-            for (Long i : array) {
-                course = courseRepository.findById(i).get();
-                request = new Request();
-                request.setCourse(course);
-                request.setStatus(Request.statusValues.get("new"));
-                request.setTimes(userAvailabilities.get(userAvailabilities.size() -
-                        1).getTimes());
-                request.setUser(currentUser);
-                request.setPreference(count);
-                count++;
-                repository.save(request);
-            }
+        for (Long i : array) {
+            course = courseRepository.findById(i).get();
+            request = new Request();
+            request.setCourse(course);
+            request.setStatus(Request.statusValues.get("new"));
+            request.setTimes(userAvailabilities.get(userAvailabilities.size() -
+                    1).getTimes());
+            request.setUser(currentUser);
+            request.setPreference(count);
+            count++;
+            repository.save(request);
         }
 
         return ResponseEntity.ok("my_requests");

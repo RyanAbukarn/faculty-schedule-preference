@@ -44,13 +44,7 @@ public class CourseController {
     public String requestCourses(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         User currentUser = userRepository.findByUsername(userDetails.getUsername()).get();
         Set<Department> departments = currentUser.getDepartments();
-        List<Course> courses = new ArrayList<Course>();
-
-        // Not sure how to make it a one-liner? 
-        // courses.addAll(courseRepo.getCoursesByDepartmentS(departments));
-        for (Department i : departments){
-            courses.addAll(courseRepo.getCoursesByDepartment(i));
-        }
+        List<Course> courses = courseRepo.getCoursesByDepartmentIn(departments);
 
         model.addAttribute("courses", courses);
         model.addAttribute("departments", departments);
@@ -88,7 +82,7 @@ public class CourseController {
         course.setTerm(term);
         course.setDepartment(department);
         courseRepo.save(course);
-        return "redirect:/courses";
+        return "redirect:/courses/manage";
     }
 
     @GetMapping("/{course_id}/edit")
@@ -102,7 +96,8 @@ public class CourseController {
 
     @PostMapping("/{course_id}/edit")
     public String update(@PathVariable("course_id") long course_id, @ModelAttribute("course") Course updatedCourse,
-            @RequestParam("department_id") String departmentID, @RequestParam("term_id") Long termID, RedirectAttributes redirectAttributes) {
+            @RequestParam("department_id") String departmentID, @RequestParam("term_id") Long termID,
+            RedirectAttributes redirectAttributes) {
         Long deptID = Long.parseLong(departmentID.split(":")[0]);
         Department department = depRepo.findById(deptID).get();
         Course course = courseRepo.getById(course_id);
@@ -118,7 +113,7 @@ public class CourseController {
         courseRepo.save(course);
         redirectAttributes.addFlashAttribute("message", "Success");
         redirectAttributes.addFlashAttribute("alertClass", "alert-success");
-        return "redirect:/courses";
+        return "redirect:/courses/manage";
     }
 
     // searching on the base of department
