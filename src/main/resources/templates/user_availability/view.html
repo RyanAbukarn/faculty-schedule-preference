@@ -36,17 +36,26 @@
                         <h5 class="card-title" th:text="|Min Unit: ${user_availability.getMinUnit()}|"></h5>
                     </div>
                 </div>
-                <!-- <div class="fsp-card">
-                    <div class="fsp-card-body">
-                        <h5 class="card-title" th:text="|Release Time: ${user_availability.getReleaseTime()}|"></h5>
+
+                <div th:each="release_time :${release_times}">
+                    <div class="fsp-card">
+                        <div class="fsp-card-body">
+                            <h5 class="card-title" th:text="|Release Time Units: ${release_time.units}|"></h5>
+                        </div>
                     </div>
-                </div> -->
-                <!-- <div class="fsp-card">
-                    <div class="fsp-card-body">
-                        <h6 class="card-title">Description</h6>
-                        <p class="card-title" th:text="${user_availability.getSourceDescription()}"></p>
+                    <div class="fsp-card">
+                        <div class="fsp-card-body">
+                            <h6 class="card-title">Source</h6>
+                            <p class="card-title" th:text="${release_time.source}"></p>
+                        </div>
                     </div>
-                </div> -->
+                    <div class="fsp-card">
+                        <div class="fsp-card-body">
+                            <h6 class="card-title">Note</h6>
+                            <p class="card-title" th:text="${release_time.note}"></p>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div>
                 <div id='calendar'></div>

@@ -1,5 +1,7 @@
 package ex.google.faculty_schedule_preference.user_availability;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -76,6 +78,7 @@ public class UserAvailabilityController {
             User currentUser = userRepository.findByUsername(userDetails.getUsername()).get();
             model.addAttribute("user", currentUser);
             model.addAttribute("user_availability", repository.findById(id).get());
+            model.addAttribute("release_times", releaseTimeRepository.getAllByUserAvailabilityId(id));
             return "user_availability/view";
       }
 

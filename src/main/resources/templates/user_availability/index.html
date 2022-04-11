@@ -17,7 +17,7 @@
                     <th scope="col">Term</th>
                     <th scope="col">Min Unit</th>
                     <th scope="col">Max Unit</th>
-                    <!-- <th scope="col">Release Time</th> -->
+                    <th scope="col">Release Time Submissions</th>
                     <th scope="col">Action</th>
 
                 </tr>
@@ -27,7 +27,7 @@
                     <td th:text="${userAvailability.getTerm().getPrefix()}" />
                     <td th:text="${userAvailability.getMinUnit()}" />
                     <td th:text="${userAvailability.getMaxUnit()}" />
-                    <!-- <td th:text="${userAvailability.getReleaseTime()}" /> -->
+                    <td th:text="${userAvailability.getReleaseTimes().size()}" />
                     <td>
                         <a th:href="|/users/${userAvailability.getUser().getId()}/user_availability/${userAvailability.getId()}|"
                             th:text="View" />
