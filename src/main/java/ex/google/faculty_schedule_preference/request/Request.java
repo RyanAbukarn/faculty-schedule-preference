@@ -143,4 +143,11 @@ public class Request {
         this.preference = preference;
     }
 
+    public String getPreferenceAsString(){
+        if (preference == 1){
+            return "Most Preferred";
+        }
+        return "Least Preferred";
+    }
+
 }

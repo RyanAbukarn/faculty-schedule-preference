@@ -42,127 +42,121 @@
                 </div>
             </div>
 
-            <div class = "container">
-                <table class="fsp-table fsp-table-striped" id = "table-changes">
-                    <tbody class="connectedSortable" id="table1">
-                        <!-- <thead> -->
-                        <tr>
+            <div class="container">
+                <table id='table1' class="mytable fsp-table fsp-table-striped">
+                    <tbody class="connectedSortable" id="t1">
+
+                        <tr class="table1">
                             <th scope="col">Course Name</th>
                         </tr>
-                        <!-- </thead> -->
-    
+
+
+
                         <tr th:if="${courses} == null">
                             No Records Found
                         </tr>
-                        <tr th:each="course: ${courses}" th:id="${course.id}" onmouseover="changeTextarea(this.id)">
+                        <tr th:each="course: ${courses}" th:id="${course.id}" onmouseover="changeTextarea(this.id)"
+                            class="table1">
                             <td th:text="${course.name}" />
                         </tr>
                     </tbody>
                 </table>
             </div>
 
-            <div class="container-2">
-                <!-- extra div for dragging and dropping stuff -->
-                <table class="fsp-table">
-                    <tbody class="connectedSortable" id="table2">
-                        <!-- <thead> -->
-                        <tr>
-                            <th scope="col">Course Request List</th>
-
-                        </tr>
-                        <!-- </thead> -->
-                        <tr th:each="course: ${requestedCourses}" th:id="${course.id}"
-                            onmouseover="changeTextarea(this.id)">
-                            <td th:text="${course.name}" />
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
 
             <button id="MyButton">Submit Request</button>
 
-            <div style="height:300px; width:300px;"><textarea name="info" id='info'></textarea></div></br>
-            <div>
+            <!-- <div style="height:300px; width:300px;"><textarea name="info" id='info'></textarea></div></br> -->
 
-                <script src="jquery.js"></script>
-                <script src="jquery-ui.min.js"></script>
-                <script>
-                    function changeTextarea(id) {
-                        var textarea = document.getElementById('info');
-                        // display description instead of id?
-                        textarea.value = id;
+        </div>
+
+
+
+        <div class="container-2">
+            <!-- extra div for dragging and dropping stuff -->
+            <table id='table2' class="mytable fsp-table fsp-table-striped">
+
+                <tbody class="connectedSortable" id="t2">
+
+                    <tr class="table2">
+                        <th>Least Preferred Courses List</th>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+
+        <div class="container-3">
+            <!-- extra div for dragging and dropping stuff -->
+            <table id='table3' class="mytable fsp-table fsp-table-striped">
+
+                <tbody class="connectedSortable" id="t3">
+
+                    <tr class="table3">
+                        <th>Most Preferred Courses List</th>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+        <script src="jquery.js"></script>
+        <script src="jquery-ui.min.js"></script>
+        <script>
+            function changeTextarea(id) {
+                var textarea = document.getElementById('info');
+                // display description instead of id?
+                textarea.value = id;
+            }
+            // $('tr').mouseout(function () {
+            //     $('#info').hide();
+            // });
+            $('tr').mouseover(function () {
+                $('#info').show();
+            });
+            $('#info').mouseover(function () {
+                $(this).show();
+            });
+            $(document).ready(function () {
+                $("tbody.connectedSortable").sortable({
+                    connectWith: ".connectedSortable",
+                    items: "> tr:not(:first)",
+                    helper: "clone",
+                    cursor: "move",
+                    zIndex: 99999,
+                    receive: function (event, ui) {
+                        /* here you can access the dragged row via ui.item
+                           ui.item has been removed from the other table, and added to "this" table
+                        */
+                        // var addedTo = $(this).closest("table.mytable"),
+                        //     removedFrom = $("table.mytable").not(addedTo);
+                        // alert("The ajax should be called for adding to " + addedTo.attr("id") + " and removing from " + removedFrom.attr("id"));
                     }
-                    // $('tr').mouseout(function () {
-                    //     $('#info').hide();
-                    // });
-                    $('tr').mouseover(function () {
-                        $('#info').show();
-                    });
-                    $('#info').mouseover(function () {
-                        $(this).show();
-                    });
-                    $(document).ready(function () {
-                        var startTable = "table1";
-                        var $tabs = $("#" + startTable);
+                });
+                $('#MyButton').click(function () {
+                    var token = $('#_csrf').attr('content');
+                    var header = $('#_csrf_header').attr('content');
+                    var leastPreferred = $('tbody#t2').sortable('toArray');
+                    var mostPreferred = $('tbody#t3').sortable('toArray');
+                    $.ajax({
+                        type: 'POST',
+                        url: '/course_requests',
+                        data: {
+                            myArray1: leastPreferred,
+                            myArray2: mostPreferred
+                        },
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader(header, token);
+                        },
+                        success: function (data) {
+                            location.href = data + "?error=true";
+                        }
 
+                    })
 
-                        $("tbody.connectedSortable")
-                            .sortable({
-                                connectWith: ".connectedSortable",
-                                items: "> tr:not(:first)",
-                                appendTo: $tabs,
-                                helper: "clone",
-                                cursor: "move",
-                                zIndex: 999990,
-                                start: function (event, ui) {
-                                    //alert("start1");
-                                    var start_pos = ui.item.index();
-                                    ui.item.data('start_pos', start_pos);
-                                }
-                            });
+                });
 
-                        var startTable2 = "table2";
-                        var $tabs2 = $("#" + startTable2);
-                        $("tbody.connectedSortable")
-                            .sortable({
-                                connectWith: ".connectedSortable",
-                                items: "> tr:not(:first)",
-                                appendTo: $tabs,
-                                helper: "clone",
-                                cursor: "move",
-                                zIndex: 999990,
-                                start: function (event, ui) {
-                                    //alert("start2");
-                                    var start_pos = ui.item.index();
-                                    ui.item.data('start_pos', start_pos);
-                                    //alert(start_pos);
-                                },
-                            });
-                        $('#MyButton').click(function () {
-                            var token = $('#_csrf').attr('content');
-                            var header = $('#_csrf_header').attr('content');
-                            var requestsArray = $('tbody#table2').sortable('toArray', { attribute: 'id' });
-                            $.ajax({
-                                type: 'POST',
-                                url: '/course_requests',
-                                data: {
-                                    myArray: requestsArray,
-
-                                },
-                                beforeSend: function (xhr) {
-                                    xhr.setRequestHeader(header, token);
-                                },
-                                success: function (data) {
-                                    location.href = data + "?error=true";
-                                }
-
-                            })
-
-                        });
-
-                    });
-                </script>
-
+            });
+        </script>
     </section>
 </body>
 

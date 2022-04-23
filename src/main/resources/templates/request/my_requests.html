@@ -19,14 +19,16 @@
                     <th scope="col">Request ID</th>
                     <th scope="col">For Course</th>
                     <th scope="col">Status</th>
+                    <th scope="col">Preference</th>
                     <th scope="col">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 <tr th:each="request: ${requests}">
                     <td th:text="${request.getId()}" />
-                    <td th:text="${request.getCourse().getNumber()}" />
+                    <td th:text="${request.getCourse().getDepartment().getPrefix()} + ' ' +${request.getCourse().getNumber()}" />
                     <td th:text="${request.humanStatus()}" />
+                    <td th:text="${request.getPreferenceAsString()}" />
                     <td>
                         <details>
                             <summary>Details</summary>

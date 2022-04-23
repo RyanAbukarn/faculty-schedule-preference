@@ -134,17 +134,19 @@ public class RequestController {
     @PostMapping("course_requests")
     public ResponseEntity<?> create(
             @AuthenticationPrincipal UserDetails userDetails, RedirectAttributes redirectAttributes,
-            @RequestParam(value = "myArray[]") Long[] array) {
+            @RequestParam(value = "myArray1[]") Long[] leastPreferred,
+            @RequestParam(value = "myArray2[]") Long[] mostPreferred) {
         User currentUser = userRepository.findByUsername(userDetails.getUsername()).get();
         List<UserAvailability> userAvailabilities = currentUser.getUserAvailabilities();
-        int count = 1;
 
         Course course = null;
         Request request = null;
         if (userAvailabilities.isEmpty()) {
             return ResponseEntity.ok("my_availabilities");
         }
-        for (Long i : array) {
+
+
+        for (Long i : mostPreferred) {
             course = courseRepository.findById(i).get();
             request = new Request();
             request.setCourse(course);
@@ -152,8 +154,19 @@ public class RequestController {
             request.setTimes(userAvailabilities.get(userAvailabilities.size() -
                     1).getTimes());
             request.setUser(currentUser);
-            request.setPreference(count);
-            count++;
+            request.setPreference(1);
+            repository.save(request);
+        }
+
+        for (Long i : leastPreferred) {
+            course = courseRepository.findById(i).get();
+            request = new Request();
+            request.setCourse(course);
+            request.setStatus(Request.statusValues.get("new"));
+            request.setTimes(userAvailabilities.get(userAvailabilities.size() -
+                    1).getTimes());
+            request.setUser(currentUser);
+            request.setPreference(2);
             repository.save(request);
         }
 

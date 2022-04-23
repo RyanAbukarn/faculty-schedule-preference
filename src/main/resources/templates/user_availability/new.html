@@ -202,13 +202,13 @@
             var intId = (lastField && lastField.length && lastField.data("idx") + 1) || 1;
             var fieldWrapper = $("<div class=\"fieldwrapper\" id=\"field" + intId + "\"/>");
             fieldWrapper.data("idx", intId);
-            var fName = $("<label>Units</label><input type=\"number\" step=\"0.01\" min=0 max=15 class=\"fieldname\" /><label>Source</label><textarea type=\"text\" class=\"fieldname1\" /><label>Note</label><textarea type=\"text\" class=\"fieldname2\" />");
+            var releaseTimeForm = $("<label>Units</label><input type=\"number\" step=\"0.01\" min=0 max=15 class=\"units\" /><label>Source</label><textarea type=\"text\" class=\"source\" /><label>Note</label><textarea type=\"text\" class=\"note\" />");
 
             var removeButton = $("<input type=\"button\" class=\"remove\" value=\"-\" />");
             removeButton.click(function () {
                 $(this).parent().remove();
             });
-            fieldWrapper.append(fName);
+            fieldWrapper.append(releaseTimeForm);
 
             fieldWrapper.append(removeButton);
             $("#buildyourform").append(fieldWrapper);
@@ -219,13 +219,12 @@
             var fieldSet = $("<fieldset id=\"yourform\"><legend>Your Form</legend></fieldset>");
             $("#buildyourform div").each(function () {
                 var id = "input" + $(this).attr("id").replace("field", "");
-
-                array.push($(this).find("input.fieldname").first().val());
-                array.push($(this).find("textarea.fieldname1").first().val());
-                array.push($(this).find("textarea.fieldname2").first().val());
-
+                // doesn't work with 2d array, data is sent as 1d array?
+                array.push($(this).find("input.units").first().val());
+                array.push($(this).find("textarea.source").first().val());
+                array.push($(this).find("textarea.note").first().val());
             });
-            document.getElementById('releaseTimeArray').value = array;
+            
             $("body").append(fieldSet);
         });
     });
