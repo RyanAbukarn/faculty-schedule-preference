@@ -12,11 +12,12 @@ import com.box.sdk.sharedlink.BoxSharedLinkRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,8 +31,6 @@ import ex.google.faculty_schedule_preference.user.User;
 import ex.google.faculty_schedule_preference.user.UserRepository;
 import ex.google.faculty_schedule_preference.user_availability.UserAvailability;
 import ex.google.faculty_schedule_preference.user_availability.UserAvailabilityRepository;
-
-import org.springframework.stereotype.Controller;
 
 @Controller
 public class RequestController {
@@ -132,28 +131,46 @@ public class RequestController {
         return "redirect:/requests/" + request_id;
     }
 
-    @PostMapping("courses/{course_id}/request/create")
-    public String create(@ModelAttribute Request request, @RequestParam int preference,
-            @PathVariable("course_id") long course_id,
-            @AuthenticationPrincipal UserDetails userDetails, RedirectAttributes redirectAttributes) {
-        Course course = courseRepository.findById(course_id).get();
+    @PostMapping("course_requests")
+    public ResponseEntity<?> create(
+            @AuthenticationPrincipal UserDetails userDetails, RedirectAttributes redirectAttributes,
+            @RequestParam(value = "myArray1[]") Long[] leastPreferred,
+            @RequestParam(value = "myArray2[]") Long[] mostPreferred) {
         User currentUser = userRepository.findByUsername(userDetails.getUsername()).get();
         List<UserAvailability> userAvailabilities = currentUser.getUserAvailabilities();
 
-        request.setCourse(course);
-        request.setStatus(Request.statusValues.get("new"));
-        if (userAvailabilities.size() == 0) {
-            redirectAttributes.addFlashAttribute("message",
-                    " In order to request to teach a course, your availability needs to be created first.");
-            redirectAttributes.addFlashAttribute("alertClass", "alert-warning");
-
-            return "redirect:/my_availabilities";
+        Course course = null;
+        Request request = null;
+        if (userAvailabilities.isEmpty()) {
+            return ResponseEntity.ok("my_availabilities");
         }
-        request.setTimes(userAvailabilities.get(userAvailabilities.size() - 1).getTimes());
-        request.setUser(currentUser);
-        request.setPreference(preference);
-        repository.save(request);
-        return "redirect:/my_requests";
+
+
+        for (Long i : mostPreferred) {
+            course = courseRepository.findById(i).get();
+            request = new Request();
+            request.setCourse(course);
+            request.setStatus(Request.statusValues.get("new"));
+            request.setTimes(userAvailabilities.get(userAvailabilities.size() -
+                    1).getTimes());
+            request.setUser(currentUser);
+            request.setPreference(1);
+            repository.save(request);
+        }
+
+        for (Long i : leastPreferred) {
+            course = courseRepository.findById(i).get();
+            request = new Request();
+            request.setCourse(course);
+            request.setStatus(Request.statusValues.get("new"));
+            request.setTimes(userAvailabilities.get(userAvailabilities.size() -
+                    1).getTimes());
+            request.setUser(currentUser);
+            request.setPreference(2);
+            repository.save(request);
+        }
+
+        return ResponseEntity.ok("my_requests");
     }
 
 }

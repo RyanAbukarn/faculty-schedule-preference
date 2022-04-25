@@ -9,10 +9,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link th:href="@{/css/course/index.css}" rel="stylesheet" />
 </head>
+
 <body>
 
   <section layout:fragment="content">
-    
+
     <div class="container">
       <h1 class="title">List of Courses</h1>
       <div class="row">
@@ -61,16 +62,6 @@
                 th:href="@{courses/{course_id}/edit(course_id=${course.id})}">Edit
               </a>
             </td>
-            <td>
-              <form method="POST" th:action="@{courses/{course_id}/request/create(course_id=${course.id})}">
-                <select name="preference" id="preference">
-                  <option value="1">High</option>
-                  <option value="2">Medium</option>
-                  <option value="3">Low</option>
-                </select>
-                <button type="submit" class="fsp-button">Request</button>
-              </form>
-            </td>
           </tr>
           <tr th:if="${courses} == null">
             No Records Found
@@ -83,9 +74,6 @@
       </div>
     </div>
 
-    <div class="container-2"> <!-- extra div for dragging and dropping stuff -->
-
-    </div>
   </section>
 </body>
 

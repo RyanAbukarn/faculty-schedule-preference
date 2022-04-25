@@ -1,14 +1,20 @@
 package ex.google.faculty_schedule_preference.user_availability;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import ex.google.faculty_schedule_preference.release_time.ReleaseTime;
 import ex.google.faculty_schedule_preference.term.Term;
 import ex.google.faculty_schedule_preference.user.User;
 
@@ -25,10 +31,7 @@ public class UserAvailability {
     private double maxUnit;
     @Column(name = "min_unit", nullable = false)
     private double minUnit;
-    @Column(name = "release_time", nullable = false)
-    private double releaseTime;
-    @Column(name = "source_description", nullable = false)
-    private String sourceDescription;
+    
 
     @OneToOne(fetch = FetchType.LAZY)
     private User user;
@@ -36,25 +39,23 @@ public class UserAvailability {
     @OneToOne(fetch = FetchType.LAZY)
     private Term term;
 
+    @OneToMany(mappedBy = "userAvailability", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ReleaseTime> releaseTimes = new ArrayList<ReleaseTime>();
+
     public UserAvailability() {
     }
 
-    public UserAvailability(String times, double maxUnit, double minUnit, double releaseTime,
-            String sourceDescription) {
+    public UserAvailability(String times, double maxUnit, double minUnit) {
         this.times = times;
         this.maxUnit = maxUnit;
         this.minUnit = minUnit;
-        this.releaseTime = releaseTime;
-        this.sourceDescription = sourceDescription;
     }
 
-    public UserAvailability(String times, double maxUnit, double minUnit, double releaseTime,
-            String sourceDescription, User user) {
+    public UserAvailability(String times, double maxUnit, double minUnit, 
+            User user) {
         this.times = times;
         this.maxUnit = maxUnit;
         this.minUnit = minUnit;
-        this.releaseTime = releaseTime;
-        this.sourceDescription = sourceDescription;
         this.user = user;
     }
 
@@ -90,22 +91,6 @@ public class UserAvailability {
         this.minUnit = minUnit;
     }
 
-    public double getReleaseTime() {
-        return releaseTime;
-    }
-
-    public void setReleaseTime(double releaseTime) {
-        this.releaseTime = releaseTime;
-    }
-
-    public void setSourceDescription(String sourceDescription) {
-        this.sourceDescription = sourceDescription;
-    }
-
-    public String getSourceDescription() {
-        return sourceDescription;
-    }
-
     public User getUser() {
         return user;
     }
@@ -126,4 +111,11 @@ public class UserAvailability {
         this.term = term;
     }
 
+    public void setReleaseTimes(List<ReleaseTime> releaseTimes) {
+        this.releaseTimes = releaseTimes;
+    }
+
+    public List<ReleaseTime> getReleaseTimes() {
+        return releaseTimes;
+    }
 }

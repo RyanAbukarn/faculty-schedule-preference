@@ -1,8 +1,12 @@
 package ex.google.faculty_schedule_preference.course;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +21,8 @@ import ex.google.faculty_schedule_preference.department.Department;
 import ex.google.faculty_schedule_preference.department.DepartmentRepository;
 import ex.google.faculty_schedule_preference.term.Term;
 import ex.google.faculty_schedule_preference.term.TermRepository;
+import ex.google.faculty_schedule_preference.user.User;
+import ex.google.faculty_schedule_preference.user.UserRepository;
 
 @Controller
 @RequestMapping("courses")
@@ -31,7 +37,22 @@ public class CourseController {
     @Autowired
     private TermRepository termRepo;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @GetMapping("")
+    public String requestCourses(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        User currentUser = userRepository.findByUsername(userDetails.getUsername()).get();
+        Set<Department> departments = currentUser.getDepartments();
+        List<Course> courses = courseRepo.getCoursesByDepartmentIn(departments);
+
+        model.addAttribute("courses", courses);
+        model.addAttribute("departments", departments);
+        model.addAttribute("search", "true");
+        return "course/request";
+    }
+
+    @GetMapping("/manage")
     public String index(Model model) {
         model.addAttribute("courses", courseRepo.findAll());
         model.addAttribute("departments", depRepo.findAll());
@@ -61,7 +82,7 @@ public class CourseController {
         course.setTerm(term);
         course.setDepartment(department);
         courseRepo.save(course);
-        return "redirect:/courses";
+        return "redirect:/courses/manage";
     }
 
     @GetMapping("/{course_id}/edit")
@@ -75,7 +96,8 @@ public class CourseController {
 
     @PostMapping("/{course_id}/edit")
     public String update(@PathVariable("course_id") long course_id, @ModelAttribute("course") Course updatedCourse,
-            @RequestParam("department_id") String departmentID, @RequestParam("term_id") Long termID, RedirectAttributes redirectAttributes) {
+            @RequestParam("department_id") String departmentID, @RequestParam("term_id") Long termID,
+            RedirectAttributes redirectAttributes) {
         Long deptID = Long.parseLong(departmentID.split(":")[0]);
         Department department = depRepo.findById(deptID).get();
         Course course = courseRepo.getById(course_id);
@@ -91,7 +113,7 @@ public class CourseController {
         courseRepo.save(course);
         redirectAttributes.addFlashAttribute("message", "Success");
         redirectAttributes.addFlashAttribute("alertClass", "alert-success");
-        return "redirect:/courses";
+        return "redirect:/courses/manage";
     }
 
     // searching on the base of department

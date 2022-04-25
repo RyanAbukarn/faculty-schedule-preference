@@ -43,6 +43,9 @@
                     href="/terms">Terms</a></li>
             <li><a class="fsp-navbar-link" href="/courses">Courses</a></li>
             <li sec:authorize="hasAnyRole('CONTROLLER','SUPERUSER')"><a class="fsp-navbar-link"
+                href="/courses/manage">Manage Courses</a></li>
+            
+            <li sec:authorize="hasAnyRole('CONTROLLER','SUPERUSER')"><a class="fsp-navbar-link"
                     href="/requests">Requests</a></li>
             <li sec:authorize="hasAnyRole('CONTROLLER','SUPERUSER')"><a class="fsp-navbar-link"
                     href="/user_availabilities">Availabilities</a></li>

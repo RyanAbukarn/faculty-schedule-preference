@@ -39,7 +39,7 @@
 					<div class="fsp-card-body">
 						<h5 class="card-title" th:text="|Full Name: ${user.getName()}|"></h5>
 						<h6 class="card-subtitle mb-2 text-muted" th:text="|CSUN ID: ${user.getCsunID()}|"></h6>
-						<h5 class="card-title" th:text="|Preference to teach course: ${request.getPreferenceAsWord()}|">
+						<h5 class="card-title" th:text="|Preference: ${request.getPreferenceAsString()}|">
 						</h5>
 						<a th:href="${resume}" class="card-link" target="_blank">resume</a>
 					</div>

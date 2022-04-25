@@ -1,0 +1,164 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{page_layout/layout}">
+
+<head>
+    <title>Courses</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link th:href="@{/css/course/index.css}" rel="stylesheet" />
+    <link rel="stylesheet" href="jquery-ui.css">
+    <meta id="_csrf" name="_csrf" th:content="${_csrf.token}" />
+    <meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}" />
+</head>
+
+<body>
+    <section layout:fragment="content">
+        <div class="container">
+            <h1 class="title">List of Courses</h1>
+            <div class="row">
+
+                <div class="col-lg-9" th:switch="${search}">
+                    <form th:case="'true'" th:action="@{/courses/search}" method="POST">
+                        <div class="col-lg-9">
+                            <div class="form-group ">
+                                <select class="form-control" id="departments" name="departments">
+
+                                    <option th:each="department : ${departments}" th:value="${department.prefix}"
+                                        th:text="${department.name}">
+
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <button id="submit_request" class="btn">
+                                Search
+                            </button>
+                        </div>
+                    </form>
+                    <a th:case="'false'" th:href="@{/courses}" class="btn fsp-button btn-sm mb-3"> Get All Courses</a>
+                </div>
+            </div>
+
+            <div class="container">
+                <table id='table1' class="mytable fsp-table fsp-table-striped">
+                    <tbody class="connectedSortable" id="t1">
+
+                        <tr class="table1">
+                            <th scope="col">Course Name</th>
+                        </tr>
+
+
+
+                        <tr th:if="${courses} == null">
+                            No Records Found
+                        </tr>
+                        <tr th:each="course: ${courses}" th:id="${course.id}" onmouseover="changeTextarea(this.id)"
+                            class="table1">
+                            <td th:text="${course.name}" />
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+
+            <button id="MyButton">Submit Request</button>
+
+            <!-- <div style="height:300px; width:300px;"><textarea name="info" id='info'></textarea></div></br> -->
+
+        </div>
+
+
+
+        <div class="container-2">
+            <!-- extra div for dragging and dropping stuff -->
+            <table id='table2' class="mytable fsp-table fsp-table-striped">
+
+                <tbody class="connectedSortable" id="t2">
+
+                    <tr class="table2">
+                        <th>Least Preferred Courses List</th>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+
+        <div class="container-3">
+            <!-- extra div for dragging and dropping stuff -->
+            <table id='table3' class="mytable fsp-table fsp-table-striped">
+
+                <tbody class="connectedSortable" id="t3">
+
+                    <tr class="table3">
+                        <th>Most Preferred Courses List</th>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+        <script src="jquery.js"></script>
+        <script src="jquery-ui.min.js"></script>
+        <script>
+            function changeTextarea(id) {
+                var textarea = document.getElementById('info');
+                // display description instead of id?
+                textarea.value = id;
+            }
+            // $('tr').mouseout(function () {
+            //     $('#info').hide();
+            // });
+            $('tr').mouseover(function () {
+                $('#info').show();
+            });
+            $('#info').mouseover(function () {
+                $(this).show();
+            });
+            $(document).ready(function () {
+                $("tbody.connectedSortable").sortable({
+                    connectWith: ".connectedSortable",
+                    items: "> tr:not(:first)",
+                    helper: "clone",
+                    cursor: "move",
+                    zIndex: 99999,
+                    receive: function (event, ui) {
+                        /* here you can access the dragged row via ui.item
+                           ui.item has been removed from the other table, and added to "this" table
+                        */
+                        // var addedTo = $(this).closest("table.mytable"),
+                        //     removedFrom = $("table.mytable").not(addedTo);
+                        // alert("The ajax should be called for adding to " + addedTo.attr("id") + " and removing from " + removedFrom.attr("id"));
+                    }
+                });
+                $('#MyButton').click(function () {
+                    var token = $('#_csrf').attr('content');
+                    var header = $('#_csrf_header').attr('content');
+                    var leastPreferred = $('tbody#t2').sortable('toArray');
+                    var mostPreferred = $('tbody#t3').sortable('toArray');
+                    $.ajax({
+                        type: 'POST',
+                        url: '/course_requests',
+                        data: {
+                            myArray1: leastPreferred,
+                            myArray2: mostPreferred
+                        },
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader(header, token);
+                        },
+                        success: function (data) {
+                            location.href = data + "?error=true";
+                        }
+
+                    })
+
+                });
+
+            });
+        </script>
+    </section>
+</body>
+
+
+</html>

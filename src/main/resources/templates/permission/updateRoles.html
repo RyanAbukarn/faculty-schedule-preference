@@ -21,7 +21,7 @@
             <h1 id="roles-h2">Update User Roles</h1>
             <div id="roles-user-details">
                 <span id="roles-csun-id">CSUN ID:</span>
-                <span id="roles-id-number" th:text="${user.csun_id}">Default</span>
+                <span id="roles-id-number" th:text="${user.csunID}">Default</span>
             </div>
             <div id="roles-container">
                 <div sec:authorize="hasAnyRole('ADMIN','SUPERUSER')">

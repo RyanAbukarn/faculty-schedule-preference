@@ -2,31 +2,33 @@
 
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
     layout:decorate="~{page_layout/layout}">
+
 </html>
 
 <head>
     <title>User availability</title>
     <link th:href="@{/css/request/create.css}" rel="stylesheet" />
     <meta charset='utf-8' content="Cory Sanoy" name="Author" />
-	<link th:href="@{/css/user_availabilities/new.css}" rel="stylesheet" />
+    <link th:href="@{/css/user_availabilities/new.css}" rel="stylesheet" />
 
 </head>
 
 <body>
     <section layout:fragment="content">
         <div class="info">
-            <form method="POST" th:action="@{/my_availability/create}" th:object="${user_availability}" class="fsp-form">
+            <form method="POST" th:action="@{/my_availability/create}" th:object="${user_availability}"
+                class="fsp-form">
                 <h1>User Info</h1>
                 <div class="userinfo">
                     <h2 class="card-title" th:text="|Name: |"></h2>
                     <h2 class="csunname" th:text="|${user.name}|"></h2>
                 </div>
-                
+
                 <div class="userinfo ui2">
                     <h2 class="card-title" th:text="|CSUN ID: |"></h2>
                     <h2 class="csunid" th:text="|${user.getCsunID}|"></h2>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="minUnit">Select minimum units:</label>
                     <select name="minUnit" id="minUnit" th:field="*{minUnit}">
@@ -47,33 +49,21 @@
                         <option value="15.0">15.0</option>
                     </select>
                 </div>
-                
-                <div class="form-group">
-                    <label for="releaseTime">Select release units:</label>
-                    <select name="releaseTime" id="releaseTime" th:field="*{releaseTime}">
-                        <option value="0.0">0.0</option>
-                        <option value="3.0">3.0</option>
-                        <option value="6.0">6.0</option>
-                    </select>
-                </div>
-                
+
                 <div class="form-group">
                     <label for="term">Select the term</label>
-                        <select th:field="*{term}">
-                            <option th:each="i : ${terms}" th:value="${i.getId()}"
-                                th:text="${i.getPrefix()}"></option>
-                        </select>
+                    <select th:field="*{term}">
+                        <option th:each="i : ${terms}" th:value="${i.getId()}" th:text="${i.getPrefix()}"></option>
+                    </select>
                 </div>
-                <!-- Source description text box -->
-                <div class="form-group">
-                    <label for="sourceDescription">Enter description for request of release time
-                        units.</label>
-                    <textarea class="form-control" id="sourceDescription" name="sourceDescription"
-                        th:field="*{sourceDescription}" th:placeholder="*{sourceDescription}" />
-                </div>
-                <input name = "times" th:value="*{times}" type="hidden" id="times">
+                <fieldset id="buildyourform">
+                    <legend>Release Times</legend>
+                </fieldset>
+                <input type="button" value="Add more release times" class="add" id="add" />
+                <br>
+                <input name="times" th:value="*{times}" type="hidden" id="times">
                 <div class="box-footer">
-                    <button type="submit">Register</button>
+                    <button type="submit" class="add" id="releaseTimeArray" name="releaseTimeArray">Register</button>
                 </div>
             </form>
         </div>
@@ -83,27 +73,27 @@
         </div>
 
         <div class="modal fade" id="createEventModal" tabindex="-1" aria-labelledby="createEventModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="createEventModalLabel">Modal title</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <label for="priorities">Priority:</label>
-                    <select name="cars" id="priorities">
-                        <option value="1">Most Willing</option>
-                        <option value="2">Willing</option>
-                        <option value="3">Not Available</option>
-                    </select>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" id="submit_event" class="btn btn-primary">Save changes</button>
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="createEventModalLabel">Modal title</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <label for="priorities">Priority:</label>
+                        <select name="cars" id="priorities">
+                            <option value="1">Most Willing</option>
+                            <option value="2">Willing</option>
+                            <option value="3">Not Available</option>
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" id="submit_event" class="btn btn-primary">Save changes</button>
+                    </div>
                 </div>
             </div>
-        </div>
     </section>
 </body>
 
@@ -207,5 +197,35 @@
             calendarEL.fullCalendar("clientEvents").forEach(convertToJson);
             $('#times').val(JSON.stringify(dates));
         }
+        $("#add").click(function () {
+            var lastField = $("#buildyourform div:last");
+            var intId = (lastField && lastField.length && lastField.data("idx") + 1) || 1;
+            var fieldWrapper = $("<div class=\"fieldwrapper\" id=\"field" + intId + "\"/>");
+            fieldWrapper.data("idx", intId);
+            var releaseTimeForm = $("<label>Units</label><input type=\"number\" step=\"0.01\" min=0 max=15 class=\"units\" /><label>Source</label><textarea type=\"text\" class=\"source\" /><label>Note</label><textarea type=\"text\" class=\"note\" />");
+
+            var removeButton = $("<input type=\"button\" class=\"remove\" value=\"-\" />");
+            removeButton.click(function () {
+                $(this).parent().remove();
+            });
+            fieldWrapper.append(releaseTimeForm);
+
+            fieldWrapper.append(removeButton);
+            $("#buildyourform").append(fieldWrapper);
+        });
+        $("#releaseTimeArray").click(function () {
+            var array = [];
+            $("#yourform").remove();
+            var fieldSet = $("<fieldset id=\"yourform\"><legend>Your Form</legend></fieldset>");
+            $("#buildyourform div").each(function () {
+                var id = "input" + $(this).attr("id").replace("field", "");
+                // doesn't work with 2d array, data is sent as 1d array?
+                array.push($(this).find("input.units").first().val());
+                array.push($(this).find("textarea.source").first().val());
+                array.push($(this).find("textarea.note").first().val());
+            });
+            
+            $("body").append(fieldSet);
+        });
     });
 </script>
