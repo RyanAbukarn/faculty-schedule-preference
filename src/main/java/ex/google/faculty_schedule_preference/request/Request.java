@@ -57,6 +57,9 @@ public class Request {
     @OneToOne(fetch = FetchType.LAZY)
     private Course course;
 
+    private String days;
+    private String start_end_time;
+
     @OneToMany(mappedBy = "request", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RequestFeedback> requestFeedbacks = new ArrayList<RequestFeedback>();
 
@@ -150,4 +153,55 @@ public class Request {
         return "Least Preferred";
     }
 
+    public String getCourse_name(){
+        return this.getCourse().getName();
+    }
+
+    public String getCourse_description(){
+        return this.getCourse().getDescription();
+    }
+
+    public String getDepartment_prefix(){
+        return this.getCourse().getDepartment().getPrefix();
+    }
+
+    public String getCourse_number(){
+        return this.getCourse().getNumber();
+    }
+
+    public String getK_factor(){
+        return this.getCourse().getK_factor();
+    }
+
+    public Boolean getEnrollment_based(){
+        return this.getCourse().getEnrollmentBased();
+    }
+
+    public String getTerm(){
+        return this.getCourse().getTerm().getName();
+    }
+
+    public String getInstructor_name(){
+        return this.getUser().getName();
+    }
+
+    public String getInstructorID(){
+        return this.getUser().getCsunID();
+    }
+
+    public String getDays(){
+        return this.days;
+    }
+
+    public void setDays(String days){
+        this.days = days;
+    }
+
+    public String getStart_end_time(){
+        return this.start_end_time;
+    }
+
+    public void setStart_end_time(String start_end_time){
+        this.start_end_time = start_end_time;
+    }
 }
