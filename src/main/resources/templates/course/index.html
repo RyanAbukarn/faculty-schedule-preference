@@ -74,6 +74,10 @@
       </div>
     </div>
 
+    <div>
+      <a sec:authorize="hasAnyRole('ADMIN','CONTROLLER', 'SUPERUSER')" th:href="@{/users/export_csv}">Export Courses To CSV</a>
+    </div>
+
   </section>
 </body>
 

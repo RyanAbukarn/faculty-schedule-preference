@@ -5,6 +5,10 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -19,6 +23,8 @@ import javax.servlet.http.HttpServletResponse;
 import com.box.sdk.BoxAPIConnection;
 import com.box.sdk.BoxFolder;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -37,13 +43,20 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.supercsv.io.CsvBeanWriter;
+import org.supercsv.io.ICsvBeanWriter;
+import org.supercsv.prefs.CsvPreference;
 
+import ex.google.faculty_schedule_preference.course.Course;
+import ex.google.faculty_schedule_preference.course.CourseRepository;
 import ex.google.faculty_schedule_preference.department.Department;
 import ex.google.faculty_schedule_preference.department.DepartmentRepository;
 import ex.google.faculty_schedule_preference.document.Document;
 import ex.google.faculty_schedule_preference.document.DocumentRepository;
 import ex.google.faculty_schedule_preference.permission.Permission;
 import ex.google.faculty_schedule_preference.permission.PermissionRepository;
+import ex.google.faculty_schedule_preference.request.Request;
+import ex.google.faculty_schedule_preference.request.RequestRepository;
 import ex.google.faculty_schedule_preference.user.email.EmailSender;
 
 @Controller
@@ -68,6 +81,12 @@ public class UserController {
 
     @Autowired
     private EmailSender emailSender;
+
+    @Autowired
+    private RequestRepository requestRepository;
+
+    @Autowired
+    private CourseRepository courseRepository;
 
     @Value("${boxapi}")
     private String boxapi;
@@ -358,5 +377,79 @@ public class UserController {
 
         userService.confirmToken(token);
         return "user/email-activated";
+    }
+
+    @GetMapping("/export_csv")
+    public void downloadCSV(HttpServletResponse response, @AuthenticationPrincipal UserDetails userDetails)
+            throws IOException {
+
+        response.setContentType("text/csv");
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+        String currentDateTime = dateFormatter.format(new Date());
+
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=courses_" + currentDateTime +
+                ".csv";
+        response.setHeader(headerKey, headerValue);
+
+        User currentUser = repository.findByUsername(userDetails.getUsername()).get();
+
+        // Get all approved requests that are for courses of departments that the
+        // current user is the controller of
+
+        // Get the departments for the current user
+        Set<Department> departments = currentUser.getDepartments();
+        // Get All Courses for those departments
+        List<Course> courses = courseRepository.getCoursesByDepartmentIn(departments);
+
+        // get all requests that are for those courses
+        List<Request> requests = requestRepository.getAllByCourseIn(courses);
+
+        // get all requests that are approved with status # of 4
+        List<Request> finalRequests = new ArrayList<>();
+        for (Request i : requests) {
+            if (i.getStatus() == 4) {
+                finalRequests.add(i);
+            }
+        }
+
+        for (int i = 0; i < finalRequests.size(); i++) {
+            String timeJSON = finalRequests.get(i).getApprovedTime();
+            timeJSON = "{\"times\": " + timeJSON + "}";
+
+            JSONObject jObject = new JSONObject(timeJSON);
+            JSONArray jArray = jObject.getJSONArray("times");
+            String days = "";
+            String time = "";
+
+            JSONObject temp = jArray.getJSONObject(0);
+            time = temp.getString("startTime") + " - " + temp.getString("endTime");
+
+            for (int j = 0; j < jArray.length(); j++) {
+                temp = jArray.getJSONObject(j);
+                days += temp.getString("day") + ", ";
+            }
+            days = days.substring(0, days.length() - 2);
+
+            Request current = requestRepository.findById(finalRequests.get(i).getId()).get();
+            current.setDays(days);
+            current.setStart_end_time(time);
+        }
+
+        ICsvBeanWriter csvWriter = new CsvBeanWriter(response.getWriter(), CsvPreference.STANDARD_PREFERENCE);
+        String[] csvHeader = { "Course Name", "Course Description", "Department Prefix", "Course Number", "K-Factor",
+                "Enrollment Based", "Term", "Instructor Name", "Instructor CSUN ID", "Days", "Time" };
+
+        String[] nameMapping = { "course_name", "course_description", "department_prefix", "course_number", "k_factor",
+                "enrollment_based", "term", "instructor_name", "instructorID", "days", "start_end_time" };
+
+        csvWriter.writeHeader(csvHeader);
+
+        for (Request i : finalRequests) {
+            csvWriter.write(i, nameMapping);
+        }
+
+        csvWriter.close();
+
     }
 }
