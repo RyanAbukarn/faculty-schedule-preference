@@ -434,6 +434,7 @@ public class UserController {
             Request current = requestRepository.findById(finalRequests.get(i).getId()).get();
             current.setDays(days);
             current.setStart_end_time(time);
+            requestRepository.save(current);
         }
 
         ICsvBeanWriter csvWriter = new CsvBeanWriter(response.getWriter(), CsvPreference.STANDARD_PREFERENCE);
