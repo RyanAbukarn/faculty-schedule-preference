@@ -163,8 +163,8 @@
                 updateHiddenInput();
             },
             eventClick: function (calEvent) {
-                $("#createEventModal").modal("show");
                 tempEvent = calEvent;
+                $("#createEventModal").modal("show");
             }
         });
         $('#calendar').fullCalendar('gotoDate', currentDate);
@@ -174,20 +174,20 @@
             zIndex: 999,
             revert: true, // will cause the event to go back to its
         });
-        $("#submit_event").click(_ => {    
-            updatedEvent = false
-            for (i = 0; i < dates.length; i++){
-                if (dates[i].start == start_ && dates[i].end == end_){
-                    tempEvent.color = color[Direction[$("#priorities").val()]]
-                    calendarEL.fullCalendar('updateEvent', tempEvent);
-                    updatedEvent = true
+        $("#submit_event").click(_ => {
+            updated = false
+            for (i = 0; i < dates.length; i++) {
+                if (dates[i].start == start_ && dates[i].end == end_) {
+                    addEvent(Direction[$("#priorities").val()], tempEvent.start, tempEvent.end);
+                    $("#calendar").fullCalendar("removeEvents", tempEvent._id);
+                    updated = true
                     break;
                 }
             }
-            if (updatedEvent == false){
+            if (updated == false){
                 addEvent(Direction[$("#priorities").val()], start_, end_);
             }
-
+            
             $("#createEventModal").modal("hide");
         });
 
