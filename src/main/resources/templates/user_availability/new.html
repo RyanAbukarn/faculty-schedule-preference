@@ -77,7 +77,7 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="createEventModalLabel">Modal title</h5>
+                        <h5 class="modal-title" id="createEventModalLabel">Priority selection</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -119,6 +119,7 @@
         let currentDate = "2012-05-25";
         let start_ = "";
         let end_ = "";
+        let tempEvent = "";
         calendarEL.fullCalendar({
             hiddenDays: [0],
             defaultView: 'agendaWeek',
@@ -160,17 +161,30 @@
                     updateHiddenInput();
                 });
                 updateHiddenInput();
+            },
+            eventClick: function (calEvent) {
+                tempEvent = calEvent;
+                $("#createEventModal").modal("show");
             }
         });
         $('#calendar').fullCalendar('gotoDate', currentDate);
+
 
         $('#my-draggable').draggable({
             zIndex: 999,
             revert: true, // will cause the event to go back to its
         });
         $("#submit_event").click(_ => {
-            addEvent(Direction[$("#priorities").val()], start_, end_);
+            if (tempEvent != "") {
+                addEvent(Direction[$("#priorities").val()], tempEvent.start, tempEvent.end);
+                $("#calendar").fullCalendar("removeEvents", tempEvent._id);
+            }
+            else {
+                addEvent(Direction[$("#priorities").val()], start_, end_);
+            }
+
             $("#createEventModal").modal("hide");
+            tempEvent = "";
         });
 
         function convertToJson(value, _, _) {
@@ -179,7 +193,7 @@
                 title: value.title,
                 start: value.start.toISOString(),
                 end: value.end.toISOString(),
-                editable: false
+                editable: true
             })
         };
 
@@ -224,7 +238,7 @@
                 array.push($(this).find("textarea.source").first().val());
                 array.push($(this).find("textarea.note").first().val());
             });
-            
+
             $("body").append(fieldSet);
         });
     });
