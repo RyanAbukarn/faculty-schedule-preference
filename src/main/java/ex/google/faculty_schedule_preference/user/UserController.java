@@ -413,44 +413,62 @@ public class UserController {
             }
         }
 
-        for (int i = 0; i < finalRequests.size(); i++) {
-            String timeJSON = finalRequests.get(i).getApprovedTime();
-            timeJSON = "{\"times\": " + timeJSON + "}";
-
-            JSONObject jObject = new JSONObject(timeJSON);
-            JSONArray jArray = jObject.getJSONArray("times");
-            String days = "";
-            String time = "";
-
-            JSONObject temp = jArray.getJSONObject(0);
-            time = temp.getString("startTime") + " - " + temp.getString("endTime");
-
-            for (int j = 0; j < jArray.length(); j++) {
-                temp = jArray.getJSONObject(j);
-                days += temp.getString("day") + ", ";
-            }
-            days = days.substring(0, days.length() - 2);
-
-            Request current = requestRepository.findById(finalRequests.get(i).getId()).get();
-            current.setDays(days);
-            current.setStart_end_time(time);
-            requestRepository.save(current);
-        }
-
         ICsvBeanWriter csvWriter = new CsvBeanWriter(response.getWriter(), CsvPreference.STANDARD_PREFERENCE);
         String[] csvHeader = { "Course Name", "Course Description", "Department Prefix", "Course Number", "K-Factor",
                 "Enrollment Based", "Term", "Instructor Name", "Instructor CSUN ID", "Days", "Time" };
 
+        csvWriter.writeHeader(csvHeader);
+
         String[] nameMapping = { "course_name", "course_description", "department_prefix", "course_number", "k_factor",
                 "enrollment_based", "term", "instructor_name", "instructorID", "days", "start_end_time" };
 
-        csvWriter.writeHeader(csvHeader);
+        for (int i = 0; i < finalRequests.size(); i++) {
+            String dataJSON = finalRequests.get(i).getApprovedTime();
+            dataJSON = "{\"data\": " + dataJSON + "}";
 
-        for (Request i : finalRequests) {
-            csvWriter.write(i, nameMapping);
+            JSONObject jObject = new JSONObject(dataJSON);
+            JSONArray jArray = jObject.getJSONArray("data");
+
+            HashMap<String, Integer> section = new HashMap<>();
+
+            JSONObject temp;
+            List<String> daysList = new ArrayList<>();
+            List<String> timeList = new ArrayList<>();
+            List<String> sectionList = new ArrayList<>();
+
+            int value = 0;
+            for (int j = 0; j < jArray.length(); j++) {
+                temp = jArray.getJSONObject(j);
+                String key = temp.getString("section");
+
+                if (section.containsKey(key)) {
+                    String tempString = daysList.get(section.get(key));
+                    daysList.set(section.get(key), tempString + temp.getString("day") + ", ");
+                } else {
+                    section.put(key, value);
+                    daysList.add(temp.getString("day") + ", ");
+                    timeList.add(temp.getString("startTime") + " - " + temp.getString("endTime"));
+                    sectionList.add(key);
+                    value++;
+
+                }
+
+            }
+
+            for (int k = 0; k < daysList.size(); k++) {
+                String tempString = daysList.get(k);
+                tempString = tempString.substring(0, tempString.length() - 2);
+                daysList.set(k, tempString);
+            }
+            Request currentRequest = requestRepository.findById(finalRequests.get(i).getId()).get();
+            for (int k = 0; k < sectionList.size(); k++) {
+                currentRequest.setDays(daysList.get(k));
+                currentRequest.setStart_end_time(timeList.get(k));
+                requestRepository.save(currentRequest);
+                csvWriter.write(currentRequest, nameMapping);
+            }
         }
 
         csvWriter.close();
-
     }
 }

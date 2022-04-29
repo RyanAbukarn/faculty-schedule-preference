@@ -148,9 +148,9 @@ public class Request {
 
     public String getPreferenceAsString(){
         if (preference == 1){
-            return "Most Preferred";
+            return "Preferred";
         }
-        return "Least Preferred";
+        return "Acceptable";
     }
 
     public String getCourse_name(){

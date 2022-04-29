@@ -155,16 +155,19 @@
             eventRender: function (event, element) {
                 element
                     .find(".fc-content")
+                    .prepend(`<i class="editBtn far fa-pencil" style = "float: right; padding-top: 2px; padding-right: 2px;"></i>`)
                     .prepend(`<i class="closeBtn far fa-times-circle"></i>`);
+
                 element.find(".closeBtn").on("click", function () {
                     $("#calendar").fullCalendar("removeEvents", event._id);
                     updateHiddenInput();
                 });
+                element.find(".editBtn").on("click", function () {
+                    tempEvent = event;
+                    $("#createEventModal").modal("show");
+                    updateHiddenInput();
+                });
                 updateHiddenInput();
-            },
-            eventClick: function (calEvent) {
-                tempEvent = calEvent;
-                $("#createEventModal").modal("show");
             }
         });
         $('#calendar').fullCalendar('gotoDate', currentDate);

@@ -145,29 +145,32 @@ public class RequestController {
             return ResponseEntity.ok("my_availabilities");
         }
 
-
-        for (Long i : mostPreferred) {
-            course = courseRepository.findById(i).get();
-            request = new Request();
-            request.setCourse(course);
-            request.setStatus(Request.statusValues.get("new"));
-            request.setTimes(userAvailabilities.get(userAvailabilities.size() -
-                    1).getTimes());
-            request.setUser(currentUser);
-            request.setPreference(1);
-            repository.save(request);
+        if (mostPreferred[0] != -1){
+            for (Long i : mostPreferred) {
+                course = courseRepository.findById(i).get();
+                request = new Request();
+                request.setCourse(course);
+                request.setStatus(Request.statusValues.get("new"));
+                request.setTimes(userAvailabilities.get(userAvailabilities.size() -
+                        1).getTimes());
+                request.setUser(currentUser);
+                request.setPreference(1);
+                repository.save(request);
+            }
         }
 
-        for (Long i : leastPreferred) {
-            course = courseRepository.findById(i).get();
-            request = new Request();
-            request.setCourse(course);
-            request.setStatus(Request.statusValues.get("new"));
-            request.setTimes(userAvailabilities.get(userAvailabilities.size() -
-                    1).getTimes());
-            request.setUser(currentUser);
-            request.setPreference(2);
-            repository.save(request);
+        if (leastPreferred[0] != -1){
+            for (Long i : leastPreferred) {
+                course = courseRepository.findById(i).get();
+                request = new Request();
+                request.setCourse(course);
+                request.setStatus(Request.statusValues.get("new"));
+                request.setTimes(userAvailabilities.get(userAvailabilities.size() -
+                        1).getTimes());
+                request.setUser(currentUser);
+                request.setPreference(2);
+                repository.save(request);
+            }
         }
 
         return ResponseEntity.ok("my_requests");

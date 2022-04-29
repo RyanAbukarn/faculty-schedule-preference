@@ -79,7 +79,7 @@
                 <tbody class="connectedSortable" id="t2">
 
                     <tr class="table2">
-                        <th>Least Preferred Courses List</th>
+                        <th>Acceptable Courses List</th>
                     </tr>
 
                 </tbody>
@@ -93,7 +93,7 @@
                 <tbody class="connectedSortable" id="t3">
 
                     <tr class="table3">
-                        <th>Most Preferred Courses List</th>
+                        <th>Preferred Courses List</th>
                     </tr>
 
                 </tbody>
@@ -102,20 +102,20 @@
         <script src="jquery.js"></script>
         <script src="jquery-ui.min.js"></script>
         <script>
-            function changeTextarea(id) {
-                var textarea = document.getElementById('info');
-                // display description instead of id?
-                textarea.value = id;
-            }
+            //function changeTextarea(id) {
+            //     var textarea = document.getElementById('info');
+            //     // display description instead of id?
+            //     textarea.value = id;
+            // }
             // $('tr').mouseout(function () {
             //     $('#info').hide();
             // });
-            $('tr').mouseover(function () {
-                $('#info').show();
-            });
-            $('#info').mouseover(function () {
-                $(this).show();
-            });
+            // $('tr').mouseover(function () {
+            //     $('#info').show();
+            // });
+            // $('#info').mouseover(function () {
+            //     $(this).show();
+            // });
             $(document).ready(function () {
                 $("tbody.connectedSortable").sortable({
                     connectWith: ".connectedSortable",
@@ -137,6 +137,17 @@
                     var header = $('#_csrf_header').attr('content');
                     var leastPreferred = $('tbody#t2').sortable('toArray');
                     var mostPreferred = $('tbody#t3').sortable('toArray');
+                    if (leastPreferred.length == 0 && mostPreferred.length == 0){
+                        alert("Drag courses to lists and then click submit.");
+                        return;
+                    }
+                    if (leastPreferred.length == 0){
+                        leastPreferred = ['-1']
+                    }
+                    if (mostPreferred.length == 0){
+                        mostPreferred = ['-1']
+                    }
+
                     $.ajax({
                         type: 'POST',
                         url: '/course_requests',

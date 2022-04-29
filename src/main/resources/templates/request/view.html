@@ -65,160 +65,232 @@
 						<div class="form-group">
 							<label for="comment">Feedback</label>
 							<textarea class="form-control" id="comment" name="comment" th:field="*{comment}" />
-							</div>
-				<div class="form-group">
-					<label for="receiver">Send to</label>
-					<select th:field="*{receiver}" name="receiver" class="form-control" id="receiver">
-						<option th:each="i : ${receiver_types}" th:value="${i.key}" th:text="${i.value}">
-						</option>
-					</select>
+						</div>
+						<div class="form-group">
+							<label for="receiver">Send to</label>
+							<select th:field="*{receiver}" name="receiver" class="form-control" id="receiver">
+								<option th:each="i : ${receiver_types}" th:value="${i.key}" th:text="${i.value}">
+								</option>
+							</select>
+						</div>
+						<br>
+						<input class="btn btn-primary" type="submit" name="submit" />
+					</form>
 				</div>
+			</div>
+			<div>
+				<div id='calendar'></div>
 				<br>
-					<input class="btn btn-primary" type="submit" name="submit"/>
+				<form th:if="${request.getStatus()!=4 && request.getStatus()!=3}"
+					th:action="@{/requests/__${request.getId()}__/denied}" method="post">
+					<button class="btn btn-danger">Deny</button>
+				</form>
+				<br>
+				<form th:if="${request.getStatus()!=4 && request.getStatus()!=3}"
+					th:action="@{/requests/__${request.getId()}__/approved-time}" method="post">
+					<input name="potentialApprovedTime" type="hidden" id="potentialApprovedTime">
+					<input name="userAvailability" type="hidden" id="userAvailability">
+
+					<button class="btn btn-primary">Approve</button>
 				</form>
 			</div>
-		</div>
-		<div>
-			<div id='calendar'></div>
-			<br>
-			<form th:if="${request.getStatus()!=4 && request.getStatus()!=3}" th:action="@{/requests/__${request.getId()}__/denied}" method="post">
-				<button class="btn btn-danger">Deny</button>
-			</form>
-			<br>
-			<form th:if="${request.getStatus()!=4 && request.getStatus()!=3}" th:action="@{/requests/__${request.getId()}__/approved-time}" method="post">
-				<input name= "potentialApprovedTime" type="hidden" id="potentialApprovedTime">
-				<input name= "userAvailability" type="hidden" id="userAvailability">
 
-				<button class="btn btn-primary">Approve</button>
-			</form>
 		</div>
 
-	</div>
-	
-	<script>
-		var e;
-		$(document).ready(function () {
-			const DENIED = 3
-			const APPROVED = 4;
-			let approvedTime = [];
-			let userAvailability = [];
-			let calendarEL = $('#calendar');
-			let courseNumber = $('#departmentPrefix').text().split(":")[1] + " " + $('#courseNumber').text().split(" ")[1];
-			let potentialApprovedTime = $('#potentialApprovedTime');
-			let userAvailabilityTag = $('#userAvailability');
-			let currentDate = "2012-05-25";
-			calendarEL.fullCalendar({
-				eventColor: '#2E4755',
-				hiddenDays: [0],
-				defaultView: 'agendaWeek',
-				slotDuration: '00:15',
-				allDaySlot: false,
-				editable: true,
-				eventResourceEditable: false,
-				selectHelper: true,
-                selectable: true,
-                unselectAuto: true,
-                eventOverlap: true,
-				slotLabelInterval: "00:15",
-				longPressDelay: 0,
-				header: {
-                    left: '',
-                    center: '',
-                    right: ''
-                },
-				views: {
-					agendaWeek: {
-						columnFormat: "dddd"
+		<div class="modal fade" id="createEventModal" tabindex="-1" aria-labelledby="createEventModalLabel"
+			aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="createEventModalLabel">Section Number</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<label for="section">Section:</label>
+						<select name="cars" id="sections">
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+							<option value="5">5</option>
+						</select>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+						<button type="button" id="submit_event" class="btn btn-primary">Save changes</button>
+					</div>
+				</div>
+			</div>
+
+			<script>
+				var e;
+				$(document).ready(function () {
+					const Direction = {
+						1: '1',
+						2: '2',
+						3: '3',
+						4: '4',
+						5: '5',
 					}
-				},
-				nowIndicator: "true",
-                minTime: '08:30',
-                maxTime: '21:45',
-				events: function (_, _, _, callback) {
-					if($("#status").val() == APPROVED || $("#status").val() == DENIED)
-						callback(JSON.parse($("#approvedTime").val()));
-					else
-						callback(JSON.parse($("#times").val()));
-				}, 
-				select: function (start, end) {
-					start_ = start.toISOString();
-                    end_ = end.toISOString();
-					addEvent(start_,end_);
-				},
-				eventRender: function (event, element) {
-					if(event.editable == undefined){
-						element
-							.find(".fc-content")
-							.prepend(`<i class="closeBtn far fa-times-circle"></i>`);
-						element.find(".closeBtn").on("click", function () {
-							calendarEL.fullCalendar("removeEvents", event._id);
-							updateHiddenInput()
-						});
+					const color = {
+						'1': "#33FE01",
+						'2': "#FE7701",
+						'3': "#FB75E5",
+						'4': "#6ADCF9",
+						'5': "#BCE31E",
 					}
-                }
-					 
-			});
-			function convertToJson(value, _, _) {
-				if (value.title == courseNumber){
-					approvedTime.push({
-						title: courseNumber,
-						color: value.color,
-						start: value.start.toISOString(),
-						end: value.end.toISOString(),
-						day: value.start.format("dddd"),
-						startTime: value.start.format("hh:mm"),
-						endTime: value.end.format("hh:mm"),
-						editable: false
+					const Direction2 = {
+						'1': 1,
+						'2': 2,
+						'3': 3,
+						'4': 4,
+						'5': 5,
+					}
+					const DENIED = 3
+					const APPROVED = 4;
+					let approvedTime = [];
+					let userAvailability = [];
+					let calendarEL = $('#calendar');
+					let courseNumber = $('#departmentPrefix').text().split(":")[1] + " " + $('#courseNumber').text().split(" ")[1];
+					let potentialApprovedTime = $('#potentialApprovedTime');
+					let userAvailabilityTag = $('#userAvailability');
+					let currentDate = "2012-05-25";
+					let start_ = "";
+					let end_ = "";
+					let tempEvent = "";
+					calendarEL.fullCalendar({
+						eventColor: '#2E4755',
+						hiddenDays: [0],
+						defaultView: 'agendaWeek',
+						slotDuration: '00:15',
+						allDaySlot: false,
+						editable: true,
+						eventResourceEditable: false,
+						selectHelper: true,
+						selectable: true,
+						unselectAuto: true,
+						eventOverlap: true,
+						slotLabelInterval: "00:15",
+						longPressDelay: 0,
+						header: {
+							left: '',
+							center: '',
+							right: ''
+						},
+						views: {
+							agendaWeek: {
+								columnFormat: "dddd"
+							}
+						},
+						nowIndicator: "true",
+						minTime: '08:30',
+						maxTime: '21:45',
+						events: function (_, _, _, callback) {
+							if ($("#status").val() == APPROVED || $("#status").val() == DENIED)
+								callback(JSON.parse($("#approvedTime").val()));
+							else
+								callback(JSON.parse($("#times").val()));
+						},
+						select: function (start, end) {
+							start_ = start.toISOString();
+							end_ = end.toISOString();
+							$("#createEventModal").modal("show");
+							return true;
+						},
+						eventRender: function (event, element) {
+							if (event.editable == undefined) {
+								element
+									.find(".fc-content")
+									.prepend(`<i class="closeBtn far fa-times-circle"></i>`);
+								element.find(".closeBtn").on("click", function () {
+									calendarEL.fullCalendar("removeEvents", event._id);
+									updateHiddenInput()
+								});
+								updateHiddenInput();
+							}
+						},
+						eventClick: function (calEvent) {
+							tempEvent = calEvent;
+							$("#createEventModal").modal("show");
+						}
+					});
 
-					})
-					userAvailability.push({
-						title: courseNumber,
-						color: value.color,
-						start: value.start.toISOString(),
-						end: value.end.toISOString(),
-						day: value.start.format("dddd"),
-						editable: false
-					})
-				}else{
-					userAvailability.push({
-						title: value.title,
-						color: value.color,
-						start: value.start.toISOString(),
-						end: value.end.toISOString(),
-						day: value.start.format("dddd"),
-						editable: false
-					})
-				}
-				
-				
+					$("#submit_event").click(_ => {
+						if (tempEvent != "") {
+							addEvent(Direction[$("#sections").val()], tempEvent.start, tempEvent.end);
+							calendarEL.fullCalendar("removeEvents", tempEvent._id);
+						}
+						else {
+							addEvent(Direction[$("#sections").val()], start_, end_);
+						}
 
-            };
-			function updateHiddenInput() {
-                approvedTime = [];
-				userAvailability = [];
-                calendarEL.fullCalendar("clientEvents").forEach(convertToJson);
-				potentialApprovedTime.val(JSON.stringify(approvedTime));
-				userAvailabilityTag.val(JSON.stringify(userAvailability));
-            }
+						$("#createEventModal").modal("hide");
+						tempEvent = "";
+					});
 
-			function addEvent(start, end) {
-                calendarEL.fullCalendar('renderEvent', {
-                    title: courseNumber,
-                    start: start,
-                    end: end,
-                }, true);
-				updateHiddenInput()
-            };
+					function convertToJson(value, _, _) {
+						if (value.title == courseNumber) {
+							approvedTime.push({
+								title: courseNumber,
+								color: value.color,
+								start: value.start.toISOString(),
+								end: value.end.toISOString(),
+								day: value.start.format("dddd"),
+								startTime: value.start.format("hh:mm"),
+								endTime: value.end.format("hh:mm"),
+								editable: false,
+								section: value.section
+							})
+							userAvailability.push({
+								title: courseNumber,
+								color: value.color,
+								start: value.start.toISOString(),
+								end: value.end.toISOString(),
+								day: value.start.format("dddd"),
+								editable: false
+							})
+						} else {
+							userAvailability.push({
+								title: value.title,
+								color: value.color,
+								start: value.start.toISOString(),
+								end: value.end.toISOString(),
+								day: value.start.format("dddd"),
+								editable: false
+							})
+						}
 
-			calendarEL.fullCalendar('gotoDate', currentDate);
-			$('#my-draggable').draggable({
-				zIndex: 999,
-				revert: true, // will cause the event to go back to its
-			});
-			
-		});
-	</script>
-</section>
+
+
+					};
+					function updateHiddenInput() {
+						approvedTime = [];
+						userAvailability = [];
+						calendarEL.fullCalendar("clientEvents").forEach(convertToJson);
+						potentialApprovedTime.val(JSON.stringify(approvedTime));
+						userAvailabilityTag.val(JSON.stringify(userAvailability));
+					}
+
+					function addEvent(temp, start, end) {
+						calendarEL.fullCalendar('renderEvent', {
+							color: color[temp],
+							title: courseNumber,
+							start: start,
+							end: end,
+							section: temp
+						}, true);
+						updateHiddenInput()
+					};
+
+					calendarEL.fullCalendar('gotoDate', currentDate);
+					$('#my-draggable').draggable({
+						zIndex: 999,
+						revert: true, // will cause the event to go back to its
+					});
+
+				});
+			</script>
+	</section>
 </body>
 
 
